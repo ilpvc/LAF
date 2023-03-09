@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import HeaderBar from "./components/Header/HeaderBar.vue"
-import createTheme from "naive-ui"
+import {NDialogProvider,NMessageProvider} from "naive-ui"
+import {useRouter} from "vue-router";
+
+useRouter().push({name:'home'})
+
 </script>
 
 <template>
-  <n-config-provider :theme="createTheme">
-    <header-bar></header-bar>
-  </n-config-provider>
+
+  <n-message-provider>
+    <n-dialog-provider>
+      <router-view/>
+    </n-dialog-provider>
+  </n-message-provider>
 </template>
 
 <style scoped>

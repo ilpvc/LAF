@@ -36,7 +36,7 @@
       </a>
 
       <!--    头像和下拉框  -->
-      <n-popover :overlap="overlap" placement="bottom" trigger="click">
+      <n-popover placement="bottom" trigger="click">
         <template #trigger>
           <a href="javascript:;" class="Tab-avatar">
             <n-avatar
@@ -46,6 +46,7 @@
             />
           </a>
         </template>
+<!--        下拉选项-->
         <div>
           <ul class="Tab-select">
             <li class="Select-item"><a href="javascript:;">
@@ -146,10 +147,10 @@ let value = ref(1)
 
 /*顶部导航栏*/
 #HeaderBody {
-  width: 100vw;
+  width: 99vw;
   min-width: 1000px;
   overflow: hidden;
-  position: absolute;
+  position: fixed;
   z-index: 100;
   background: #fff;
   top: 0;
