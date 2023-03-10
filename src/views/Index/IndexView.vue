@@ -1,19 +1,29 @@
 <template>
-<Card v-for="i in 10"></Card>
+  <div class="index">
+    <div>
+      <Card v-for="i in 10"></Card>
+    </div>
+    <div>
+      <NavigationCard></NavigationCard>
+      <LeiFengRank></LeiFengRank>
+    </div>
+
+  </div>
 </template>
 
 <script setup>
-
 import Card from "@/components/Card/Card.vue";
+import NavigationCard from "@/components/NavigationCard.vue";
+import LeiFengRank from "@/components/LeiFengRank.vue";
+
+
 </script>
 
 <style scoped>
-.light-green {
-  height: 108px;
-  background-color: rgba(0, 128, 0, 0.12);
+.index {
+  display: flex;
+  flex-direction: row;
 }
-.green {
-  height: 108px;
-  background-color: rgba(0, 128, 0, 0.24);
-}
+
+
 </style>
