@@ -19,7 +19,7 @@ router.push({path:'/home'})
 
 <style scoped>
 .body {
-  position: relative;
+  position: absolute;
   top: 54px;
   width: 99vw;
   display: flex;

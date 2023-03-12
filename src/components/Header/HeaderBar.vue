@@ -7,7 +7,7 @@
     />
     <!--    导航选项-->
     <ul class="Tabs">
-      <li class="Tab-items"><a class="Tab-link" href="javascript:;">首页</a></li>
+      <li class="Tab-items"><router-link class="Tab-link" to="/home">首页</router-link></li>
       <li class="Tab-items"><a class="Tab-link" href="javascript:;">寻物</a></li>
       <li class="Tab-items"><a class="Tab-link" href="javascript:;">招领</a></li>
       <li class="Tab-items"><a class="Tab-link" href="javascript:;">大厅</a></li>
@@ -49,14 +49,14 @@
 <!--        下拉选项-->
         <div>
           <ul class="Tab-select">
-            <li class="Select-item"><a href="javascript:;">
+            <li class="Select-item"><router-link to="/user">
               <svg t="1678175865725" class="icon" viewBox="0 0 1024 1024" version="1.1"
                    xmlns="http://www.w3.org/2000/svg" p-id="1358" width="1em" height="1em" style="margin-right: 5px">
                 <path
                     d="M943.616 421.376l-363.008-322.048c-18.432-17.92-43.008-28.16-68.608-28.16s-49.664 9.728-67.584 27.136L83.456 419.328l-2.56 2.56c-24.576 24.576-34.304 59.392-27.648 92.16 6.144 27.136 32.768 47.616 38.912 51.2 15.36 11.264 35.328 12.8 51.712 12.8h0.512V855.04c0 53.76 37.888 91.648 91.648 91.648h138.24c53.76 0 91.648-37.888 91.648-91.648v-138.24h93.184v138.752c0 53.76 37.888 91.648 91.648 91.648h138.24c53.76 0 91.648-37.888 91.648-91.648v-277.504h0.512c13.312-1.024 32.768-3.584 48.64-12.8 16.384-9.216 29.184-23.04 35.328-40.448 15.36-36.352 8.192-73.216-21.504-103.424z m-362.496 249.856h-138.24c-12.288 0-22.528 10.24-22.528 22.528V855.04c0 29.184-17.408 46.08-46.08 46.08H235.008c-29.184 0-46.08-17.408-46.08-46.08v-299.008c0-12.288-10.752-23.04-22.528-23.04h-13.824c-12.288 0-28.16 0-34.304-4.608-10.752-7.68-19.456-18.432-20.48-23.552-1.536-7.168-4.608-30.208 16.896-52.224L476.16 132.096c20.48-19.968 53.248-19.456 73.728 1.024l357.376 320-2.048 1.024 2.56 2.56c17.408 13.824 20.992 30.208 12.288 51.2-3.584 8.704-7.168 13.824-14.848 18.432-8.192 4.608-20.992 7.168-35.328 7.168h-12.8c-12.288 0-22.528 10.24-22.528 22.528v299.52c0 29.184-17.408 46.08-46.08 46.08h-138.24c-29.184 0-46.08-17.408-46.08-46.08v-161.792c0-12.288-10.24-22.528-23.04-22.528z"
                     fill="#8590a6" p-id="1359"></path>
               </svg>
-              我的主页</a></li>
+              我的主页</router-link></li>
             <li class="Select-item"><a href="javascript:;">
               <svg t="1678175821106" class="icon" viewBox="0 0 1024 1024" version="1.1"
                    xmlns="http://www.w3.org/2000/svg" p-id="1154" width="1em" height="1em" style="margin-right: 5px">
@@ -80,6 +80,12 @@
     </n-space>
   </div>
 
+<!--  <div class="body">-->
+<!--    <div class="context">-->
+<!--      <router-view />-->
+<!--    </div>-->
+<!--  </div>-->
+
 </template>
 
 <script setup>
@@ -89,6 +95,20 @@ let value = ref(1)
 </script>
 
 <style scoped>
+/*.body {*/
+/*  position: absolute;*/
+/*  top: 54px;*/
+/*  width: 99vw;*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*}*/
+/*.context {*/
+/*  display: flex;*/
+/*  min-width: 1000px;*/
+/*  margin: 10px auto;*/
+/*  flex-direction: column;*/
+/*}*/
+
 
 /*头像下来选项*/
 .Tab-select {

@@ -10,7 +10,12 @@ const constantRoutes = [
             {
                 path: 'home',
                 name: 'index',
-                component: ()=>import('@/views/Index/IndexView.vue')
+                component: ()=>import('@/views/Index/IndexView.vue'),
+            },
+            {
+                path: 'user',
+                name: 'user',
+                component: ()=>import('@/views/UserDetails/UserDetails.vue')
             }
         ]
     }
