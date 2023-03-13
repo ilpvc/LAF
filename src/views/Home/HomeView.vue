@@ -13,7 +13,7 @@ import HeaderBar from "@/components/Header/HeaderBar.vue";
 import {useRouter} from "vue-router";
 let router = useRouter()
 
-router.push({path:'/home'})
+router.push({path:'/user'})
 
 </script>
 
