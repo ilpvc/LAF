@@ -12,6 +12,18 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+
+html {
+  overflow-y: scroll;
+}
+
+body {
+  width: 100vw;
+  overflow: hidden;
 }
 * {
   box-sizing: border-box;

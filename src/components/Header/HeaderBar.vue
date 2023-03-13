@@ -167,7 +167,7 @@ let value = ref(1)
 
 /*顶部导航栏*/
 #HeaderBody {
-  width: 99vw;
+  width: 100vw;
   min-width: 1000px;
   overflow: hidden;
   position: fixed;

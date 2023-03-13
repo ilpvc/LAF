@@ -61,7 +61,7 @@
         </div>
 
         <div class="item-right">
-          <n-button  round type="success" size="tiny">
+          <n-button  round type="success" size="tiny" @click="success">
             领取
           </n-button>
         </div>
@@ -72,7 +72,14 @@
 </template>
 
 <script setup>
+import {useMessage} from 'naive-ui'
 
+const message = useMessage()
+function success () {
+  message.success(
+      "领取成功"
+  )
+}
 </script>
 
 <style scoped lang="less">
