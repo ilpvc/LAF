@@ -71,10 +71,10 @@
       </div>
 
       <div class="header-setting">
-        <div style="font-size: 1.5em;position:relative; left: 24px;margin-bottom: 10px">选项</div>
-        <div style="position: relative;left: 32px;border-bottom: #444444 1px solid;width: 135px;">
+        <div style="font-size: 1.5em;position:relative; left: 10px;margin-bottom: 10px;color: white">选项</div>
+        <div style="position: relative;left: 31px;border-bottom: #ffffff 1px solid;width: 136px;">
           <i style="margin-left: 10px">
-            <a href="#" style="font-size: 1.1em;color: #121212;">隐藏信息</a>
+            <a href="#" style="font-size: 1.1em;color: white;">隐藏个人信息</a>
           </i>
         </div>
       </div>
@@ -114,7 +114,8 @@
       </div>
 
       <div class="right">
-
+        <NavigationCard></NavigationCard>
+        <MissionCard></MissionCard>
       </div>
 
     </div>
@@ -125,6 +126,8 @@
 
 import Card from "@/components/Card/Card.vue"
 import {reactive, ref} from "vue";
+import NavigationCard from "@/components/NavigationCard.vue";
+import MissionCard from "@/components/MissionCard.vue";
 
 let userInfo = reactive({
   name: "ilpvc",
@@ -138,13 +141,19 @@ let userInfo = reactive({
 
 <style scoped lang="less">
 
+//主题右部分
+.right {
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+}
 //主体左部分
 .left {
   display: flex;
   flex-direction: column;
   background: #ffffff;
   width: 700px;
-  margin-right: 10px;
+  //margin-right: 10px;
   .left-header {
     display: flex;
     justify-content: space-between;
@@ -153,6 +162,11 @@ let userInfo = reactive({
       padding: 20px 0px;
     }
   }
+}
+//主题部分
+.center {
+  display: flex;
+  flex-direction: row;
 }
 
 //设置

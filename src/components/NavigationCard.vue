@@ -1,6 +1,6 @@
 <template>
 
-  <div class="body">
+  <div id="nav-body">
 
     <div class="header">
       <svg width="18" height="20" viewBox="0 0 24 24" class="Zi Zi--Creator CreatorEntrance-creatorIcon"
@@ -140,10 +140,10 @@
 }
 
 /*导航卡片*/
-.body {
+#nav-body {
   display: flex;
   background-color: white;
-  width: 300px;
+  width: 290px;
   margin-left: 10px;
   padding: 15px 10px;
   flex-direction: column;

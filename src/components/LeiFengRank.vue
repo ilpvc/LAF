@@ -104,7 +104,7 @@
 .body {
   display: flex;
   background-color: white;
-  width: 300px;
+  width: 290px;
   margin-left: 10px;
   margin-bottom: 10px;
   padding: 15px 10px;
