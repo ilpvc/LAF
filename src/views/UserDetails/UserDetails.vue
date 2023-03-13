@@ -82,15 +82,48 @@
     </div>
 
     <div class="center">
-      <div class="left"></div>
-      <div class="right"></div>
+
+      <div class="left">
+        <div class="left-header">
+          <n-tabs default-value="praise" justify-content="space-around">
+            <n-tab-pane name="praise" tab="我点赞的" class="left-content">
+              <div>
+                <Card v-for="i in 10"></Card>
+              </div>
+            </n-tab-pane>
+            <n-tab-pane name="comment" tab="我评论的" class="left-content">
+              <div>
+                <Card v-for="i in 10"></Card>
+              </div>
+            </n-tab-pane>
+            <n-tab-pane name="collection" tab="收藏" class="left-content">
+              <div>
+                <Card v-for="i in 10"></Card>
+              </div>
+            </n-tab-pane>
+            <n-tab-pane name="attention" tab="关注" class="left-content">
+              <div>
+                <Card v-for="i in 10"></Card>
+              </div>
+            </n-tab-pane>
+            <n-tab-pane name="report" tab="举报" class="left-content">
+              七里香
+            </n-tab-pane>
+          </n-tabs>
+        </div>
+      </div>
+
+      <div class="right">
+
+      </div>
+
     </div>
   </div>
 </template>
 
 <script setup>
 
-
+import Card from "@/components/Card/Card.vue"
 import {reactive, ref} from "vue";
 
 let userInfo = reactive({
@@ -105,6 +138,23 @@ let userInfo = reactive({
 
 <style scoped lang="less">
 
+//主体左部分
+.left {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  width: 700px;
+  margin-right: 10px;
+  .left-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .left-content {
+      padding: 20px 0px;
+    }
+  }
+}
+
 //设置
 .header-setting {
   height: 250px;
@@ -118,8 +168,6 @@ let userInfo = reactive({
     color: #ececec;
   }
 }
-
-
 
 //头像信息
 .header-avatar {
