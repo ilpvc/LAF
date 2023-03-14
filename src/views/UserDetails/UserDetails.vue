@@ -147,6 +147,7 @@ let userInfo = reactive({
   width: 300px;
   flex-direction: column;
 }
+
 //主体左部分
 .left {
   display: flex;
@@ -158,11 +159,13 @@ let userInfo = reactive({
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     .left-content {
       padding: 20px 0px;
     }
   }
 }
+
 //主题部分
 .center {
   display: flex;
@@ -178,6 +181,9 @@ let userInfo = reactive({
   align-items: center;
   padding: 20px 20px;
   background: linear-gradient(110deg, transparent 90px, #646cff 0);
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+
   a:hover {
     color: #ececec;
   }
