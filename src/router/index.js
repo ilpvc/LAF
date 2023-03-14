@@ -16,6 +16,11 @@ const constantRoutes = [
                 path: 'user',
                 name: 'user',
                 component: ()=>import('@/views/UserDetails/UserDetails.vue')
+            },
+            {
+                path: 'setting',
+                name: 'setting',
+                component: ()=>import('@/views/Setting/Setting.vue')
             }
         ]
     }
