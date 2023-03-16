@@ -21,6 +21,16 @@ const constantRoutes = [
                 path: 'setting',
                 name: 'setting',
                 component: ()=>import('@/views/Setting/Setting.vue')
+            },
+            {
+                path: 'lost',
+                name: 'lost',
+                component: ()=>import('@/views/LostObject/LostObject.vue')
+            },
+            {
+                path: 'find',
+                name: 'find',
+                component: ()=>import('@/views/FindObject/FindObject.vue')
             }
         ]
     }
