@@ -4,18 +4,16 @@
       <Card v-for="i in 10"></Card>
     </div>
     <div>
-      <NavigationCard></NavigationCard>
-      <LeiFengRank></LeiFengRank>
+      <MyAttention></MyAttention>
     </div>
-  </div>
 
+  </div>
 </template>
 
 <script setup>
-
-import NavigationCard from "@/components/NavigationCard.vue";
-import LeiFengRank from "@/components/LeiFengRank.vue";
 import Card from "@/components/Card/Card.vue";
+import MyAttention from "@/components/MyAttention.vue";
+
 
 </script>
 
@@ -24,4 +22,6 @@ import Card from "@/components/Card/Card.vue";
   display: flex;
   flex-direction: row;
 }
+
+
 </style>

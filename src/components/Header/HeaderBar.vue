@@ -10,7 +10,7 @@
       <li class="Tab-items"><router-link class="Tab-link" to="/home">首页</router-link></li>
       <li class="Tab-items"><router-link class="Tab-link" to="/lost">寻物</router-link></li>
       <li class="Tab-items"><router-link class="Tab-link" to="/find">招领</router-link></li>
-      <li class="Tab-items"><a class="Tab-link" href="javascript:;">大厅</a></li>
+      <li class="Tab-items"><router-link class="Tab-link" to="/lobby">大厅</router-link></li>
     </ul>
     <!--搜索框-->
     <div class="SearchBar">

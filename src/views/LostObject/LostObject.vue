@@ -1,13 +1,27 @@
 <template>
-<div>
-  我是寻物
-</div>
+  <div class="index">
+    <div>
+      <Card v-for="i in 10"></Card>
+    </div>
+    <div>
+      <NavigationCard></NavigationCard>
+      <LeiFengRank></LeiFengRank>
+    </div>
+  </div>
+
 </template>
 
 <script setup>
 
+import NavigationCard from "@/components/NavigationCard.vue";
+import LeiFengRank from "@/components/LeiFengRank.vue";
+import Card from "@/components/Card/Card.vue";
+
 </script>
 
 <style scoped>
-
+.index {
+  display: flex;
+  flex-direction: row;
+}
 </style>

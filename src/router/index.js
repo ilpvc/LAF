@@ -31,6 +31,11 @@ const constantRoutes = [
                 path: 'find',
                 name: 'find',
                 component: ()=>import('@/views/FindObject/FindObject.vue')
+            },
+            {
+                path: 'lobby',
+                name: 'lobby',
+                component: ()=>import('@/views/Lobby/Lobby.vue')
             }
         ]
     }
