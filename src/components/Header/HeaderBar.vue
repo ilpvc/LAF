@@ -24,7 +24,7 @@
     </div>
     <!--通知图标等-->
     <n-space :size="30" align="center" justify="center">
-      <a href="javascript:;" class="Tab-icon">
+      <router-link to="/notice" class="Tab-icon">
         <n-badge :value="value" :max="15">
           <svg t="1678171073766" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
                p-id="840" width="1.5em" height="1.5em">
@@ -33,7 +33,7 @@
                 fill="#666666" p-id="841"></path>
           </svg>
         </n-badge>
-      </a>
+      </router-link>
 
       <!--    头像和下拉框  -->
       <n-popover placement="bottom" trigger="click">

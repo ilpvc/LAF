@@ -36,7 +36,12 @@ const constantRoutes = [
                 path: 'lobby',
                 name: 'lobby',
                 component: ()=>import('@/views/Lobby/Lobby.vue')
-            }
+            },
+            {
+                path: 'notice',
+                name: 'notice',
+                component: ()=>import('@/views/NoticeMessage/NoticeMessage.vue')
+            },
         ]
     }
 ]
