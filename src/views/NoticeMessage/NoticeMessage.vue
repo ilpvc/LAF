@@ -7,13 +7,22 @@
       </div>
       <n-scrollbar>
         <a href="#" v-for="i in 20" :key="i" class="l-item">
-          <Message></Message>
+          <MessageThumbnail></MessageThumbnail>
         </a>
       </n-scrollbar>
 
     </div>
 
     <div class="right">
+
+      <div class="r-top">
+        <n-scrollbar style="max-height: 600px">
+          <MessageItem v-for="i in 10" :key="i" :type ="i%2"></MessageItem>
+        </n-scrollbar>
+      </div>
+      <div class="r-bottom">
+        <!--        <emoji></emoji>-->
+      </div>
 
     </div>
 
@@ -22,7 +31,9 @@
 
 <script setup>
 
-import Message from "@/components/Message.vue";
+import MessageThumbnail from "@/components/MessageThumbnail.vue";
+import Emoji from "@/components/Emoji.vue";
+import MessageItem from "@/components/MessageItem.vue";
 </script>
 
 <style scoped lang="less">
@@ -31,26 +42,35 @@ import Message from "@/components/Message.vue";
   display: flex;
   width: 1000px;
   padding: 10px;
-  background-color: white;
+  background-color: #c8e6c9;
+  border-radius: 10px;
+
   .left {
     display: flex;
     flex-direction: column;
-    //background-color: white;
     width: 290px;
     border-right: 1px solid #121212;
     height: 800px;
-    padding: 10px 0;
-    background: linear-gradient(135deg,#fbed96,#abecd6);
-
-
+    padding: 10px 2px;
+    background: linear-gradient(135deg, #fbed96, #abecd6);
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
   }
 
   .right {
     display: flex;
     flex-direction: column;
     width: 700px;
-    background-color: white;
+    background: #e8f5e9;
     padding: 20px 10px;
+    justify-content: space-between;
+
+    .r-top {
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+      border-bottom: 1px solid #8590a6;
+    }
   }
 
 }
@@ -58,9 +78,11 @@ import Message from "@/components/Message.vue";
 
 .l-item {
   display: flex;
-  //background-color: #cccccc;
+
+  transition: background 0.75s;
+
   &:hover {
-    background: linear-gradient(135deg,#ffe000,#799f0c);
+    background: #e0ff9e;
   }
 }
 </style>

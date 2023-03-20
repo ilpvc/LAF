@@ -1,0 +1,34 @@
+<template>
+  <div id="emoji-body">
+    <i>😀</i><i>😁</i><i>😂</i><i>😃</i><i>😄</i><i>😅</i><i>😆</i><i>😇</i>
+    <i>😉</i><i>😊</i><i>😍</i><i>😓</i><i>😔</i><i>😕</i><i>😘</i><i>😛</i>
+    <i>😡</i><i>😤</i><i>😨</i><i>😪</i><i>😭</i><i>😱</i><i>😵</i><i>😷</i>
+    <i>🙈</i><i>🙏</i><i>🙅🏻</i><i>👫🏿</i><i>👰🏿</i><i>👴🏿</i><i>👷🏿</i><i>🖕🏿</i>
+  </div>
+</template>
+
+<script setup>
+
+</script>
+
+<style scoped lang="less">
+#emoji-body {
+  border-radius: 10px;
+  width: 310px;
+  height: 160px;
+  background-color: white;
+  padding: 5px;
+  i {
+    cursor: pointer;
+    font-size: 24px;
+    margin: 2px;
+    user-select: none;
+
+    &:hover {
+      //cursor: initial;
+    }
+  }
+
+}
+
+</style>
