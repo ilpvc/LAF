@@ -8,8 +8,11 @@
             src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
         />
         <div class="header-detail-dd">
-          <h4>昵称</h4>
-          <p>{{reverseInformation}}</p>
+          <div>
+            <h4>昵称</h4>
+            <p>2021-12-30</p>
+          </div>
+          <p>{{ reverseInformation }}</p>
         </div>
       </div>
       <div>
@@ -40,7 +43,10 @@ reverseInformation.value = "😆笑死了"
   padding: 10px 10px;
   border-bottom: 1px solid #8590a6;
   width: 290px;
+  height: 80px;
+
   /*卡片头部*/
+
   .card-header {
     display: flex;
     flex-direction: row;
@@ -52,10 +58,20 @@ reverseInformation.value = "😆笑死了"
       flex-direction: row;
 
       /*头像部分的姓名和发布时间*/
+
       .header-detail-dd {
         display: flex;
         flex-direction: column;
         padding-left: 10px;
+        height: 40px;
+        justify-content: space-around;
+
+        div {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          width: 290px;
+        }
 
       }
 

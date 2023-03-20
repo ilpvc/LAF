@@ -11,7 +11,6 @@
         </a>
       </n-scrollbar>
 
-
     </div>
 
     <div class="right">
@@ -36,12 +35,12 @@ import Message from "@/components/Message.vue";
   .left {
     display: flex;
     flex-direction: column;
-    background-color: white;
+    //background-color: white;
     width: 290px;
     border-right: 1px solid #121212;
     height: 800px;
     padding: 10px 0;
-
+    background: linear-gradient(135deg,#fbed96,#abecd6);
 
 
   }
@@ -61,7 +60,7 @@ import Message from "@/components/Message.vue";
   display: flex;
   //background-color: #cccccc;
   &:hover {
-    background-color: #cccccc;
+    background: linear-gradient(135deg,#ffe000,#799f0c);
   }
 }
 </style>
