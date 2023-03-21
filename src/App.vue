@@ -2,7 +2,7 @@
 import {NDialogProvider,NMessageProvider} from "naive-ui"
 import {useRouter} from "vue-router";
 
-useRouter().push({name:'home'})
+useRouter().push({name:'login'})
 
 </script>
 

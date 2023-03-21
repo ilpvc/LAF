@@ -5,45 +5,51 @@ const constantRoutes = [
     {
         path: '/',
         name: 'home',
-        component: ()=> import('@/views/Home/HomeView.vue'),
+        component: () => import('@/views/Home/HomeView.vue'),
         children: [
             {
                 path: 'home',
                 name: 'index',
-                component: ()=>import('@/views/Index/IndexView.vue'),
+                component: () => import('@/views/Index/IndexView.vue'),
             },
             {
                 path: 'user',
                 name: 'user',
-                component: ()=>import('@/views/UserDetails/UserDetails.vue')
+                component: () => import('@/views/UserDetails/UserDetails.vue')
             },
             {
                 path: 'setting',
                 name: 'setting',
-                component: ()=>import('@/views/Setting/Setting.vue')
+                component: () => import('@/views/Setting/Setting.vue')
             },
             {
                 path: 'lost',
                 name: 'lost',
-                component: ()=>import('@/views/LostObject/LostObject.vue')
+                component: () => import('@/views/LostObject/LostObject.vue')
             },
             {
                 path: 'find',
                 name: 'find',
-                component: ()=>import('@/views/FindObject/FindObject.vue')
+                component: () => import('@/views/FindObject/FindObject.vue')
             },
             {
                 path: 'lobby',
                 name: 'lobby',
-                component: ()=>import('@/views/Lobby/Lobby.vue')
+                component: () => import('@/views/Lobby/Lobby.vue')
             },
             {
                 path: 'notice',
                 name: 'notice',
-                component: ()=>import('@/views/NoticeMessage/NoticeMessage.vue')
+                component: () => import('@/views/NoticeMessage/NoticeMessage.vue')
             },
         ]
+    },
+    {
+        path: "/login",
+        name: 'login',
+        component: () => import('@/views/LoginAndRegister/LoginAndRegister.vue')
     }
+
 ]
 
 const router = createRouter({
