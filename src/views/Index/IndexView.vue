@@ -15,8 +15,20 @@
 import Card from "@/components/Card/Card.vue";
 import NavigationCard from "@/components/NavigationCard.vue";
 import LeiFengRank from "@/components/LeiFengRank.vue";
+import {getAllPorts} from "@/api/posts.js";
+import {onMounted, ref} from "vue";
 
+let ports = ref([])
 
+function init(){
+  getAllPorts().then(res=>{
+    ports.value=res.data.list
+  })
+}
+
+onMounted(()=>{
+  init()
+})
 </script>
 
 <style scoped>

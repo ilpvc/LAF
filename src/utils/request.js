@@ -2,8 +2,9 @@ import axios from "axios";
 import {getToken, removeToken} from "@/utils/auth";
 
 const service = axios.create({
-    baseURL: 'http://localhost:8080',
-    timeout: 10000
+    baseURL: 'http://localhost:8080/lostandfound',
+    timeout: 10000,
+
 })
 
 service.interceptors.request.use(
