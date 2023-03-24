@@ -1,9 +1,12 @@
 import service from "@/utils/request.js";
 
 
-export function getAllPorts(){
+
+export function getAllPosts() {
     return service({
-        url: '/post/',
-        method: 'get'
+        url: `/post/`,
+        method: "get",
+        params: {},
+        data: {}
     })
 }
