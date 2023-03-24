@@ -10,25 +10,30 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "lib": ["ESNext", "DOM"],
+    "noImplicitAny": false,
     "skipLibCheck": true,
     "noEmit": true,
     "baseUrl": ".", // 非相对模块的导入可以相对于baseUrl或通过下文会讲到的路径映射来进行解析
+    "paths": {
+      // 配置导出路径（这里根据自己项目执行修改）
+      "@/stores*": [
+        "./src/stores*"
+      ],
+      "@/components*": [
+        "./src/components*"
+      ],
+      "@/modules*": [
+        "./src/modules*"
+      ],
+      "@/utils*": [
+        "./src/utils*"
+      ],
+      "@/api*": [
+        "./src/api*"
+      ],
+    }
   },
-  "paths": {
-    // 配置导出路径（这里根据自己项目执行修改）
-    "@/stores*": [
-      "./src/stores*"
-    ],
-    "@/components*": [
-      "./src/components*"
-    ],
-    "@/modules*": [
-      "./src/modules*"
-    ],
-    "@/utils*": [
-      "./src/utils*"
-    ]
-  },
+
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -1,5 +1,5 @@
 import axios from "axios";
-import {getToken, removeToken} from "@/utils/auth";
+import {getToken,removeToken} from "./auth";
 
 const service = axios.create({
     baseURL: 'http://localhost:8080/lostandfound',

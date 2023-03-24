@@ -10,7 +10,7 @@
         />
         <div class="header-detail-dd">
           <a href="javascript:;">昵称</a>
-          <i>{{ pastTime }}</i>
+          <i>{{ moment(post.createdTime).format("yyyy-MM-DD") }}</i>
         </div>
       </div>
       <div>
@@ -154,11 +154,13 @@
 
 <script setup lang="ts">
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
-
-import {computed, getCurrentInstance, ref} from 'vue'
+import {getCurrentInstance, ref} from 'vue'
 import {Post} from "../../Interface/ApiInterface";
+import moment from "moment";
+import {getCacheUserById} from "@/api/user";
 
 const currentInstance = getCurrentInstance()
+
 //下拉选项
 let options = [
   {
@@ -175,13 +177,18 @@ let options = [
 let show = ref(false)
 //获取传入的数据
 const props = defineProps(["pp"])
-let post:Post={
+let post: Post = {
   ...props.pp
 }
 
 let pastTime = post.updatedTime
 let images = post.image?.split(" ")
-console.log(images)
+let user = ref()
+getCacheUserById(post.userId).then(res=>{
+  user = res.data.item
+  currentInstance?.proxy?.$forceUpdate()
+})
+
 
 </script>
 

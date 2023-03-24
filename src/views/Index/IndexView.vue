@@ -15,7 +15,7 @@
 import Card from "@/components/Card/Card.vue";
 import NavigationCard from "@/components/NavigationCard.vue";
 import LeiFengRank from "@/components/LeiFengRank.vue";
-import {getAllPosts} from "@/api/posts.js";
+import {getAllPosts} from "@/api/posts.ts";
 import {getCurrentInstance, nextTick, onMounted, ref} from "vue";
 
 const currentInstance = getCurrentInstance()

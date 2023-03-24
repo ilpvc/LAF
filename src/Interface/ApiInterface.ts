@@ -174,3 +174,8 @@ export interface PostQuery {
 export interface AttributeQuery {
   attrKey?: string;
 }
+
+
+export interface res {
+  data?: any;
+}

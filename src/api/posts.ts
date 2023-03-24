@@ -1,6 +1,4 @@
-import service from "@/utils/request.js";
-
-
+import service from "@/utils/request"
 
 export function getAllPosts() {
     return service({
