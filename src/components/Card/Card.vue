@@ -6,11 +6,11 @@
         <n-avatar
             round
             size="large"
-            src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+            :src="user?.header"
         />
         <div class="header-detail-dd">
-          <a href="javascript:;">昵称</a>
-          <i>{{ moment(post.createdTime).format("yyyy-MM-DD") }}</i>
+          <a href="javascript:;">{{ user?.nickname }}</a>
+          <i>{{ moment(post?.createdTime).format("yyyy-MM-DD") }}</i>
         </div>
       </div>
       <div>
@@ -27,7 +27,7 @@
 
       </div>
     </div>
-    <div class="article-info">{{ post.content }}</div>
+    <div class="article-info">{{ post?.content }}</div>
     <div class="image">
       <n-image-group show-toolbar-tooltip>
         <n-space>
@@ -155,7 +155,7 @@
 <script setup lang="ts">
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
 import {getCurrentInstance, ref} from 'vue'
-import {Post} from "../../Interface/ApiInterface";
+import {Post, User} from "@/Interface/ApiInterface";
 import moment from "moment";
 import {getCacheUserById} from "@/api/user";
 
@@ -183,9 +183,11 @@ let post: Post = {
 
 let pastTime = post.updatedTime
 let images = post.image?.split(" ")
-let user = ref()
+let user:User ={
+
+}
 getCacheUserById(post.userId).then(res=>{
-  user = res.data.item
+  user = {...res.data.item}
   currentInstance?.proxy?.$forceUpdate()
 })
 
