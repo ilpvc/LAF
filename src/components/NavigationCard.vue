@@ -73,13 +73,13 @@
       <div style="display: flex;flex-direction: column;align-items: center">
         <i>今日找回数量</i>
         <n-statistic>
-          2
+          {{  now?.numberValue ||0}}
         </n-statistic>
       </div>
       <div style="display: flex;flex-direction: column;align-items: center">
         <i>累计找回数量</i>
         <n-statistic>
-          123
+          {{ all?.numberValue||0}}
         </n-statistic>
       </div>
 
@@ -89,8 +89,19 @@
 
 </template>
 
-<script setup>
+<script setup lang="ts">
 
+import {AttributeQuery} from "@/Interface/ApiInterface";
+
+const props = defineProps(["count"])
+let now:AttributeQuery={
+  ...props?.count?.at(0)
+}
+let all:AttributeQuery={
+  ...props?.count?.at(1)
+}
+
+console.log(props)
 </script>
 
 <style scoped>

@@ -40,7 +40,7 @@
       </n-image-group>
     </div>
     <div class="card-secondary-footer">
-      <i style="color: #8590a6">浏览{{ post.count }}次</i>
+      <i style="color: #8590a6">浏览{{ post?.count }}次</i>
       <div style="width: 200px">
         <n-space justify="space-around">
           <n-popover trigger="hover" :show-arrow="false">
@@ -96,57 +96,50 @@
 
     <div class="comment">
       <n-space vertical>
-        <n-switch v-model:value="show">
-          <template #checked>
-            展开
-          </template>
-          <template #unchecked>
-            折叠
-          </template>
-        </n-switch>
-        <n-collapse-transition :show="show">
-          <div class="item" v-for="i in 3">
-            <div class="header-detail">
-              <n-avatar
-                  round
-                  size="medium"
-                  src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
-              />
-              <div class="header-detail-dd">
-                <div>
-                  <a href="javascript:;" style="size: 12px;color: #646cff">昵称</a>&nbsp;:
-                  <n-text>你可真可爱</n-text>
-                </div>
-                <i style="size: 12px">8小时前发布</i>
-              </div>
-            </div>
-            <ul>
-              <li v-for="i in 2">
-                <div class="header-detail" style="margin-left: 40px">
-                  <n-avatar
-                      round
-                      size="medium"
-                      src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
-                  />
-                  <div class="header-detail-dd">
-                    <div>
-                      <a href="javascript:;" style="size: 12px;color: #646cff">昵称</a>&nbsp;回复&nbsp;
-                      <a href="javascript:;" style="size: 12px;color: #646cff">另一个人</a>&nbsp;:
-                      <n-text>你也很可爱</n-text>
-                    </div>
-                    <i style="size: 12px">8小时前发布</i>
+        <n-button @click="activate('right')">
+          qiehuan1
+        </n-button>
+        <n-drawer v-model:show="show" :width="400" :placement="placement">
+          <n-drawer-content title="评论">
+            <div class="item" v-for="i in 3">
+              <div class="header-detail">
+                <n-avatar
+                    round
+                    size="medium"
+                    src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+                />
+                <div class="header-detail-dd">
+                  <div>
+                    <a href="javascript:;" style="size: 12px;color: #646cff">昵称</a>&nbsp;:
+                    <n-text>你可真可爱</n-text>
                   </div>
+                  <i style="size: 12px">8小时前发布</i>
                 </div>
-              </li>
-            </ul>
-          </div>
-        </n-collapse-transition>
+              </div>
+              <ul>
+                <li v-for="i in 2">
+                  <div class="header-detail" style="margin-left: 40px">
+                    <n-avatar
+                        round
+                        size="medium"
+                        src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+                    />
+                    <div class="header-detail-dd">
+                      <div>
+                        <a href="javascript:;" style="size: 12px;color: #646cff">昵称</a>&nbsp;回复&nbsp;
+                        <a href="javascript:;" style="size: 12px;color: #646cff">另一个人</a>&nbsp;:
+                        <n-text>你也很可爱</n-text>
+                      </div>
+                      <i style="size: 12px">8小时前发布</i>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </n-drawer-content>
+        </n-drawer>
       </n-space>
-      <!--      <n-ellipsis expand-trigger="click" line-clamp="6" :tooltip="false">-->
-      <!--      <n-scrollbar style="max-height: 120px" trigger="none">-->
 
-      <!--      </n-scrollbar>-->
-      <!--      </n-ellipsis>-->
     </div>
   </div>
 
@@ -154,13 +147,19 @@
 
 <script setup lang="ts">
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
-import {getCurrentInstance, ref} from 'vue'
+import {getCurrentInstance, onMounted, ref} from 'vue'
 import {Post, User} from "@/Interface/ApiInterface";
 import moment from "moment";
 import {getCacheUserById} from "@/api/user";
+import type { DrawerPlacement } from 'naive-ui'
 
 const currentInstance = getCurrentInstance()
 
+const placement = ref<DrawerPlacement>('right')
+const activate = (place: DrawerPlacement) => {
+  show.value = true
+  placement.value = place
+}
 //下拉选项
 let options = [
   {
@@ -186,9 +185,20 @@ let images = post.image?.split(" ")
 let user:User ={
 
 }
-getCacheUserById(post.userId).then(res=>{
-  user = {...res.data.item}
-  currentInstance?.proxy?.$forceUpdate()
+function getUser(){
+  if (post.userId!==undefined){
+    getCacheUserById(post.userId).then(res=>{
+      user = {...res.data.item}
+      currentInstance?.proxy?.$forceUpdate()
+    })
+  }
+}
+
+
+
+onMounted(()=>{
+  getUser()
+
 })
 
 
