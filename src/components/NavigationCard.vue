@@ -73,13 +73,13 @@
       <div style="display: flex;flex-direction: column;align-items: center">
         <i>今日找回数量</i>
         <n-statistic>
-          {{  now?.numberValue ||0}}
+          {{ now?.numberValue }}
         </n-statistic>
       </div>
       <div style="display: flex;flex-direction: column;align-items: center">
         <i>累计找回数量</i>
         <n-statistic>
-          {{ all?.numberValue||0}}
+          {{ all?.numberValue }}
         </n-statistic>
       </div>
 
@@ -92,16 +92,23 @@
 <script setup lang="ts">
 
 import {AttributeQuery} from "@/Interface/ApiInterface";
+import {getCurrentInstance, nextTick, ref, watch} from "vue";
 
+
+const currentInstance = getCurrentInstance()
 const props = defineProps(["count"])
-let now:AttributeQuery={
+
+let now: AttributeQuery = {
   ...props?.count?.at(0)
 }
-let all:AttributeQuery={
+let all: AttributeQuery = {
   ...props?.count?.at(1)
 }
 
-console.log(props)
+nextTick(()=>{
+  currentInstance?.proxy?.$forceUpdate()
+})
+
 </script>
 
 <style scoped>

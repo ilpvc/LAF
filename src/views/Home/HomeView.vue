@@ -1,8 +1,10 @@
 <template>
-  <HeaderBar></HeaderBar>
-  <div class="body">
-    <div class="context">
-      <router-view />
+  <div>
+    <HeaderBar></HeaderBar>
+    <div class="body">
+      <div class="context">
+        <router-view />
+      </div>
     </div>
   </div>
 </template>

@@ -14,13 +14,13 @@
 <style scoped lang="less">
 #emoji-body {
   position: absolute;
-  top: 479px;
-  //top: 90px;
+  top: -162px;
   border-radius: 10px;
   width: 310px;
   height: 160px;
   background-color: white;
   padding: 5px;
+  box-shadow: #cccccc 0 0 10px;
   z-index: 100;
   i {
     cursor: pointer;
