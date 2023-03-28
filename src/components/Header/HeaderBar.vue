@@ -7,10 +7,10 @@
     />
     <!--    导航选项-->
     <ul class="Tabs">
-      <li class="Tab-items"><router-link class="Tab-link" to="/home">首页</router-link></li>
-      <li class="Tab-items"><router-link class="Tab-link" to="/lost">寻物</router-link></li>
-      <li class="Tab-items"><router-link class="Tab-link" to="/find">招领</router-link></li>
-      <li class="Tab-items"><router-link class="Tab-link" to="/lobby">大厅</router-link></li>
+      <li class="Tab-items"><a class="Tab-link" @click="change(0)">首页</a></li>
+      <li class="Tab-items"><a class="Tab-link" @click="change(1)">寻物</a></li>
+      <li class="Tab-items"><a class="Tab-link" @click="change(2)">招领</a></li>
+      <li class="Tab-items"><a class="Tab-link" @click="change(3)">大厅</a></li>
     </ul>
     <!--搜索框-->
     <div class="SearchBar">
@@ -80,35 +80,25 @@
     </n-space>
   </div>
 
-<!--  <div class="body">-->
-<!--    <div class="context">-->
-<!--      <router-view />-->
-<!--    </div>-->
-<!--  </div>-->
-
 </template>
 
-<script setup>
-import {ref} from "vue";
+<script setup lang="ts">
+import {getCurrentInstance, ref} from "vue";
+import {useWebStore} from "@/store/WebStore";
+import {useRouter} from "vue-router";
 
-let value = ref(1)
+const router = useRouter()
+const currentInstance = getCurrentInstance()
+const value = ref(12)
+const webStore = useWebStore()
+
+function change(type:number){
+  webStore.changePage(type)
+}
+
 </script>
 
 <style scoped>
-/*.body {*/
-/*  position: absolute;*/
-/*  top: 54px;*/
-/*  width: 99vw;*/
-/*  display: flex;*/
-/*  justify-content: center;*/
-/*}*/
-/*.context {*/
-/*  display: flex;*/
-/*  min-width: 1000px;*/
-/*  margin: 10px auto;*/
-/*  flex-direction: column;*/
-/*}*/
-
 
 /*头像下来选项*/
 .Tab-select {
@@ -199,10 +189,12 @@ let value = ref(1)
 .Tab-link {
   color: #8590a6;
   transition: color 0.75s;
+  user-select: none;
 }
 
 .Tab-link:hover {
   color: #121212;
+  cursor: pointer;
 }
 
 .SearchBar {

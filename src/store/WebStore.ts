@@ -4,6 +4,7 @@ import {computed, ref} from "vue";
 export const useWebStore = defineStore('web', () => {
     const page = ref(0)
 
+
     const getPage=computed(()=>{
         return page.value
     })
@@ -12,5 +13,5 @@ export const useWebStore = defineStore('web', () => {
         page.value = p;
     }
 
-    return {page, changePage,getPage}
+    return { changePage,getPage}
 })

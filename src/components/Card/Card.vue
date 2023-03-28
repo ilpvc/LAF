@@ -27,7 +27,12 @@
 
       </div>
     </div>
-    <div class="article-info">{{ post?.content }}</div>
+    <div class="article-info">
+      <n-tag :type="color.get(post?.type)" size="small">
+        {{type.get(post?.type)}}
+      </n-tag>
+      {{ post?.content }}
+    </div>
     <div class="image">
       <n-image-group show-toolbar-tooltip>
         <n-space>
@@ -162,9 +167,11 @@ import moment from "moment";
 import {getCacheUserById} from "@/api/user";
 import type {DrawerPlacement} from 'naive-ui'
 import Editor from "@/components/Editor.vue";
+import {usePostStore} from "@/store/PostStore";
+
 
 const currentInstance = getCurrentInstance()
-
+const postStore = usePostStore()
 const placement = ref<DrawerPlacement>('right')
 const activate = (place: DrawerPlacement) => {
   show.value = true
@@ -190,11 +197,15 @@ let post: Post = {
   ...props.pp
 }
 
-let pastTime = post.updatedTime
 let images = post.image?.split(" ")
 let user: User = {}
 
-function getUser() {
+//帖子类型和标签颜色
+const type = postStore.getPostType
+const color = postStore.getPostColor
+
+//初始化
+function init() {
   if (post.userId !== undefined) {
     getCacheUserById(post.userId).then(res => {
       user = {...res.data.item}
@@ -205,7 +216,7 @@ function getUser() {
 
 
 onMounted(() => {
-  getUser()
+  init()
 
 })
 
