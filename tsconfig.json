@@ -33,6 +33,9 @@
       ],
       "@/Interface*": [
         "./src/Interface*"
+      ],
+      "@/store*": [
+        "./src/store*"
       ]
     }
   },

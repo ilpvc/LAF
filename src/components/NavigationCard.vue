@@ -72,14 +72,13 @@
     <div class="data">
       <div style="display: flex;flex-direction: column;align-items: center">
         <i>今日找回数量</i>
-        <n-statistic>
-          {{ now?.numberValue }}
+        <n-statistic :value="now.numberValue">
         </n-statistic>
+
       </div>
       <div style="display: flex;flex-direction: column;align-items: center">
         <i>累计找回数量</i>
-        <n-statistic>
-          {{ all?.numberValue }}
+        <n-statistic :value="all.numberValue">
         </n-statistic>
       </div>
 
@@ -92,23 +91,35 @@
 <script setup lang="ts">
 
 import {AttributeQuery} from "@/Interface/ApiInterface";
-import {getCurrentInstance, nextTick, ref, watch} from "vue";
-
+import {getCurrentInstance, nextTick, onMounted} from "vue";
+import {getLikeKey} from "@/api/attribute";
 
 const currentInstance = getCurrentInstance()
-const props = defineProps(["count"])
 
-let now: AttributeQuery = {
-  ...props?.count?.at(0)
-}
-let all: AttributeQuery = {
-  ...props?.count?.at(1)
+let count: AttributeQuery[] = []
+//初始化对象
+let now: AttributeQuery = {}
+let all: AttributeQuery = {}
+
+
+async function init() {
+  await getLikeKey("complete").then(res => {
+    count = res.data.list
+    now = count[0]
+    all = count[1]
+    currentInstance?.proxy?.$forceUpdate()
+  })
+
 }
 
-nextTick(()=>{
-  currentInstance?.proxy?.$forceUpdate()
+nextTick(() => {
+
 })
 
+
+onMounted(() => {
+  init()
+})
 </script>
 
 <style scoped>

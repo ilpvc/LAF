@@ -73,7 +73,7 @@
           </n-popover>
           <n-popover trigger="hover" :show-arrow="false">
             <template #trigger>
-              <a href="javascript:;" style="display: inline-block;height: 25px">
+              <a href="javascript:;" style="display: inline-block;height: 25px" @click="activate('right')">
                 <svg t="1678412647843" class="icon" viewBox="0 0 1024 1024" version="1.1"
                      xmlns="http://www.w3.org/2000/svg"
                      p-id="1136" width="36" height="35">

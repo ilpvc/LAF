@@ -6,8 +6,13 @@ import 'vfonts/FiraCode.css'
 import naive from "naive-ui";
 // @ts-ignore
 import router from "./router"
+import {createPinia} from "pinia";
+
+const pinia = createPinia()
+
 
 const app = createApp(App)
 app.use(naive)
 app.use(router)
+app.use(pinia)
 app.mount('#app')

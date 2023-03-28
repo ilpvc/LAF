@@ -1,7 +1,7 @@
 <template>
   <div class="index">
     <div>
-      <Card v-for="i in 10"></Card>
+      <Card v-show="load" v-for="port in ports" :key="port.id" v-bind:pp="port" ></Card>
     </div>
     <div>
       <NavigationCard></NavigationCard>
@@ -16,6 +16,9 @@
 import NavigationCard from "@/components/NavigationCard.vue";
 import LeiFengRank from "@/components/LeiFengRank.vue";
 import Card from "@/components/Card/Card.vue";
+
+
+
 
 </script>
 

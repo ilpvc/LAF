@@ -9,3 +9,21 @@ export function getCacheUserById(id: number | undefined) {
         data: {}
     })
 }
+
+export function getAllUser(){
+    return service({
+        url: `/user/`,
+        method: "get",
+        params: {},
+        data: {}
+    })
+}
+
+export function getRankingUser(){
+    return service({
+        url: `/user/ranking`,
+        method: "get",
+        params: {},
+        data: {}
+    })
+}

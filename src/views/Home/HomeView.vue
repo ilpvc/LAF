@@ -9,13 +9,20 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 
 import HeaderBar from "@/components/Header/HeaderBar.vue";
 import {useRouter} from "vue-router";
-let router = useRouter()
+import {onMounted} from "vue";
+import {getAllUser} from "@/api/user";
 
-router.push({path:'/user'})
+function init(){
+  getAllUser()
+}
+
+onMounted(()=>{
+  init()
+})
 </script>
 
 <style scoped>

@@ -61,7 +61,7 @@ let user = reactive({
 function inspectionRule() {
 
   if (user.password !== "" && '' !== user.name) {
-    router.push('/')
+    router.push('/home')
   } else {
     message.error('账号密码错误！')
   }

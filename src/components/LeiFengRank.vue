@@ -22,20 +22,20 @@
       </i>
     </div>
 
-    <div class="item" v-for="i in 5">
+    <div class="item" v-for="user in users" :key="user.id">
       <div class="header-detail">
         <n-avatar
             size="large"
-            src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+            :src="user.header"
         />
         <div class="header-detail-dd">
           <div>
-            <a href="javascript:;" style="size: 12px;color: #646cff">昵称</a>
+            <a href="javascript:;" style="size: 12px;color: #646cff">{{ user.nickname }}</a>
           </div>
-          <i style="size: 12px">雷风大师</i>
+          <i style="size: 12px">总共寻回{{ user.findNum }}次物品</i>
         </div>
       </div>
-      <a href="javascript:;" >
+      <a href="javascript:;">
         <svg width="1.1em" height="1.1em" viewBox="0 0 24 24" class="ZDI ZDI--PlusFill24" fill="currentColor">
           <path fill-rule="evenodd"
                 d="M13.25 3.25a1.25 1.25 0 1 0-2.5 0v7.5h-7.5a1.25 1.25 0 1 0 0 2.5h7.5v7.5a1.25 1.25 0 1 0 2.5 0v-7.5h7.5a1.25 1.25 0 0 0 0-2.5h-7.5v-7.5Z"
@@ -50,11 +50,28 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import {getRankingUser} from "@/api/user";
+import {getCurrentInstance, onMounted, ref} from "vue";
+import {User} from "@/Interface/ApiInterface";
 
+const currentInstance = getCurrentInstance()
+let users: User[] = []
+
+function init() {
+  getRankingUser().then(res => {
+    users = res.data.list
+    currentInstance?.proxy?.$forceUpdate()
+  })
+}
+
+
+onMounted(() => {
+  init()
+})
 </script>
 
-<style scoped>
+<style scoped lang="less">
 
 /*排名的每个用户信息*/
 .item {
@@ -62,34 +79,39 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  margin: 5px;
+  a {
+    display: flex;
+    color: #646cff;
+    align-items: center;
+    justify-content: flex-start;
+    max-width: 160px;
+    font-size: 1.1em;
+  }
 }
 
-.item a {
-  display: flex;
-  color: #646cff;
-  align-items: center;
-  justify-content: space-around;
-  width: 53px;
-  font-size: 1.1em;
-}
-
-/*头像部分的姓名和发布时间*/
-.header-detail-dd {
-  display: flex;
-  flex-direction: column;
-  padding-left: 10px;
-
-}
-
-.header-detail-dd i {
-  color: #8590a6;
-}
 
 /*卡片头部头像部分*/
 .header-detail {
-  margin: 5px 0px;
+  margin: 5px 0;
   display: flex;
   flex-direction: row;
+  /*头像部分的姓名和发布时间*/
+  .header-detail-dd {
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+
+    i {
+      display: inline-block;
+      max-width: 160px;
+      overflow: hidden;
+      height: 16px;
+      color: #8590a6;
+      line-height: 16px;
+    }
+
+  }
 }
 
 

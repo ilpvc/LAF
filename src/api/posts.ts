@@ -1,4 +1,5 @@
 import service from "@/utils/request"
+import {PostQuery} from "@/Interface/ApiInterface";
 
 export function getAllPosts() {
     return service({
@@ -7,4 +8,14 @@ export function getAllPosts() {
         params: {},
         data: {}
     })
+}
+
+export function getPostByType(params: PostQuery){
+    return service({
+        url: `/post/condition`,
+        method: "post",
+        params: {},
+        data: params
+    })
+
 }
