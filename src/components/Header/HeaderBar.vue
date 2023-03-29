@@ -7,10 +7,10 @@
     />
     <!--    导航选项-->
     <ul class="Tabs">
-      <li class="Tab-items"><a class="Tab-link" @click="change(0)">首页</a></li>
-      <li class="Tab-items"><a class="Tab-link" @click="change(1)">寻物</a></li>
-      <li class="Tab-items"><a class="Tab-link" @click="change(2)">招领</a></li>
-      <li class="Tab-items"><a class="Tab-link" @click="change(3)">大厅</a></li>
+      <li class="Tab-items"><router-link to="/home" class="Tab-link" @click="change(0)">首页</router-link></li>
+      <li class="Tab-items"><router-link to="/home" class="Tab-link" @click="change(1)">寻物</router-link></li>
+      <li class="Tab-items"><router-link to="/home" class="Tab-link" @click="change(2)">招领</router-link></li>
+      <li class="Tab-items"><router-link to="/home" class="Tab-link" @click="change(3)">大厅</router-link></li>
     </ul>
     <!--搜索框-->
     <div class="SearchBar">

@@ -4,7 +4,6 @@ import App from './App.vue'
 import 'vfonts/Lato.css'
 import 'vfonts/FiraCode.css'
 import naive from "naive-ui";
-// @ts-ignore
 import router from "./router"
 import {createPinia} from "pinia";
 

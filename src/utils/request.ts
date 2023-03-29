@@ -9,8 +9,8 @@ const service = axios.create({
 
 service.interceptors.request.use(
     config=> {
-        if (getToken()){
-            config.headers['Token']=getToken()
+        if ("getToken()"){
+            config.headers['Token']="123123123123"
             config.headers['Content-Type'] = 'application/json'
         }
         return config
