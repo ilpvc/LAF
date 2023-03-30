@@ -152,9 +152,11 @@ export interface UserQuery {
     realName?: string;
     age?: number;
     clazz?: string;
+    password?: string;
     phoneNumber?: string;
     gender?: number;
     email?: string;
+    emailCode?: string
     findNum?: number;
     lostNum?: number;
     status?: number;
@@ -179,7 +181,3 @@ export interface AttributeQuery {
     textValue?: string;
 }
 
-
-export interface res {
-    data?: any;
-}

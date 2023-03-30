@@ -11,6 +11,7 @@ export function getAllPosts() {
 }
 
 export function getPostByType(params: PostQuery){
+    console.log(params)
     return service({
         url: `/post/condition`,
         method: "post",

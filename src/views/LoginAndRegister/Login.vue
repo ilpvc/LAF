@@ -6,9 +6,14 @@
       <div class="form-container sign-up-container">
         <div class="form">
           <h2>注 册</h2>
-          <input type="text" name="username" id="username" placeholder="用户名..." v-model="userDetails.username">
+          <input type="text" name="username" id="username" placeholder="用户名..." v-model="userDetails.nickname">
           <input type="email" name="email" placeholder="邮箱..." v-model="userDetails.email">
           <input type="password" name="password" placeholder="密码..." v-model="userDetails.password">
+          <div>
+            <input class="send" type="text" name="captcha" placeholder="验证码..." v-model="userDetails.emailCode">
+            <n-button size="large" type="info">发送</n-button>
+          </div>
+
           <button class="signUp" @click="doSignUp">注 册</button>
         </div>
       </div>
@@ -17,7 +22,7 @@
         <div class="form">
           <h2>登 录</h2>
           <input type="email" name="username" id="email" placeholder="用户名..."
-                 v-model="userDetails.username">
+                 v-model="userDetails.nickname">
           <input type="password" name="password" id="password" placeholder="密码..."
                  v-model="userDetails.password">
           <a href="#" class="forget-password">忘记密码</a>
@@ -49,27 +54,27 @@
 import {reactive} from "vue";
 import {register} from "@/api/register.js";
 import {UserQuery} from "@/Interface/ApiInterface";
+import {useMessage} from "naive-ui"
 // import {useRouter} from "vue-router";
-// import {useMessage} from "naive-ui"
+
 // import {setToken} from "@/utils/auth";
 //
 // const store = useStore()
-// const message = useMessage()
 // const router = useRouter()
-let container=reactive(['container','active'])
+let container = reactive(['container', 'active'])
+const message = useMessage()
+
 //
-function signIn(){
+function signIn() {
   container.pop()
 }
-function signUp(){
+
+function signUp() {
   container.push('active')
 }
+
 //
-let userDetails:UserQuery=reactive({
-  username:'',
-  password:'',
-  email:''
-})
+let userDetails: UserQuery = reactive({})
 // function doSignIn(){
 //   login(userDetails.username,userDetails.password).then(res=>{
 //     if (res.code===200){
@@ -93,16 +98,29 @@ let userDetails:UserQuery=reactive({
 //
 // }
 
-function doSignUp(){
-  register(userDetails).then(res=>{
-    console.log(res.data)
+function doSignUp() {
 
-  })
+  console.log(userDetails)
+  if (userDetails.nickname === undefined) {
+    message.error("请输入用户名")
+  } else if (userDetails.email === undefined) {
+    message.error('请输入邮箱')
+  } else if (userDetails.password === undefined) {
+    message.error('请输入密码')
+  } else if (userDetails.emailCode === undefined) {
+    message.error('验证码错误')
+  }else {
+    register(userDetails).then(res => {
+      console.log(res.data)
+
+    })
+  }
+
 }
 
 </script>
 
-<style scoped>
+<style scoped lang="less">
 * {
   margin: 0;
   padding: 0;
@@ -151,6 +169,23 @@ h2 {
   height: 100%;
   width: 100%;
   padding: 0 50px;
+
+  div {
+    display: flex;
+
+    .send {
+      margin: 8px 0;
+      padding: 12px;
+      background-color: #eee;
+      border: none;
+    }
+
+    button {
+      border-radius: 0;
+      margin: 10px 0 10px 10px;
+    }
+  }
+
 }
 
 input {
@@ -159,6 +194,8 @@ input {
   padding: 12px;
   background-color: #eee;
   border: none;
+  caret-color: black;
+  color: #121212;
 }
 
 .forget-password {
