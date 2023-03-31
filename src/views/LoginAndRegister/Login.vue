@@ -22,7 +22,9 @@
         <div class="form">
           <h2>登 录</h2>
           <input type="email" name="username" id="email" placeholder="用户名..."
-                 v-model="userDetails.nickname">
+                 v-model="userDetails.nickName">
+          <input type="email" name="email" placeholder="邮箱..." v-model="userDetails.email">
+
           <input type="password" name="password" id="password" placeholder="密码..."
                  v-model="userDetails.password">
           <a href="#" class="forget-password">忘记密码</a>
@@ -53,14 +55,16 @@
 <script setup lang="ts">
 import {reactive} from "vue";
 import {register} from "@/api/register.js";
-import {UserQuery} from "@/Interface/ApiInterface";
+import {LoginParams, UserQuery} from "@/Interface/ApiInterface";
 import {useMessage} from "naive-ui"
+import {login} from "@/api/login";
+import {useRouter} from "vue-router";
 // import {useRouter} from "vue-router";
 
 // import {setToken} from "@/utils/auth";
 //
 // const store = useStore()
-// const router = useRouter()
+const router = useRouter()
 let container = reactive(['container', 'active'])
 const message = useMessage()
 
@@ -74,34 +78,13 @@ function signUp() {
 }
 
 //
-let userDetails: UserQuery = reactive({})
-// function doSignIn(){
-//   login(userDetails.username,userDetails.password).then(res=>{
-//     if (res.code===200){
-//       if (res.data.token!==undefined) {
-//         setToken(res.data.token)
-//         let user = {
-//           userId: res.data.userId,
-//           roleId: res.data.roleId,
-//           userName:res.data.userName,
-//         }
-//         sessionStorage.setItem("userId", user.userId)
-//         sessionStorage.setItem("roleId", user.roleId)
-//         sessionStorage.setItem("userName", user.userName)
-//       }
-//       message.success("登录成功")
-//       router.push({name:'welcome'})
-//     }else{
-//       message.error(res.message)
-//     }
-//   })
-//
-// }
+let userDetails: LoginParams = reactive({})
 
+//注册
 function doSignUp() {
 
   console.log(userDetails)
-  if (userDetails.nickname === undefined) {
+  if (userDetails.nickName === undefined) {
     message.error("请输入用户名")
   } else if (userDetails.email === undefined) {
     message.error('请输入邮箱')
@@ -109,13 +92,27 @@ function doSignUp() {
     message.error('请输入密码')
   } else if (userDetails.emailCode === undefined) {
     message.error('验证码错误')
-  }else {
+  } else {
     register(userDetails).then(res => {
       console.log(res.data)
 
     })
   }
 
+}
+//登录
+function doSignIn() {
+  if (userDetails.nickName === undefined) {
+    message.error("请输入用户名")
+  } else if (userDetails.password === undefined) {
+    message.error('请输入密码')
+  } else {
+    login(userDetails).then(res => {
+      if (res.data.token!==null){
+        router.push({name:'index'})
+      }
+    })
+  }
 }
 
 </script>

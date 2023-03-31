@@ -181,3 +181,10 @@ export interface AttributeQuery {
     textValue?: string;
 }
 
+
+export interface LoginParams {
+    nickName?: string;
+    password?: string;
+    email?: string;
+    emailCode?: string;
+}
