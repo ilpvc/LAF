@@ -6,7 +6,7 @@
       <div class="form-container sign-up-container">
         <div class="form">
           <h2>注 册</h2>
-          <input type="text" name="username" id="username" placeholder="用户名..." v-model="userDetails.nickname">
+          <input type="text" name="username" id="username" placeholder="用户名..." v-model="userDetails.nickName">
           <input type="email" name="email" placeholder="邮箱..." v-model="userDetails.email">
           <input type="password" name="password" placeholder="密码..." v-model="userDetails.password">
           <div>
@@ -55,15 +55,11 @@
 <script setup lang="ts">
 import {reactive} from "vue";
 import {register} from "@/api/register.js";
-import {LoginParams, UserQuery} from "@/Interface/ApiInterface";
+import {LoginParams, Res, UserQuery} from "@/Interface/ApiInterface";
 import {useMessage} from "naive-ui"
 import {login} from "@/api/login";
 import {useRouter} from "vue-router";
-// import {useRouter} from "vue-router";
 
-// import {setToken} from "@/utils/auth";
-//
-// const store = useStore()
 const router = useRouter()
 let container = reactive(['container', 'active'])
 const message = useMessage()
@@ -90,16 +86,21 @@ function doSignUp() {
     message.error('请输入邮箱')
   } else if (userDetails.password === undefined) {
     message.error('请输入密码')
-  } else if (userDetails.emailCode === undefined) {
-    message.error('验证码错误')
   } else {
     register(userDetails).then(res => {
-      console.log(res.data)
+      if (res.code===200){
+        message.success(res.message)
+        signIn()
+      }else{
+        message.error(res.message)
+
+      }
 
     })
   }
 
 }
+
 //登录
 function doSignIn() {
   if (userDetails.nickName === undefined) {
@@ -108,8 +109,8 @@ function doSignIn() {
     message.error('请输入密码')
   } else {
     login(userDetails).then(res => {
-      if (res.data.token!==null){
-        router.push({name:'index'})
+      if (res.data.token !== null) {
+        router.push({name: 'index'})
       }
     })
   }

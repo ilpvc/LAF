@@ -188,3 +188,10 @@ export interface LoginParams {
     email?: string;
     emailCode?: string;
 }
+
+export interface Res {
+    code?:number;
+    data?:object;
+    message?:string;
+    success?:boolean;
+}

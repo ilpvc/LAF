@@ -1,7 +1,7 @@
-import { UserQuery} from "@/Interface/ApiInterface";
+import {LoginParams, UserQuery} from "@/Interface/ApiInterface";
 import service from "@/utils/request";
 
-export const register = (params: UserQuery) =>
+export const register = (params: LoginParams) =>
     service.request({
         url: `/register/`,
         method: "post",
