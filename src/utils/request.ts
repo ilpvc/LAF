@@ -1,6 +1,6 @@
 import axios from "axios";
 import {getToken, removeToken} from "./auth";
-import {Res} from "@/Interface/ApiInterface";
+
 
 const service = axios.create({
     baseURL: 'http://localhost:8080/lostandfound',
@@ -10,8 +10,8 @@ const service = axios.create({
 
 service.interceptors.request.use(
     config => {
-        if ("getToken()") {
-            config.headers['Token'] = "123123123123"
+        if (getToken()) {
+            config.headers['Token'] = getToken()
             config.headers['Content-Type'] = 'application/json'
         }
         return config
@@ -26,7 +26,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     response => {
         const res = response.data
-        if (response.headers.code === "401") {
+        if (response.headers.status === '403') {
             removeToken()
         }
         return res

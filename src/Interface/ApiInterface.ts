@@ -16,7 +16,6 @@ export interface User {
     id?: number;
     header?: string;
     nickname?: string;
-    password?: string;
     realName?: string;
     age?: number;
     clazz?: string;

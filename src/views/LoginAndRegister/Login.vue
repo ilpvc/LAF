@@ -43,7 +43,7 @@
           <!-- overlay right -->
           <div class="overlay_panel overlay_right_container">
             <h2>欢迎回来</h2>
-            <p>感谢你使用本公司的OA系统</p>
+            <p>感谢你使用失物招领系统</p>
             <button id="sign-up" @click="signUp">注 册</button>
           </div>
         </div>
@@ -59,10 +59,13 @@ import {LoginParams, Res, UserQuery} from "@/Interface/ApiInterface";
 import {useMessage} from "naive-ui"
 import {login} from "@/api/login";
 import {useRouter} from "vue-router";
+import { setToken} from "@/utils/auth";
+import {useWebInfoStore} from "@/store/WebInfoStore";
 
 const router = useRouter()
 let container = reactive(['container', 'active'])
 const message = useMessage()
+const userStore = useWebInfoStore()
 
 //
 function signIn() {
@@ -93,7 +96,6 @@ function doSignUp() {
         signIn()
       }else{
         message.error(res.message)
-
       }
 
     })
@@ -109,7 +111,12 @@ function doSignIn() {
     message.error('请输入密码')
   } else {
     login(userDetails).then(res => {
-      if (res.data.token !== null) {
+
+      if (res.data?.token !== null) {
+        setToken(res.data.token)
+        message.success('登录成功！')
+        const user = res.data.user;
+        userStore.setUser(user)
         router.push({name: 'index'})
       }
     })

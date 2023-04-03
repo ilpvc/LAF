@@ -41,9 +41,10 @@
           <a href="javascript:;" class="Tab-avatar">
             <n-avatar
                 round
-                size="small"
-                src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
-            />
+                size="medium"
+                :src="image.pop()"
+            >
+            </n-avatar>
           </a>
         </template>
 <!--        下拉选项-->
@@ -65,7 +66,7 @@
                     fill="#8590a6" p-id="1155"></path>
               </svg>
               设置</router-link></li>
-            <li class="Select-item"><router-link to="/login">
+            <li class="Select-item"><router-link to="/login" @click="logout">
               <svg t="1678174704473" class="icon" viewBox="0 0 1024 1024" version="1.1"
                    xmlns="http://www.w3.org/2000/svg" p-id="919" width="1em" height="1em" style="margin-right: 5px">
                 <path
@@ -83,17 +84,27 @@
 </template>
 
 <script setup lang="ts">
-import {getCurrentInstance, ref} from "vue";
+import {computed, ref} from "vue";
 import {useWebStore} from "@/store/WebStore";
-import {useRouter} from "vue-router";
+import {useWebInfoStore} from "@/store/WebInfoStore";
+import {removeToken} from "@/utils/auth";
 
-const router = useRouter()
-const currentInstance = getCurrentInstance()
+const webInfoStore = useWebInfoStore()
 const value = ref(12)
 const webStore = useWebStore()
+const image = ['src/assets/defaultHeader.jpg']
+
+if (webInfoStore.getUser.header!==null){
+  image.push(<string>webInfoStore.getUser.header)
+}
 
 function change(type:number){
   webStore.changePage(type)
+}
+
+
+function logout(){
+  removeToken()
 }
 
 </script>

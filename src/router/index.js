@@ -1,4 +1,5 @@
 import {createRouter, createWebHashHistory} from "vue-router/dist/vue-router"
+import {getToken} from "@/utils/auth.ts";
 
 
 const constantRoutes = [
@@ -6,11 +7,17 @@ const constantRoutes = [
         path: '/',
         name: 'home',
         component: () => import('@/views/Home/HomeView.vue'),
+        meta: {
+            isAuth: true
+        },
         children: [
             {
                 path: 'home',
                 name: 'index',
                 component: () => import('@/views/Index/IndexView.vue'),
+                meta: {
+                    isAuth: false
+                },
             },
             {
                 path: 'user',
@@ -57,4 +64,18 @@ const router = createRouter({
     history: createWebHashHistory(),
 })
 
+router.beforeEach((to, from, next) => {
+    if (to.meta.isAuth) {
+        if (getToken() !== undefined) {
+            next();
+        } else {
+            alert("你还没有登录或者登录信息过期，请重新登录")
+            router.push({
+                path: '/login',
+            })
+        }
+    } else {
+        next()
+    }
+})
 export default router
