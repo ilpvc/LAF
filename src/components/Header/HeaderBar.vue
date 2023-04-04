@@ -3,14 +3,22 @@
     <!--    logo-->
     <n-avatar
         size="48px"
-        src="src/components/Header/logo.png"
+        src="src/components/Header/img/logo.png"
     />
     <!--    导航选项-->
     <ul class="Tabs">
-      <li class="Tab-items"><router-link to="/home" class="Tab-link" @click="change(0)">首页</router-link></li>
-      <li class="Tab-items"><router-link to="/home" class="Tab-link" @click="change(1)">寻物</router-link></li>
-      <li class="Tab-items"><router-link to="/home" class="Tab-link" @click="change(2)">招领</router-link></li>
-      <li class="Tab-items"><router-link to="/home" class="Tab-link" @click="change(3)">大厅</router-link></li>
+      <li class="Tab-items">
+        <router-link to="/home" class="Tab-link" @click="change(0)">首页</router-link>
+      </li>
+      <li class="Tab-items">
+        <router-link to="/home" class="Tab-link" @click="change(1)">寻物</router-link>
+      </li>
+      <li class="Tab-items">
+        <router-link to="/home" class="Tab-link" @click="change(2)">招领</router-link>
+      </li>
+      <li class="Tab-items">
+        <router-link to="/home" class="Tab-link" @click="change(3)">大厅</router-link>
+      </li>
     </ul>
     <!--搜索框-->
     <div class="SearchBar">
@@ -26,12 +34,7 @@
     <n-space :size="30" align="center" justify="center">
       <router-link to="/notice" class="Tab-icon">
         <n-badge :value="value" :max="15">
-          <svg t="1678171073766" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-               p-id="840" width="1.5em" height="1.5em">
-            <path
-                d="M512 235.52c118.57408 0 215.04 96.46592 215.04 215.04v263.86432l19.38944 20.67968 40.43776 43.136H237.1328l40.43776-43.136L296.96 714.42432V450.56c0-118.57408 96.46592-215.04 215.04-215.04m0-71.68c-158.35136 0-286.72 128.36864-286.72 286.72v235.52l-56.60672 60.38016C131.88608 785.69984 159.70816 849.92 213.49888 849.92h597.00736c53.7856 0 81.60768-64.22016 44.82048-103.45984L798.72 686.08V450.56c0-158.35136-128.36864-286.72-286.72-286.72zM583.68 890.88H440.32a35.84 35.84 0 1 0 0 71.68h143.36a35.84 35.84 0 1 0 0-71.68zM537.6 61.44H486.4a35.84 35.84 0 1 0 0 71.68h51.2a35.84 35.84 0 1 0 0-71.68z"
-                fill="#666666" p-id="841"></path>
-          </svg>
+          <img src="./img/notice.svg">
         </n-badge>
       </router-link>
 
@@ -47,33 +50,27 @@
             </n-avatar>
           </a>
         </template>
-<!--        下拉选项-->
+        <!--        下拉选项-->
         <div>
           <ul class="Tab-select">
-            <li class="Select-item"><router-link :to="{name:'user',params:{name: webInfoStore?.getUser?.nickname}}">
-              <svg t="1678175865725" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                   xmlns="http://www.w3.org/2000/svg" p-id="1358" width="1em" height="1em" style="margin-right: 5px">
-                <path
-                    d="M943.616 421.376l-363.008-322.048c-18.432-17.92-43.008-28.16-68.608-28.16s-49.664 9.728-67.584 27.136L83.456 419.328l-2.56 2.56c-24.576 24.576-34.304 59.392-27.648 92.16 6.144 27.136 32.768 47.616 38.912 51.2 15.36 11.264 35.328 12.8 51.712 12.8h0.512V855.04c0 53.76 37.888 91.648 91.648 91.648h138.24c53.76 0 91.648-37.888 91.648-91.648v-138.24h93.184v138.752c0 53.76 37.888 91.648 91.648 91.648h138.24c53.76 0 91.648-37.888 91.648-91.648v-277.504h0.512c13.312-1.024 32.768-3.584 48.64-12.8 16.384-9.216 29.184-23.04 35.328-40.448 15.36-36.352 8.192-73.216-21.504-103.424z m-362.496 249.856h-138.24c-12.288 0-22.528 10.24-22.528 22.528V855.04c0 29.184-17.408 46.08-46.08 46.08H235.008c-29.184 0-46.08-17.408-46.08-46.08v-299.008c0-12.288-10.752-23.04-22.528-23.04h-13.824c-12.288 0-28.16 0-34.304-4.608-10.752-7.68-19.456-18.432-20.48-23.552-1.536-7.168-4.608-30.208 16.896-52.224L476.16 132.096c20.48-19.968 53.248-19.456 73.728 1.024l357.376 320-2.048 1.024 2.56 2.56c17.408 13.824 20.992 30.208 12.288 51.2-3.584 8.704-7.168 13.824-14.848 18.432-8.192 4.608-20.992 7.168-35.328 7.168h-12.8c-12.288 0-22.528 10.24-22.528 22.528v299.52c0 29.184-17.408 46.08-46.08 46.08h-138.24c-29.184 0-46.08-17.408-46.08-46.08v-161.792c0-12.288-10.24-22.528-23.04-22.528z"
-                    fill="#8590a6" p-id="1359"></path>
-              </svg>
-              我的主页</router-link></li>
-            <li class="Select-item"><router-link to="/setting">
-              <svg t="1678175821106" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                   xmlns="http://www.w3.org/2000/svg" p-id="1154" width="1em" height="1em" style="margin-right: 5px">
-                <path
-                    d="M256 755.2l55.466667-17.066667 17.066666 12.8c21.333333 12.8 38.4 25.6 64 38.4l21.333334 8.533334 8.533333 55.466666h145.066667l12.8-55.466666 21.333333-8.533334c21.333333-8.533333 42.666667-21.333333 64-38.4l17.066667-12.8 55.466666 17.066667 72.533334-128-42.666667-38.4 4.266667-21.333333c0-12.8 4.266667-25.6 4.266666-38.4s0-25.6-4.266666-38.4l-4.266667-17.066667 42.666667-38.4-72.533334-128-55.466666 21.333333-17.066667-12.8c-21.333333-12.8-38.4-25.6-64-38.4l-21.333333-8.533333-12.8-55.466667H422.4l-12.8 55.466667-21.333333 8.533333c-21.333333 8.533333-42.666667 21.333333-59.733334 34.133334l-21.333333 17.066666L256 311.466667l-72.533333 128 42.666666 38.4-4.266666 21.333333c0 12.8-4.266667 25.6-4.266667 38.4s0 25.6 4.266667 38.4l4.266666 21.333333-42.666666 38.4L256 755.2z m-76.8-179.2c0-12.8-4.266667-25.6-4.266667-42.666667s0-29.866667 4.266667-42.666666L128 443.733333l106.666667-183.466666 64 21.333333c21.333333-17.066667 46.933333-29.866667 72.533333-42.666667L388.266667 170.666667h213.333333l17.066667 68.266666c25.6 12.8 51.2 25.6 72.533333 42.666667l64-21.333333 106.666667 183.466666-51.2 46.933334c0 12.8 4.266667 25.6 4.266666 42.666666s0 29.866667-4.266666 42.666667l51.2 46.933333-106.666667 183.466667-64-21.333333c-21.333333 17.066667-46.933333 29.866667-72.533333 42.666666l-17.066667 68.266667h-213.333333l-17.066667-68.266667c-25.6-12.8-51.2-25.6-72.533333-42.666666l-64 21.333333L128 622.933333l51.2-46.933333z m315.733333 64c59.733333 0 106.666667-46.933333 106.666667-106.666667S554.666667 426.666667 494.933333 426.666667s-106.666667 46.933333-106.666666 106.666666 46.933333 106.666667 106.666666 106.666667z m0 42.666667c-81.066667 0-149.333333-68.266667-149.333333-149.333334S413.866667 384 494.933333 384s149.333333 68.266667 149.333334 149.333333-68.266667 149.333333-149.333334 149.333334z"
-                    fill="#8590a6" p-id="1155"></path>
-              </svg>
-              设置</router-link></li>
-            <li class="Select-item"><router-link to="/login" @click="logout">
-              <svg t="1678174704473" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                   xmlns="http://www.w3.org/2000/svg" p-id="919" width="1em" height="1em" style="margin-right: 5px">
-                <path
-                    d="M511.987 902.209c-49.499 0-97.577-9.494-142.794-28.32-43.71-18.103-82.907-44.048-116.591-77.104-33.688-33.066-60.125-71.585-78.621-114.451-19.13-44.378-28.837-91.53-28.837-140.145 0-58.162 14.532-115.909 41.994-167.062 26.551-49.425 65.122-92.823 111.567-125.494 12.904-9.077 30.833-6.134 40.056 6.5 9.223 12.638 6.28 30.204-6.629 39.226-39.248 27.683-71.824 64.268-94.207 105.994-23.493 43.732-35.393 91.108-35.393 140.837 0 81.139 32.197 157.426 90.668 214.783 58.433 57.379 136.143 88.981 218.789 88.981 82.624 0 160.356-31.603 218.825-88.981 58.465-57.355 90.637-133.643 90.637-214.783 0-49.673-11.873-97.133-35.393-140.837-22.388-41.692-54.986-78.309-94.244-105.938-12.873-9.018-15.874-26.588-6.62-39.221 9.25-12.634 27.147-15.604 40.024-6.5 46.473 32.665 85.099 76.063 111.627 125.489 27.486 51.154 42.018 108.904 42.018 167.066 0 48.609-9.704 95.762-28.862 140.171-18.473 42.866-44.933 81.386-78.616 114.446-33.693 33.061-72.892 58.973-116.596 77.165-45.244 18.712-93.294 28.178-142.797 28.178v0zM520.609 511.54c-15.848 0-28.691-12.55-28.691-28.128v-333.465c0-15.521 12.845-28.156 28.691-28.156 15.848 0 28.719 12.634 28.719 28.156v333.465c0 15.577-12.873 28.128-28.719 28.128v0z"
-                    p-id="920" fill="#8590a6"></path>
-              </svg>
-              退出</router-link></li>
+            <li class="Select-item">
+              <a @click="beforeLeaveInUserDetails">
+                <img src="./img/home.svg" alt="主页">
+                我的主页
+              </a>
+            </li>
+            <li class="Select-item">
+              <router-link to="/setting">
+                <img src="./img/settings.svg" alt="设置">
+                设置
+              </router-link>
+            </li>
+            <li class="Select-item">
+              <router-link to="/login" @click="logout">
+                <img src="./img/exit.svg" alt="退出">
+                退出
+              </router-link>
+            </li>
           </ul>
         </div>
       </n-popover>
@@ -84,33 +81,58 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from "vue";
+import {ref} from "vue";
 import {useWebStore} from "@/store/WebStore";
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {removeToken} from "@/utils/auth";
+import {useLoadingBar} from "naive-ui";
+import {getAllPosts} from "@/api/posts";
+import {usePostStore} from "@/store/PostStore";
+import {useRouter} from "vue-router";
 
 const webInfoStore = useWebInfoStore()
 const value = ref(12)
 const webStore = useWebStore()
+const postStore = usePostStore()
 const image = ['src/assets/defaultHeader.jpg']
+const loadBar = useLoadingBar()
+const router = useRouter()
 
-if (webInfoStore.getUser!==undefined && webInfoStore.getUser.header!==null){
+if (webInfoStore.getUser !== undefined && webInfoStore.getUser.header !== null) {
   image.push(<string>webInfoStore.getUser.header)
 }
+
+//
+function beforeLeaveInUserDetails(){
+
+  loadBar.start()
+  getAllPosts().then(res => {
+    postStore.setPosts(res.data.list)
+    if (res.code === 200) {
+      loadBar.finish()
+      if (webInfoStore.getUser!==undefined)
+      router.push({name:'user',params:{name: webInfoStore?.getUser?.nickname}})
+    } else {
+      loadBar.error()
+    }
+  })
+}
+
 //切换页面
-function change(type:number){
+function change(type: number) {
   webStore.changePage(type)
 }
 
-
-function logout(){
+//退出登录
+function logout() {
   removeToken()
   webInfoStore.removeUser
 }
 
+
 </script>
 
-<style scoped>
+<style scoped lang="less">
 
 /*头像下来选项*/
 .Tab-select {
@@ -122,6 +144,14 @@ function logout(){
 
 .Select-item {
   height: 36px;
+
+  img {
+    margin-right: 10px;
+  }
+
+  a:hover{
+    cursor: pointer;
+  }
 }
 
 .Select-item a {

@@ -6,7 +6,7 @@
 
       <!--      </div>-->
       <div class="header-info">
-        <img src="./bg.jpg">
+        <img src="./img/bg.jpg">
       </div>
 
       <div class="header-user">
@@ -14,22 +14,22 @@
           <i style="font-size: 1.5em">个人信息</i>&nbsp;<a href="#">修改</a>
         </div>
         <div class="info" style="position: relative;left: -12px">
-          姓名: {{ userInfo.realName || '未设置'}}
+          <i>姓名:</i> {{ userInfo.realName || '未设置' }}
         </div>
         <div class="info" style="position: relative;left: -24px">
-          性别: {{ userInfo.gender || '未设置'}}
+          <i>性别:</i> {{ userInfo.gender || '未设置' }}
         </div>
         <div class="info" style="position: relative;left: -36px">
-          年龄: {{ userInfo.age || '未设置'}}
+          <i>年龄:</i> {{ userInfo.age || '未设置' }}
         </div>
         <div class="info" style="position: relative;left: -48px">
-          班级: {{ userInfo.clazz || '未设置'}}
+          <i>班级:</i> {{ userInfo.clazz || '未设置' }}
         </div>
         <div class="info" style="position: relative;left: -60px">
-          QQ: {{ userInfo.QQ || '未设置'}}
+          <i>QQ:</i> {{ userInfo.QQ || '未设置' }}
         </div>
         <div class="info" style="position: relative;left: -72px">
-          邮箱: {{ userInfo.email || '未设置'}}
+          <i>邮箱:</i> {{ userInfo.email || '未设置' }}
         </div>
 
       </div>
@@ -40,7 +40,6 @@
               :size="100"
               :src="userInfo.header"
           />
-          <!--          <i style="font-size: 1.3em;font-style: italic;position: relative;left: -12px  ">ilpvc</i>-->
         </div>
         <div class="btn" style="position: relative;left: -42px">
           <n-upload
@@ -88,22 +87,22 @@
           <n-tabs default-value="praise" justify-content="space-around">
             <n-tab-pane name="praise" tab="我点赞的" class="left-content">
               <div>
-                <Card v-for="i in 10"></Card>
+                <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
               </div>
             </n-tab-pane>
             <n-tab-pane name="comment" tab="我评论的" class="left-content">
               <div>
-                <Card v-for="i in 10"></Card>
+                <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
               </div>
             </n-tab-pane>
             <n-tab-pane name="collection" tab="收藏" class="left-content">
               <div>
-                <Card v-for="i in 10"></Card>
+                <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
               </div>
             </n-tab-pane>
             <n-tab-pane name="attention" tab="关注" class="left-content">
               <div>
-                <Card v-for="i in 10"></Card>
+                <Card v-for="port in posts" :key="port.id" v-bind:pp="port" ></Card>
               </div>
             </n-tab-pane>
             <n-tab-pane name="report" tab="举报" class="left-content">
@@ -128,15 +127,18 @@ import Card from "@/components/Card/Card.vue"
 import {reactive, ref} from "vue";
 import NavigationCard from "@/components/NavigationCard.vue";
 import MissionCard from "@/components/MissionCard.vue";
-import {User} from "@/Interface/ApiInterface";
+import {Post, User} from "@/Interface/ApiInterface";
 import {useWebInfoStore} from "@/store/WebInfoStore";
+import {usePostStore} from "@/store/PostStore";
 
+const postStore = usePostStore()
 const webInfoStore = useWebInfoStore()
 let userInfo = reactive<User>({
   ...webInfoStore.getUser
 })
 
-console.log(userInfo)
+const posts = postStore.getPosts
+
 </script>
 
 <style scoped lang="less">
@@ -220,6 +222,11 @@ console.log(userInfo)
     display: inline-block;
     overflow: hidden;
     width: 190px;
+    color: red;
+
+    i {
+      color: #121212;
+    }
   }
 }
 
