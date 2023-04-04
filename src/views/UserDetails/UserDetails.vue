@@ -13,23 +13,23 @@
         <div>
           <i style="font-size: 1.5em">个人信息</i>&nbsp;<a href="#">修改</a>
         </div>
-        <div style="position: relative;left: -12px">
-          姓名: {{ userInfo.name }}
+        <div class="info" style="position: relative;left: -12px">
+          姓名: {{ userInfo.realName || '未设置'}}
         </div>
-        <div style="position: relative;left: -24px">
-          性别: {{ userInfo.sex }}
+        <div class="info" style="position: relative;left: -24px">
+          性别: {{ userInfo.gender || '未设置'}}
         </div>
-        <div style="position: relative;left: -36px">
-          年龄: {{ userInfo.age }}
+        <div class="info" style="position: relative;left: -36px">
+          年龄: {{ userInfo.age || '未设置'}}
         </div>
-        <div style="position: relative;left: -48px">
-          班级: {{ userInfo.class }}
+        <div class="info" style="position: relative;left: -48px">
+          班级: {{ userInfo.clazz || '未设置'}}
         </div>
-        <div style="position: relative;left: -60px">
-          QQ: {{ userInfo.QQ }}
+        <div class="info" style="position: relative;left: -60px">
+          QQ: {{ userInfo.QQ || '未设置'}}
         </div>
-        <div style="position: relative;left: -72px">
-          邮箱: {{ userInfo.email }}
+        <div class="info" style="position: relative;left: -72px">
+          邮箱: {{ userInfo.email || '未设置'}}
         </div>
 
       </div>
@@ -38,7 +38,7 @@
         <div class="avatar" style="position: relative;left: -12px">
           <n-avatar
               :size="100"
-              src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+              :src="userInfo.header"
           />
           <!--          <i style="font-size: 1.3em;font-style: italic;position: relative;left: -12px  ">ilpvc</i>-->
         </div>
@@ -122,21 +122,21 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 
 import Card from "@/components/Card/Card.vue"
 import {reactive, ref} from "vue";
 import NavigationCard from "@/components/NavigationCard.vue";
 import MissionCard from "@/components/MissionCard.vue";
+import {User} from "@/Interface/ApiInterface";
+import {useWebInfoStore} from "@/store/WebInfoStore";
 
-let userInfo = reactive({
-  name: "ilpvc",
-  sex: '男',
-  age: '22',
-  class: '19软件2班',
-  QQ: '2693285351',
-  email: "2693285351@qq.com"
+const webInfoStore = useWebInfoStore()
+let userInfo = reactive<User>({
+  ...webInfoStore.getUser
 })
+
+console.log(userInfo)
 </script>
 
 <style scoped lang="less">
@@ -215,6 +215,12 @@ let userInfo = reactive({
   height: 250px;
   flex-direction: column;
   justify-content: space-around;
+
+  .info {
+    display: inline-block;
+    overflow: hidden;
+    width: 190px;
+  }
 }
 
 /*背景信息*/

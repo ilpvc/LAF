@@ -50,7 +50,7 @@
 <!--        下拉选项-->
         <div>
           <ul class="Tab-select">
-            <li class="Select-item"><router-link to="/user">
+            <li class="Select-item"><router-link :to="{name:'user',params:{name: webInfoStore?.getUser?.nickname}}">
               <svg t="1678175865725" class="icon" viewBox="0 0 1024 1024" version="1.1"
                    xmlns="http://www.w3.org/2000/svg" p-id="1358" width="1em" height="1em" style="margin-right: 5px">
                 <path
@@ -94,10 +94,10 @@ const value = ref(12)
 const webStore = useWebStore()
 const image = ['src/assets/defaultHeader.jpg']
 
-if (webInfoStore.getUser.header!==null){
+if (webInfoStore.getUser!==undefined && webInfoStore.getUser.header!==null){
   image.push(<string>webInfoStore.getUser.header)
 }
-
+//切换页面
 function change(type:number){
   webStore.changePage(type)
 }
@@ -105,6 +105,7 @@ function change(type:number){
 
 function logout(){
   removeToken()
+  webInfoStore.removeUser
 }
 
 </script>

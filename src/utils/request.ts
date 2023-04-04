@@ -1,6 +1,8 @@
 import axios from "axios";
 import {getToken, removeToken} from "./auth";
+import {useWebInfoStore} from "@/store/WebInfoStore";
 
+const webInfoStore = useWebInfoStore()
 
 const service = axios.create({
     baseURL: 'http://localhost:8080/lostandfound',
@@ -28,6 +30,7 @@ service.interceptors.response.use(
         const res = response.data
         if (response.headers.status === '403') {
             removeToken()
+            webInfoStore.removeUser
         }
         return res
     }
