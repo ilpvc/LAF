@@ -22,6 +22,7 @@ export interface User {
     phoneNumber?: string;
     gender?: number;
     email?: string;
+    qq?: string;
     otherContacts?: string;
     findNum?: number;
     lostNum?: number;
@@ -189,8 +190,8 @@ export interface LoginParams {
 }
 
 export interface Res {
-    code?:number;
-    data?:object;
-    message?:string;
-    success?:boolean;
+    code?: number;
+    data?: object;
+    message?: string;
+    success?: boolean;
 }

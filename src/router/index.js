@@ -69,10 +69,12 @@ router.beforeEach((to, from, next) => {
         if (getToken() !== undefined) {
             next();
         } else {
-            alert("你还没有登录或者登录信息过期，请重新登录")
-            router.push({
-                path: '/login',
-            })
+            if (confirm("你还没有登录或者登录信息过期，请重新登录")){
+                router.push({
+                    path: '/login',
+                })
+            }
+
         }
     } else {
         next()

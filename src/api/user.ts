@@ -1,4 +1,5 @@
 import service from "@/utils/request.js";
+import {User} from "@/Interface/ApiInterface";
 
 
 export function getCacheUserById(id: number | undefined) {
@@ -27,3 +28,11 @@ export function getRankingUser(){
         data: {}
     })
 }
+
+export const updateUser = (params: User) =>
+    service.request({
+        url: `/user/updateUser`,
+        method: "put",
+        params: {},
+        data: params
+    });
