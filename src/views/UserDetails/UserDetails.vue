@@ -137,35 +137,35 @@
           <n-tabs ref="tab" :default-value="UserPostsType.THUMB" justify-content="space-around"
                   @update:value="changeTabAndGetPosts">
             <n-tab-pane :name="UserPostsType.THUMB" tab="我点赞的" class="left-content">
-              <n-empty description="你还没有点赞哦" v-if="true">
+              <n-empty description="你还没有点赞哦" v-if="isEmpty">
               </n-empty>
               <div>
                 <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
               </div>
             </n-tab-pane>
             <n-tab-pane :name="UserPostsType.COMMENT" tab="我评论的" class="left-content">
-              <n-empty description="你还没有点赞哦" v-if="false">
+              <n-empty description="你还没有点赞哦" v-if="isEmpty">
               </n-empty>
               <div>
                 <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
               </div>
             </n-tab-pane>
             <n-tab-pane :name="UserPostsType.COLLECTION" tab="收藏" class="left-content">
-              <n-empty description="你还没有点赞哦" v-if="!posts">
+              <n-empty description="你还没有点赞哦" v-if="isEmpty">
               </n-empty>
               <div>
                 <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
               </div>
             </n-tab-pane>
             <n-tab-pane :name="UserPostsType.ATTENTION" tab="关注" class="left-content">
-              <n-empty description="你还没有点赞哦" v-if="!posts">
+              <n-empty description="你还没有点赞哦" v-if="isEmpty">
               </n-empty>
               <div>
                 <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
               </div>
             </n-tab-pane>
             <n-tab-pane :name="UserPostsType.REPORT" tab="举报" class="left-content">
-              <n-empty description="你还没有点赞哦" v-if="!posts">
+              <n-empty description="你还没有点赞哦" v-if="isEmpty">
               </n-empty>
             </n-tab-pane>
           </n-tabs>
@@ -187,7 +187,7 @@ import Card from "@/components/Card/Card.vue"
 import {computed, getCurrentInstance, onMounted, reactive, ref} from "vue";
 import NavigationCard from "@/components/NavigationCard.vue";
 import MissionCard from "@/components/MissionCard.vue";
-import {Likes, Post, User} from "@/Interface/ApiInterface";
+import {Comments, Likes, Post, User} from "@/Interface/ApiInterface";
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {usePostStore} from "@/store/PostStore";
 import {getCacheUserById, updateUser} from "@/api/user";
@@ -195,6 +195,7 @@ import {useMessage} from "naive-ui";
 import {UserPostsType} from "@/Interface/enum"
 import {getPostIdByLikeUserId} from "@/api/thumb";
 import {getPostByCondition} from "@/api/posts";
+import {getCommentCondition} from "@/api/comment";
 
 
 const currentInstance = getCurrentInstance()
@@ -253,14 +254,25 @@ async function changeTabAndGetPosts(tabName: number) {
       })
       break;
     case UserPostsType.COMMENT:
-      posts.value = []
-      console.log(posts)
+      await getCommentCondition({commenterId:userInfo.id}).then(res=>{
+        if (res.data!==null)
+        for (const item: Comments of res.data.list) {
+          postsId.push(item.postId)
+        }
+      })
+      await getPostByCondition({collection: postsId}).then(res => {
+        posts.value = res.data.list
+        currentInstance?.proxy?.$forceUpdate()
+      })
       break;
 
   }
   return true
 }
-
+//判断目前posts是否为空
+const isEmpty = computed(()=>{
+  return !(Array.isArray(posts.value) && posts.value.length > 0)
+})
 
 onMounted(() => {
   changeTabAndGetPosts(0)

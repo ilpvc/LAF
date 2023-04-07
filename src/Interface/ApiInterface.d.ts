@@ -177,6 +177,23 @@ export interface PostQuery {
 
 }
 
+export interface CommentsQuery {
+    postId?: number;
+    commenterId?: number;
+    commentedUserId?: number;
+    content?: string;
+    commentType?: number;
+    parentId?: number;
+}
+
+export interface R {
+    code?: number;
+    success?: boolean;
+    message?: string;
+    data?: Record<string | number | symbol, any>;
+}
+
+
 export interface AttributeQuery {
     attrKey?: string;
     numberValue?: string;
