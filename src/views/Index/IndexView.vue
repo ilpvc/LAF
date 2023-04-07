@@ -15,7 +15,7 @@
 import Card from "@/components/Card/Card.vue";
 import NavigationCard from "@/components/NavigationCard.vue";
 import LeiFengRank from "@/components/LeiFengRank.vue";
-import {getAllPosts, getPostByType} from "@/api/posts";
+import {getAllPosts, getPostByCondition} from "@/api/posts";
 import {getCurrentInstance, nextTick, onMounted, ref, watch} from "vue";
 import {useWebStore} from "@/store/WebStore";
 import {Type} from "@/Interface/enum";
@@ -33,7 +33,7 @@ async function init() {
       ports.value = res.data.list
     })
   } else {
-    await getPostByType({type: webStore.getPage}).then(res => {
+    await getPostByCondition({type: webStore.getPage}).then(res => {
       ports.value = res.data.list
     })
   }

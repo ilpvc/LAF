@@ -173,6 +173,8 @@ export interface PostQuery {
     createdTime?: string;
     updatedTime?: string;
     status?: number;
+    collection?: number[];
+
 }
 
 export interface AttributeQuery {

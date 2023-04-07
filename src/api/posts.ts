@@ -10,8 +10,7 @@ export function getAllPosts() {
     })
 }
 
-export function getPostByType(params: PostQuery){
-    console.log(params)
+export function getPostByCondition(params: PostQuery){
     return service({
         url: `/post/condition`,
         method: "post",

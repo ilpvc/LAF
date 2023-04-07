@@ -1,7 +1,7 @@
 <template>
   <div class="body">
 
-<!--    模态框-->
+    <!--    模态框-->
     <div>
       <n-modal ref="modal" v-model:show="showModal" preset="dialog" title="Dialog" type="info" :close-on-esc="false"
                :mask-closable="false" :auto-focus="false" :on-close="onCloseClick">
@@ -134,29 +134,39 @@
 
       <div class="left">
         <div class="left-header">
-          <n-tabs default-value="praise" justify-content="space-around">
-            <n-tab-pane name="praise" tab="我点赞的" class="left-content">
+          <n-tabs ref="tab" :default-value="UserPostsType.THUMB" justify-content="space-around"
+                  @update:value="changeTabAndGetPosts">
+            <n-tab-pane :name="UserPostsType.THUMB" tab="我点赞的" class="left-content">
+              <n-empty description="你还没有点赞哦" v-if="true">
+              </n-empty>
               <div>
                 <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
               </div>
             </n-tab-pane>
-            <n-tab-pane name="comment" tab="我评论的" class="left-content">
+            <n-tab-pane :name="UserPostsType.COMMENT" tab="我评论的" class="left-content">
+              <n-empty description="你还没有点赞哦" v-if="false">
+              </n-empty>
               <div>
                 <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
               </div>
             </n-tab-pane>
-            <n-tab-pane name="collection" tab="收藏" class="left-content">
+            <n-tab-pane :name="UserPostsType.COLLECTION" tab="收藏" class="left-content">
+              <n-empty description="你还没有点赞哦" v-if="!posts">
+              </n-empty>
               <div>
                 <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
               </div>
             </n-tab-pane>
-            <n-tab-pane name="attention" tab="关注" class="left-content">
+            <n-tab-pane :name="UserPostsType.ATTENTION" tab="关注" class="left-content">
+              <n-empty description="你还没有点赞哦" v-if="!posts">
+              </n-empty>
               <div>
                 <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
               </div>
             </n-tab-pane>
-            <n-tab-pane name="report" tab="举报" class="left-content">
-              七里香
+            <n-tab-pane :name="UserPostsType.REPORT" tab="举报" class="left-content">
+              <n-empty description="你还没有点赞哦" v-if="!posts">
+              </n-empty>
             </n-tab-pane>
           </n-tabs>
         </div>
@@ -174,15 +184,20 @@
 <script setup lang="ts">
 
 import Card from "@/components/Card/Card.vue"
-import {computed, reactive, ref} from "vue";
+import {computed, getCurrentInstance, onMounted, reactive, ref} from "vue";
 import NavigationCard from "@/components/NavigationCard.vue";
 import MissionCard from "@/components/MissionCard.vue";
-import {User} from "@/Interface/ApiInterface";
+import {Likes, Post, User} from "@/Interface/ApiInterface";
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {usePostStore} from "@/store/PostStore";
 import {getCacheUserById, updateUser} from "@/api/user";
 import {useMessage} from "naive-ui";
+import {UserPostsType} from "@/Interface/enum"
+import {getPostIdByLikeUserId} from "@/api/thumb";
+import {getPostByCondition} from "@/api/posts";
 
+
+const currentInstance = getCurrentInstance()
 const message = useMessage()
 const postStore = usePostStore()
 const webInfoStore = useWebInfoStore()
@@ -190,7 +205,7 @@ let userInfo = reactive<User>({
   ...webInfoStore.getUser
 })
 //获取所有帖子
-const posts = postStore.getPosts
+const posts = ref<Post[]>()
 
 //修改信息的模态框控制
 const showModal = ref(false)
@@ -209,7 +224,7 @@ async function submit() {
   await updateUser(userInfo).then(res => {
     if (res.code === 200) {
       message.success('保存成功')
-      showModal.value =false
+      showModal.value = false
     }
   })
   await getCacheUserById(userInfo.id).then(res => {
@@ -219,7 +234,36 @@ async function submit() {
 
 //对后端用户性别进行校验匹配
 const genderComputed = computed(() => {
-  return userInfo.gender===1? '男':'女'
+  return userInfo.gender === 1 ? '男' : '女'
+})
+
+//点击切换页面获取数据
+async function changeTabAndGetPosts(tabName: number) {
+  const postsId: number[] = []
+  switch (tabName) {
+    case UserPostsType.THUMB:
+      await getPostIdByLikeUserId(userInfo.id || 0).then(res => {
+        for (const item: Likes of res.data.list) {
+          postsId.push(item.postId)
+        }
+      })
+      await getPostByCondition({collection: postsId}).then(res => {
+        posts.value = res.data.list
+        currentInstance?.proxy?.$forceUpdate()
+      })
+      break;
+    case UserPostsType.COMMENT:
+      posts.value = []
+      console.log(posts)
+      break;
+
+  }
+  return true
+}
+
+
+onMounted(() => {
+  changeTabAndGetPosts(0)
 })
 </script>
 
