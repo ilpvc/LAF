@@ -187,7 +187,7 @@ import Card from "@/components/Card/Card.vue"
 import {computed, getCurrentInstance, onMounted, reactive, ref} from "vue";
 import NavigationCard from "@/components/NavigationCard.vue";
 import MissionCard from "@/components/MissionCard.vue";
-import {Comments, Likes, Post, User} from "@/Interface/ApiInterface";
+import {Attention, Collection, Comments, Likes, Post, User} from "@/Interface/ApiInterface";
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {usePostStore} from "@/store/PostStore";
 import {getCacheUserById, updateUser} from "@/api/user";
@@ -196,6 +196,8 @@ import {UserPostsType} from "@/Interface/enum"
 import {getPostIdByLikeUserId} from "@/api/thumb";
 import {getPostByCondition} from "@/api/posts";
 import {getCommentCondition} from "@/api/comment";
+import {getCollectionByCondition} from "@/api/Collection";
+import {getAttentionCondition} from "@/api/attention";
 
 
 const currentInstance = getCurrentInstance()
@@ -241,6 +243,8 @@ const genderComputed = computed(() => {
 //点击切换页面获取数据
 async function changeTabAndGetPosts(tabName: number) {
   const postsId: number[] = []
+  const usersId: number[] = []
+
   switch (tabName) {
     case UserPostsType.THUMB:
       await getPostIdByLikeUserId(userInfo.id || 0).then(res => {
@@ -254,23 +258,50 @@ async function changeTabAndGetPosts(tabName: number) {
       })
       break;
     case UserPostsType.COMMENT:
-      await getCommentCondition({commenterId:userInfo.id}).then(res=>{
-        if (res.data!==null)
-        for (const item: Comments of res.data.list) {
-          postsId.push(item.postId)
-        }
+      await getCommentCondition({commenterId: userInfo.id}).then(res => {
+        if (res.data !== null)
+          for (const item: Comments of res.data.list) {
+            postsId.push(item.postId)
+          }
       })
       await getPostByCondition({collection: postsId}).then(res => {
         posts.value = res.data.list
         currentInstance?.proxy?.$forceUpdate()
       })
       break;
+    case UserPostsType.COLLECTION:
+      await getCollectionByCondition({userId: userInfo.id}).then(res => {
+        if (res.data !== null)
+          for (const item: Collection of res.data.list) {
+            postsId.push(item.postId)
+          }
+      })
+      await getPostByCondition({collection: postsId}).then(res => {
+        posts.value = res.data.list
+        currentInstance?.proxy?.$forceUpdate()
+      })
+      break;
+    case UserPostsType.ATTENTION:
+      await getAttentionCondition({attentionUserId: userInfo.id}).then(res => {
+        if (res.data !== null)
+          for (const item: Attention of res.data.list) {
+            usersId.push(item.attentionedUserId)
+          }
+      })
+      await getPostByCondition({collectionUserId: usersId}).then(res => {
+        posts.value = res.data.list
+        currentInstance?.proxy?.$forceUpdate()
+      })
+      break;
+    case UserPostsType.REPORT:
+      break;
 
   }
   return true
 }
+
 //判断目前posts是否为空
-const isEmpty = computed(()=>{
+const isEmpty = computed(() => {
   return !(Array.isArray(posts.value) && posts.value.length > 0)
 })
 

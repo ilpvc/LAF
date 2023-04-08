@@ -174,6 +174,7 @@ export interface PostQuery {
     updatedTime?: string;
     status?: number;
     collection?: number[];
+    collectionUserId?:number[];
 
 }
 
@@ -214,3 +215,29 @@ export interface Res {
     message?: string;
     success?: boolean;
 }
+
+
+export interface CollectionQuery {
+    userId?: number;
+    postId?: number;
+}
+
+export interface Collection {
+    id?: number;
+    userId?: number;
+    postId?: number;
+}
+
+export interface AttentionQuery {
+    attentionUserId?: number;
+    attentionedUserId?: number;
+}
+
+export interface Attention {
+    id?:number;
+    attentionUserId?: number;
+    attentionedUserId?: number;
+}
+
+
+
