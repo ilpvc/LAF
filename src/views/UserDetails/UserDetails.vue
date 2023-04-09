@@ -144,14 +144,14 @@
               </div>
             </n-tab-pane>
             <n-tab-pane :name="UserPostsType.COMMENT" tab="我评论的" class="left-content">
-              <n-empty description="你还没有点赞哦" v-if="isEmpty">
+              <n-empty description="你还没有评论哦" v-if="isEmpty">
               </n-empty>
               <div>
                 <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
               </div>
             </n-tab-pane>
             <n-tab-pane :name="UserPostsType.COLLECTION" tab="收藏" class="left-content">
-              <n-empty description="你还没有点赞哦" v-if="isEmpty">
+              <n-empty description="你还没有收藏哦" v-if="isEmpty">
               </n-empty>
               <div>
                 <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
@@ -165,8 +165,11 @@
               </div>
             </n-tab-pane>
             <n-tab-pane :name="UserPostsType.REPORT" tab="举报" class="left-content">
-              <n-empty description="你还没有点赞哦" v-if="isEmpty">
+              <n-empty description="空空如也" v-if="isEmpty">
               </n-empty>
+              <div>
+                <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
+              </div>
             </n-tab-pane>
           </n-tabs>
         </div>
@@ -187,7 +190,7 @@ import Card from "@/components/Card/Card.vue"
 import {computed, getCurrentInstance, onMounted, reactive, ref} from "vue";
 import NavigationCard from "@/components/NavigationCard.vue";
 import MissionCard from "@/components/MissionCard.vue";
-import {Attention, Collection, Comments, Likes, Post, User} from "@/Interface/ApiInterface";
+import {Attention, Collection, Comments, Likes, Post, Report, User} from "@/Interface/ApiInterface";
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {usePostStore} from "@/store/PostStore";
 import {getCacheUserById, updateUser} from "@/api/user";
@@ -198,6 +201,7 @@ import {getPostByCondition} from "@/api/posts";
 import {getCommentCondition} from "@/api/comment";
 import {getCollectionByCondition} from "@/api/Collection";
 import {getAttentionCondition} from "@/api/attention";
+import {getReportByCondition} from "@/api/Report";
 
 
 const currentInstance = getCurrentInstance()
@@ -294,8 +298,18 @@ async function changeTabAndGetPosts(tabName: number) {
       })
       break;
     case UserPostsType.REPORT:
+      await getReportByCondition({userId:userInfo.id}).then(res=>{
+        if (res.data !== null)
+          for (const item: Report of res.data.list) {
+            postsId.push(item.postId)
+          }
+      })
+      await getPostByCondition({collection: postsId}).then(res => {
+        console.log(res.data)
+        posts.value = res.data.list
+        currentInstance?.proxy?.$forceUpdate()
+      })
       break;
-
   }
   return true
 }

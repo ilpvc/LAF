@@ -240,4 +240,22 @@ export interface Attention {
 }
 
 
+export interface ReportQuery {
+    userId?: number;
+    postId?: number;
+    content?: string;
+    status?: number;
+}
+
+export interface Report {
+    id?:number;
+    userId?: number;
+    postId?: number;
+    content?: string;
+    status?: number;
+    updatedTime?: string;
+    deletedTime?: string;
+}
+
+
 
