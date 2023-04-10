@@ -8,16 +8,16 @@
     <!--    导航选项-->
     <ul class="Tabs">
       <li class="Tab-items">
-        <router-link to="/home" class="Tab-link" @click="change(0)">首页</router-link>
+        <router-link to="/home" class="Tab-link" @click="change(0)" :style="{color:fontColor0}">首页</router-link>
       </li>
       <li class="Tab-items">
-        <router-link to="/home" class="Tab-link" @click="change(1)">寻物</router-link>
+        <router-link to="/home" class="Tab-link" @click="change(1)" :style="{color:fontColor1}">寻物</router-link>
       </li>
       <li class="Tab-items">
-        <router-link to="/home" class="Tab-link" @click="change(2)">招领</router-link>
+        <router-link to="/home" class="Tab-link" @click="change(2)" :style="{color:fontColor2}">招领</router-link>
       </li>
       <li class="Tab-items">
-        <router-link to="/home" class="Tab-link" @click="change(3)">大厅</router-link>
+        <router-link to="/home" class="Tab-link" @click="change(3)" :style="{color:fontColor3}">大厅</router-link>
       </li>
     </ul>
     <!--搜索框-->
@@ -98,7 +98,7 @@ const image = ['src/assets/defaultHeader.jpg']
 const loadBar = useLoadingBar()
 const router = useRouter()
 
-if (webInfoStore.getUser !== undefined && webInfoStore.getUser.header !== null) {
+if (webInfoStore.getUser !== undefined && webInfoStore.getUser.header !== undefined) {
   image.push(<string>webInfoStore.getUser.header)
 }
 
@@ -118,9 +118,38 @@ function beforeLeaveInUserDetails(){
   })
 }
 
+const fontColor0 = ref("black")
+const fontColor1 = ref("#8590a6")
+const fontColor2 = ref("#8590a6")
+const fontColor3 = ref("#8590a6")
+
 //切换页面
 function change(type: number) {
   webStore.changePage(type)
+  if (type===0){
+    fontColor0.value = "black"
+    fontColor1.value = "#8590a6"
+    fontColor2.value = "#8590a6"
+    fontColor3.value = "#8590a6"
+  }
+  if (type===1){
+    fontColor0.value = "#8590a6"
+    fontColor1.value = "black"
+    fontColor2.value = "#8590a6"
+    fontColor3.value = "#8590a6"
+  }
+  if (type===2){
+    fontColor0.value = "#8590a6"
+    fontColor1.value = "#8590a6"
+    fontColor2.value = "black"
+    fontColor3.value = "#8590a6"
+  }
+  if (type===3){
+    fontColor0.value = "#8590a6"
+    fontColor1.value = "#8590a6"
+    fontColor2.value = "#8590a6"
+    fontColor3.value = "black"
+  }
 }
 
 //退出登录

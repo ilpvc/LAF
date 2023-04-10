@@ -50,7 +50,7 @@
         <n-space justify="space-around">
           <n-popover trigger="hover" :show-arrow="false">
             <template #trigger>
-              <a href="javascript:;" style="display: inline-block;height: 25px">
+              <a href="javascript:;" style="display: inline-block;height: 25px" @click="doThumb">
                 <img :src="thumb? 'src/components/Card/img/thumb_check.svg' :'src/components/Card/img/thumb.svg'"
                      alt="点赞">
               </a>
@@ -59,7 +59,7 @@
           </n-popover>
           <n-popover trigger="hover" :show-arrow="false">
             <template #trigger>
-              <a href="javascript:;" style="display: inline-block;height: 25px">
+              <a href="javascript:;" style="display: inline-block;height: 25px" @click="doCollect">
                 <img
                     :src="collection ? 'src/components/Card/img/collection_check.svg':'src/components/Card/img/collection.svg'"
                     alt="收藏">
@@ -153,8 +153,15 @@ import {getCacheUserById} from "@/api/user";
 import type {DrawerPlacement} from 'naive-ui'
 import Editor from "@/components/Editor.vue";
 import {usePostStore} from "@/store/PostStore";
+import {useMessage} from "naive-ui";
+import {addCollections, deleteCollections, getCollectionByCondition} from "@/api/Collection";
+import {useWebInfoStore} from "@/store/WebInfoStore";
+import {addLikes, deleteLikes, getLikesByCondition} from "@/api/Likes";
+import {debounce} from "lodash";
+import {updatePost} from "@/api/posts";
 
-
+const webInfoStore = useWebInfoStore()
+const message = useMessage()
 const currentInstance = getCurrentInstance()
 const postStore = usePostStore()
 const placement = ref<DrawerPlacement>('right')
@@ -197,15 +204,74 @@ function init() {
       currentInstance?.proxy?.$forceUpdate()
     })
   }
+  getCollectionByCondition({userId: webInfoStore.getUser.id, postId: post.id}).then(res => {
+    if (res.data.num !== 0) {
+      collection.value = true
+    }
+  })
+  getLikesByCondition({userId: webInfoStore.getUser.id, postId: post.id}).then(res => {
+        if (res.data.num !== 0) {
+          thumb.value = true
+        }
+      }
+  )
+  post.count = post.count+1
+  updatePost(post).then(res=>{
+  })
+
 }
 
 //是否点赞
 const thumb = ref(false)
 const collection = ref(false)
 
-function doThumb(){
-
+//点赞和取消点赞
+function doThumb() {
+  if (webInfoStore.getUser.id===undefined){
+    message.error("你还没有登录，无法点赞")
+    return
+  }
+  thumb.value = !thumb.value
+  handleThumb()
 }
+
+//收藏和取消收藏
+function doCollect() {
+  if (webInfoStore.getUser.id===undefined){
+    message.error("你还没有登录，无法点赞")
+    return
+  }
+  collection.value = !collection.value
+  handleCollection()
+}
+//对点赞操作进行防抖
+const handleThumb = debounce(()=>{
+  if (thumb.value) {
+    addLikes({userId: webInfoStore.getUser.id, postId: post.id}).then(res => {
+      if (res.code === 200) message.success('点赞成功')
+      else message.error('点赞失败')
+    })
+  } else {
+    deleteLikes({userId: webInfoStore.getUser.id, postId: post.id}).then(res => {
+      if (res.code === 200) message.warning('取消点赞')
+      else message.error('取消失败')
+    })
+  }
+}, 500)
+//对收藏操作进行防抖
+const handleCollection = debounce(()=>{
+  if (collection.value) {
+    addCollections({userId: webInfoStore.getUser.id, postId: post.id}).then(res => {
+      if (res.code === 200) message.success('收藏成功')
+      else message.error('收藏失败')
+    })
+  } else {
+    deleteCollections({userId: webInfoStore.getUser.id, postId: post.id}).then(res => {
+      if (res.code === 200) message.warning('取消收藏')
+      else message.error('取消失败')
+    })
+  }
+}, 500)
 
 
 onMounted(() => {

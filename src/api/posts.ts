@@ -1,5 +1,5 @@
 import service from "@/utils/request"
-import {PostQuery} from "@/Interface/ApiInterface";
+import {Post, PostQuery} from "@/Interface/ApiInterface";
 
 export function getAllPosts() {
     return service({
@@ -19,3 +19,11 @@ export function getPostByCondition(params: PostQuery){
     })
 
 }
+
+export const updatePost = (params: Post) =>
+    service.request({
+        url: `/post/updateUser`,
+        method: "put",
+        params: {},
+        data: params
+    });

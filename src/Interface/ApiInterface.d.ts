@@ -100,7 +100,7 @@ export interface Post {
     title?: string;
     content?: string;
     image?: string;
-    count?: number;
+    count: number | 0;
     userId?: number;
     createdTime?: string;
     updatedTime?: string;
@@ -174,7 +174,7 @@ export interface PostQuery {
     updatedTime?: string;
     status?: number;
     collection?: number[];
-    collectionUserId?:number[];
+    collectionUserId?: number[];
 
 }
 
@@ -234,7 +234,7 @@ export interface AttentionQuery {
 }
 
 export interface Attention {
-    id?:number;
+    id?: number;
     attentionUserId?: number;
     attentionedUserId?: number;
 }
@@ -248,7 +248,7 @@ export interface ReportQuery {
 }
 
 export interface Report {
-    id?:number;
+    id?: number;
     userId?: number;
     postId?: number;
     content?: string;
@@ -257,5 +257,9 @@ export interface Report {
     deletedTime?: string;
 }
 
+export interface LikesQuery {
+    userId?: number;
+    postId?: number;
+}
 
 
