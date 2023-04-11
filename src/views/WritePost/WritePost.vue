@@ -1,30 +1,30 @@
 <template>
-  <div class="index">
-    <div>
-      <Card v-show="load" v-for="port in ports" :key="port.id" v-bind:pp="port" ></Card>
+  <div class="write_post">
+    <div class="left">
+      我是写帖子
     </div>
     <div>
       <NavigationCard></NavigationCard>
       <LeiFengRank></LeiFengRank>
     </div>
-  </div>
 
+  </div>
 </template>
 
-<script setup>
-
+<script setup lang="ts">
 import NavigationCard from "@/components/NavigationCard.vue";
 import LeiFengRank from "@/components/LeiFengRank.vue";
-import Card from "@/components/Card/Card.vue";
-
-
-
-
 </script>
 
-<style scoped>
-.index {
+<style scoped lang="less">
+.write_post {
   display: flex;
   flex-direction: row;
+
+  .left {
+    width: 700px;
+    height: 800px;
+    background: white;
+  }
 }
 </style>

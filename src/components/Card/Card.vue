@@ -204,17 +204,21 @@ function init() {
       currentInstance?.proxy?.$forceUpdate()
     })
   }
-  getCollectionByCondition({userId: webInfoStore.getUser.id, postId: post.id}).then(res => {
-    if (res.data.num !== 0) {
-      collection.value = true
-    }
-  })
-  getLikesByCondition({userId: webInfoStore.getUser.id, postId: post.id}).then(res => {
-        if (res.data.num !== 0) {
-          thumb.value = true
-        }
+  //如果没有登录就不显示是否点赞
+  if (webInfoStore.getUser.id!==undefined){
+    getCollectionByCondition({userId: webInfoStore.getUser.id, postId: post.id}).then(res => {
+      if (res.data.num !== 0) {
+        collection.value = true
       }
-  )
+    })
+    getLikesByCondition({userId: webInfoStore.getUser.id, postId: post.id}).then(res => {
+          if (res.data.num !== 0) {
+            thumb.value = true
+          }
+        }
+    )
+  }
+
   post.count = post.count+1
   updatePost(post).then(res=>{
   })

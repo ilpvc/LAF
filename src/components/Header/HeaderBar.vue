@@ -62,13 +62,19 @@
             <li class="Select-item">
               <router-link to="/setting">
                 <img src="./img/settings.svg" alt="设置">
-                设置
+                用户设置
+              </router-link>
+            </li>
+            <li class="Select-item">
+              <router-link to="/login" @click="logout">
+                <img src="./img/login.svg" alt="登录">
+                用户登录
               </router-link>
             </li>
             <li class="Select-item">
               <router-link to="/login" @click="logout">
                 <img src="./img/exit.svg" alt="退出">
-                退出
+                退出登录
               </router-link>
             </li>
           </ul>
@@ -84,7 +90,7 @@
 import {ref} from "vue";
 import {useWebStore} from "@/store/WebStore";
 import {useWebInfoStore} from "@/store/WebInfoStore";
-import {removeToken} from "@/utils/auth";
+import {removeToken, removeUser} from "@/utils/auth";
 import {useLoadingBar} from "naive-ui";
 import {getAllPosts} from "@/api/posts";
 import {usePostStore} from "@/store/PostStore";
@@ -94,7 +100,7 @@ const webInfoStore = useWebInfoStore()
 const value = ref(12)
 const webStore = useWebStore()
 const postStore = usePostStore()
-const image = ['src/assets/defaultHeader.jpg']
+const image = ['src/components/Header/img/default_header.svg']
 const loadBar = useLoadingBar()
 const router = useRouter()
 
@@ -155,7 +161,9 @@ function change(type: number) {
 //退出登录
 function logout() {
   removeToken()
-  webInfoStore.removeUser
+  removeUser()
+  //将user值设为空
+  webInfoStore.setUser({})
 }
 
 

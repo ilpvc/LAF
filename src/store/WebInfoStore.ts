@@ -20,7 +20,8 @@ export const useWebInfoStore = defineStore('webInfoStore',()=>{
         user.value= u
     }
 
-    function removeUser(){
+    const removeUser = ()=>{
+        Cookies.removeUser()
         user.value= {}
     }
 

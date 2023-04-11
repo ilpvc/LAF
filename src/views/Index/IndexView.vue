@@ -24,7 +24,6 @@ const currentInstance = getCurrentInstance()
 let ports = ref([])
 let load = false
 const webStore = useWebStore()
-console.log(webStore.getPage)
 
 async function init() {
   //获取后端数据，将数据赋值，并且重新加载页面

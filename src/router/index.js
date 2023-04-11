@@ -30,24 +30,14 @@ const constantRoutes = [
                 component: () => import('@/views/Setting/Setting.vue')
             },
             {
-                path: 'lost',
-                name: 'lost',
-                component: () => import('@/views/LostObject/LostObject.vue')
-            },
-            {
-                path: 'find',
-                name: 'find',
-                component: () => import('@/views/FindObject/FindObject.vue')
-            },
-            {
-                path: 'lobby',
-                name: 'lobby',
-                component: () => import('@/views/Lobby/Lobby.vue')
-            },
-            {
                 path: 'notice',
                 name: 'notice',
                 component: () => import('@/views/NoticeMessage/NoticeMessage.vue')
+            },
+            {
+                path: 'write',
+                name: 'write',
+                component: () => import('@/views/WritePost/WritePost.vue')
             },
         ]
     },
