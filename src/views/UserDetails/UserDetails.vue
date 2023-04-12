@@ -87,24 +87,28 @@
       <div class="header-avatar">
         <div class="avatar" style="position: relative;left: -12px">
           <n-avatar
-              :size="100"
+              :class="classesRev"
+              :size="96"
               :src="userInfo.header"
           />
-        </div>
-        <div class="btn" style="position: relative;left: -42px">
           <n-upload
-              action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
-              :headers="{
-      'naive-info': 'hello!'
-    }"
-              :data="{
-      'naive-data': 'cool! naive!'
-    }"
-          >
-            <n-button>上传头像</n-button>
-          </n-upload>
+              :class="classes"
+              ref="upload"
+              action="http://localhost:8080/lostandfound/upload/image"
+              list-type="image-card"
+              :accept="'/image/*'"
+              :default-upload="false"
+              :max="1"
+              multiple
+              :custom-request="customRequest"
+              :on-update:file-list="changeOpacity"
+          />
+
         </div>
-        <div class="btn" style="position: relative;left: -60px">
+        <div class="btn" style="position: relative;left: -42px;top:-100px;">
+          <n-button @click="doUploadHeader">上传头像</n-button>
+        </div>
+        <div class="btn" style="position: relative;left: -60px;top:-100px;">
           <n-upload
               action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
               :headers="{
@@ -194,7 +198,7 @@ import {Attention, Collection, Comments, Likes, Post, Report, User} from "@/Inte
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {usePostStore} from "@/store/PostStore";
 import {getCacheUserById, updateUser} from "@/api/user";
-import {useMessage} from "naive-ui";
+import {UploadCustomRequestOptions, UploadFileInfo, useMessage} from "naive-ui";
 import {UserPostsType} from "@/Interface/enum"
 import {getPostIdByLikeUserId} from "@/api/thumb";
 import {getPostByCondition} from "@/api/posts";
@@ -202,6 +206,7 @@ import {getCommentCondition} from "@/api/comment";
 import {getCollectionByCondition} from "@/api/Collection";
 import {getAttentionCondition} from "@/api/attention";
 import {getReportByCondition} from "@/api/Report";
+import service from "@/utils/request";
 
 
 const currentInstance = getCurrentInstance()
@@ -298,7 +303,7 @@ async function changeTabAndGetPosts(tabName: number) {
       })
       break;
     case UserPostsType.REPORT:
-      await getReportByCondition({userId:userInfo.id}).then(res=>{
+      await getReportByCondition({userId: userInfo.id}).then(res => {
         if (res.data !== null)
           for (const item: Report of res.data.list) {
             postsId.push(item.postId)
@@ -322,6 +327,51 @@ const isEmpty = computed(() => {
 onMounted(() => {
   changeTabAndGetPosts(0)
 })
+
+//获取上传组件
+const upload = ref()
+
+//更新用户
+function doUploadHeader() {
+  upload.value?.submit()
+}
+
+//自定义文件上传
+const customRequest = async ({
+                               file,
+                               action,
+                             }: UploadCustomRequestOptions) => {
+  const formData = new FormData()
+  formData.append('file', file.file as File)
+  await service({
+    url: action as string,
+    method: 'post',
+    data: formData,
+  }).then((res) => {
+    userInfo.header = res
+  })
+  await updateUser(userInfo).then(res => {
+    if (res.code === 200) {
+      message.success('保存成功')
+
+    }
+  })
+  await getCacheUserById(userInfo.id).then(res => {
+    webInfoStore.setUser(res.data.item)
+  })
+
+
+}
+
+//头像样式
+const classesRev = ref([])
+//上传头像样式
+const classes = ref(['upload'])
+
+function changeOpacity() {
+  classes.value.push('changeOpacity')
+  classesRev.value.push('noOpacity')
+}
 </script>
 
 <style scoped lang="less">
@@ -419,6 +469,25 @@ onMounted(() => {
       color: #121212;
     }
   }
+}
+
+.upload {
+  display: block;
+  position: relative;
+  top: -96px;
+  opacity: 0;
+
+  &:hover {
+    opacity: 0.5;
+  }
+}
+
+.changeOpacity {
+  opacity: 1;
+}
+
+.noOpacity {
+  opacity: 0;
 }
 
 /*背景信息*/

@@ -23,7 +23,7 @@
     </div>
 
     <div class="mission">
-      <div class="mission-item" v-for="i in 5">
+      <div class="mission-item" v-for="task in tasks" :key="task.taskId">
         <div class="item-left">
           <svg t="1678697746782" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
                p-id="1493" width="30" height="30">
@@ -57,7 +57,7 @@
                 d="M576.1024 111.2064c-42.3936-9.984-89.2416-15.5648-138.5984-15.5648-188.8768 0-342.016 81.2032-342.016 181.4016 0 5.4272 0.512 10.752 1.4336 16.0768a446.8224 446.8224 0 0 0 127.488 13.0048c146.9952-6.0416 274.5344-82.176 351.6928-194.9184z"
                 fill="#F67B7A" p-id="1503"></path>
           </svg>
-          <i>每日登陆</i>
+          <i>{{task.taskName }} -- {{task.points}}分</i>
         </div>
 
         <div class="item-right">
@@ -73,6 +73,8 @@
 
 <script setup>
 import {useMessage} from 'naive-ui'
+import {getAllTasks} from "@/api/task";
+import {onMounted, ref} from "vue";
 
 const message = useMessage()
 function success () {
@@ -80,6 +82,21 @@ function success () {
       "领取成功"
   )
 }
+const tasks = ref([])
+async function init(){
+  await getAllTasks().then(res=>{
+    for (let i of res.data.list){
+      tasks.value.push(i)
+    }
+    console.log(tasks.value)
+  })
+}
+
+console.log(tasks.value)
+console.log('nihao')
+onMounted(()=>{
+  init()
+})
 </script>
 
 <style scoped lang="less">

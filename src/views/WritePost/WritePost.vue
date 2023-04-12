@@ -23,8 +23,8 @@
                     }))"
           />
         </n-form-item>
-        <n-form-item :label="post.type===3? '帖子标题':'丢失物品'" path="titleValue">
-          <n-input v-model:value="post.title" :placeholder="post.type===3? '帖子标题':'丢失物品'"/>
+        <n-form-item :label="post.type===3? '帖子标题':'物品信息'" path="titleValue">
+          <n-input v-model:value="post.title" :placeholder="post.type===3? '帖子标题':'物品信息'"/>
         </n-form-item>
         <n-form-item label="具体描述" path="contentValue">
           <n-input
@@ -73,9 +73,11 @@ import service from "@/utils/request";
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {debounce} from "lodash";
 import {addPost} from "@/api/posts";
+import {useRouter} from "vue-router";
+
 
 const message = useMessage()
-
+const router = useRouter()
 const upload = ref<UploadInst | null>(null)
 const fileList = ref<UploadFileInfo[]>()
 let post = ref<Post>({
@@ -105,6 +107,7 @@ const doAddPost= debounce(()=>{
   // console.log(post.value)
   addPost(post.value).then(res=>{
     message.success('发送成功')
+    router.push({name:'index'})
   })
 },800)
 
