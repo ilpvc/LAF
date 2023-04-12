@@ -27,3 +27,13 @@ export const updatePost = (params: Post) =>
         params: {},
         data: params
     });
+
+
+export const addPost = (params: Post) =>
+    service.request({
+        url: `/post/addPost`,
+        method: "post",
+        params: {},
+        data: params
+    });
+

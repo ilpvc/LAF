@@ -99,7 +99,7 @@ export interface Post {
     type?: number;
     title?: string;
     content?: string;
-    image?: string;
+    image?: string | "";
     count: number | 0;
     userId?: number;
     createdTime?: string;

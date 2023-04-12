@@ -70,6 +70,9 @@ import {Post} from "@/Interface/ApiInterface";
 import {ref} from "vue";
 import {UploadCustomRequestOptions, UploadFileInfo, useMessage, UploadInst} from "naive-ui";
 import service from "@/utils/request";
+import {useWebInfoStore} from "@/store/WebInfoStore";
+import {debounce} from "lodash";
+import {addPost} from "@/api/posts";
 
 const message = useMessage()
 
@@ -83,17 +86,29 @@ let post = ref<Post>({
   backUserId: undefined,
   image: '',
   content: '',
-  userId: undefined,
+  userId: useWebInfoStore().getUser.id,
 
 })
 
 
-function submit() {
+async function submit() {
   console.log(upload.value);
-  upload.value?.submit()
+  await upload.value?.submit()
+  doAddPost()
+
   message.success('提交成功')
 }
 
+const doAddPost= debounce(()=>{
+
+  post.value.image = images.toString().replace(/,/g,' ')
+  // console.log(post.value)
+  addPost(post.value).then(res=>{
+    message.success('发送成功')
+  })
+},800)
+
+let images:string[]=[]
 //自定义图片上传请求
 const customRequest = ({
                          file,
@@ -106,7 +121,7 @@ const customRequest = ({
                          onProgress
                        }: UploadCustomRequestOptions) => {
   const formData = new FormData()
-  console.log(file)
+  images =[]
   if (data) {
     Object.keys(data).forEach((key) => {
       formData.append(
@@ -122,10 +137,7 @@ const customRequest = ({
     data: formData,
   })
       .then((res) => {
-        message.success(JSON.stringify(res))
-      })
-      .catch((error) => {
-        message.success(error.message)
+        images.push(res)
       })
 }
 </script>
