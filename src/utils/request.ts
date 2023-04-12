@@ -14,7 +14,7 @@ service.interceptors.request.use(
     config => {
         if (getToken()) {
             config.headers['Token'] = getToken()
-            config.headers['Content-Type'] = 'application/json'
+            // config.headers['Content-Type'] = 'application/json'
         }
         return config
     },

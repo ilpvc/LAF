@@ -38,23 +38,21 @@
           />
         </n-form-item>
 
-        <n-form-item label="图片上传" >
+        <n-form-item label="图片上传">
           <n-upload
-              action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
+              ref="upload"
+              action="http://localhost:8080/lostandfound/upload/image"
               list-type="image-card"
-              @preview="handlePreview"
+              :accept="'/image/*'"
+              :file-list="fileList"
+              :default-upload="false"
+              multiple
+              :custom-request="customRequest"
           />
-          <n-modal
-              v-model:show="showModal"
-              preset="card"
-              style="width: 600px"
-              title="一张很酷的图片"
-          >
-            <img :src="previewImageUrl" style="width: 100%">
-          </n-modal>
         </n-form-item>
 
 
+        <n-button type="primary" size="large" @click="submit">提交</n-button>
       </n-form>
     </div>
     <div>
@@ -70,8 +68,13 @@ import NavigationCard from "@/components/NavigationCard.vue";
 import LeiFengRank from "@/components/LeiFengRank.vue";
 import {Post} from "@/Interface/ApiInterface";
 import {ref} from "vue";
+import {UploadCustomRequestOptions, UploadFileInfo, useMessage, UploadInst} from "naive-ui";
+import service from "@/utils/request";
 
+const message = useMessage()
 
+const upload = ref<UploadInst | null>(null)
+const fileList = ref<UploadFileInfo[]>()
 let post = ref<Post>({
   title: '',
   type: 1,
@@ -84,6 +87,47 @@ let post = ref<Post>({
 
 })
 
+
+function submit() {
+  console.log(upload.value);
+  upload.value?.submit()
+  message.success('提交成功')
+}
+
+//自定义图片上传请求
+const customRequest = ({
+                         file,
+                         data,
+                         headers,
+                         withCredentials,
+                         action,
+                         onFinish,
+                         onError,
+                         onProgress
+                       }: UploadCustomRequestOptions) => {
+  const formData = new FormData()
+  console.log(file)
+  if (data) {
+    Object.keys(data).forEach((key) => {
+      formData.append(
+          key,
+          data[key as keyof UploadCustomRequestOptions['data']]
+      )
+    })
+  }
+  formData.append('file', file.file as File)
+  service({
+    url: action as string,
+    method: 'post',
+    data: formData,
+  })
+      .then((res) => {
+        message.success(JSON.stringify(res))
+      })
+      .catch((error) => {
+        message.success(error.message)
+      })
+}
 </script>
 
 <style scoped lang="less">
