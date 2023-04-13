@@ -1,5 +1,6 @@
 import service from "@/utils/request.js";
-import {User} from "@/Interface/ApiInterface";
+import {R, User, UserSecurity, UserSecurityQuery} from "@/Interface/ApiInterface";
+import {UnwrapRef} from "vue";
 
 
 export function getCacheUserById(id: number | undefined) {
@@ -11,7 +12,7 @@ export function getCacheUserById(id: number | undefined) {
     })
 }
 
-export function getAllUser(){
+export function getAllUser() {
     return service({
         url: `/user/`,
         method: "get",
@@ -20,7 +21,7 @@ export function getAllUser(){
     })
 }
 
-export function getRankingUser(){
+export function getRankingUser() {
     return service({
         url: `/user/ranking`,
         method: "get",
@@ -35,4 +36,22 @@ export const updateUser = (params: User) =>
         method: "put",
         params: {},
         data: params
+    });
+
+
+export const updateUserSecurity = (params: UserSecurity) =>
+    service.request<R>({
+        url: `/user/updateAccount`,
+        method: "put",
+        params: {},
+        data: params
+    });
+
+
+export const getUserById = (id: UnwrapRef<User["id"]> | undefined) =>
+    service.request({
+        url: `/user/${id}`,
+        method: "get",
+        params: {},
+        data: {}
     });

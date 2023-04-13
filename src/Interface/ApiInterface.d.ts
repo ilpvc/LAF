@@ -265,12 +265,28 @@ export interface LikesQuery {
 
 export interface UserSecurity {
     id?: number;
-    userid?: number;
+    userId?: number;
     nickname: string;
     originPassword: string;
     password: string;
     rePassword: string;
     email: string;
 }
+
+export interface UserSecurityQuery {
+    userId?: number;
+    nickname?: string;
+    originPassword?: string;
+    password?: string;
+    email?: string;
+}
+
+export interface R {
+    code?: number;
+    success?: boolean;
+    message?: string;
+    data?: Record<string | number | symbol, any>;
+}
+
 
 

@@ -1,6 +1,7 @@
 import axios from "axios";
 import {getToken, removeToken} from "./auth";
 import {useWebInfoStore} from "@/store/WebInfoStore";
+import {R} from "@/Interface/ApiInterface";
 
 const webInfoStore = useWebInfoStore()
 

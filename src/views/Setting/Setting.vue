@@ -9,8 +9,7 @@
           content="你确认?"
           positive-text="确认"
           negative-text="取消"
-          @positive-click="submitCallback"
-          @negative-click="cancelCallback"
+          @positive-click="confirmModification"
           :closable="false"
       >
         <n-form ref="formRef">
@@ -61,7 +60,7 @@
         <div class="item-i">
           <h3>账&nbsp;&nbsp;&nbsp;&nbsp;号</h3>
           <div>
-            <i>ilpvc</i>
+            <i>{{ webInfoStore.getUser.nickname }}</i>
 
             <i @click="change(1)" class="modify">修改</i>
           </div>
@@ -79,7 +78,7 @@
         <div class="item-i">
           <h3>邮箱</h3>
           <div>
-            <i>2693285351@qq.com</i>
+            <i>{{ webInfoStore.getUser.email }}</i>
             <i @click="change(3)" class="modify">修改</i>
           </div>
 
@@ -231,12 +230,17 @@
 
 <script setup lang="ts">
 import MyEditor from "@/components/MyEditor.vue";
-import {ref} from "vue";
+import {getCurrentInstance, ref} from "vue";
 import {UserSecurity} from "@/Interface/ApiInterface";
+import {getUserById, updateUserSecurity} from "@/api/user";
+import {useWebInfoStore} from "@/store/WebInfoStore";
+import {useMessage} from "naive-ui";
 
-
+const message = useMessage()
+const webInfoStore = useWebInfoStore()
 const showModal = ref(false)
 const user = ref<UserSecurity>({
+  userId: webInfoStore.getUser.id,
   rePassword: "",
   email: "",
   originPassword: "",
@@ -249,6 +253,21 @@ const showType = ref()
 function change(type: number) {
   showType.value = type
   showModal.value = true
+}
+
+async function confirmModification() {
+  await updateUserSecurity(user.value).then(res => {
+    if (res.code===200){
+      message.success(res.message)
+    }else {
+      message.error(res.message)
+    }
+  })
+  await getUserById(webInfoStore.getUser.id).then(res=>{
+    webInfoStore.setUser(res.data.item)
+    getCurrentInstance()?.proxy?.$forceUpdate()
+  })
+
 }
 
 </script>
@@ -280,6 +299,7 @@ function change(type: number) {
 
         .modify {
           color: #646cff;
+
           &:hover {
             cursor: pointer;
           }
