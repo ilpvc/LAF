@@ -170,6 +170,7 @@ export interface PostQuery {
     title?: string;
     content?: string;
     userId?: number;
+    searchInfo?: string;
     createdTime?: string;
     updatedTime?: string;
     status?: number;
@@ -260,6 +261,16 @@ export interface Report {
 export interface LikesQuery {
     userId?: number;
     postId?: number;
+}
+
+export interface UserSecurity {
+    id?: number;
+    userid?: number;
+    nickname: string;
+    originPassword: string;
+    password: string;
+    rePassword: string;
+    email: string;
 }
 
 

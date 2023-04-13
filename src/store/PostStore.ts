@@ -21,7 +21,7 @@ export const usePostStore = defineStore('postStore', () => {
         return postColor
     })
 
-    const posts = ref<Post>({})
+    const posts = ref<Post>()
 
     const getPosts = computed(() => {
         return posts.value
@@ -31,10 +31,22 @@ export const usePostStore = defineStore('postStore', () => {
         posts.value = p
     }
 
+
+    let searchPost:Post[] = []
+
+    function setSearchPost(posts:Post[]){
+        searchPost = posts
+    }
+    const getSearchPosts = ()=>{
+        return searchPost
+    }
+
     return {
         getPostType,
         getPostColor,
         setPosts,
-        getPosts
+        getPosts,
+        setSearchPost,
+        getSearchPosts
     }
 })

@@ -56,7 +56,8 @@ onMounted(() => {
 
 </script>
 
-<style scoped>
+<style scoped lang="less">
+
 .index {
   display: flex;
   flex-direction: row;

@@ -20,6 +20,14 @@ const constantRoutes = [
                 },
             },
             {
+                path: 'search/s=:info?',
+                name: 'search',
+                component: () => import('@/views/SearchDetail/SearchDetail.vue'),
+                meta: {
+                    isAuth: false
+                },
+            },
+            {
                 path: 'user/:name?',
                 name: 'user',
                 component: () => import('@/views/UserDetails/UserDetails.vue')

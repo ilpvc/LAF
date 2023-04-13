@@ -1,6 +1,57 @@
 <template>
   <div id="Setting-body">
 
+    <div>
+      <n-modal
+          v-model:show="showModal"
+          preset="dialog"
+          title="确认"
+          content="你确认?"
+          positive-text="确认"
+          negative-text="取消"
+          @positive-click="submitCallback"
+          @negative-click="cancelCallback"
+          :closable="false"
+      >
+        <n-form ref="formRef">
+          <n-form-item path="nickname" label="用户名" v-if="showType===1">
+            <n-input v-model:value="user.nickname" placeholder="请输入用户名"/>
+          </n-form-item>
+          <n-form-item path="password" label="原密码" v-if="showType===2">
+            <n-input
+                v-model:value="user.originPassword"
+                type="password"
+                placeholder="原密码"
+            />
+          </n-form-item>
+          <n-form-item path="password" label="新密码" v-if="showType===2">
+            <n-input
+                v-model:value="user.password"
+                type="password"
+                placeholder="新密码"
+            />
+          </n-form-item>
+          <n-form-item
+              ref="rPasswordFormItemRef"
+              first
+              path="reenteredPassword"
+              label="重复密码"
+              v-if="showType===2"
+          >
+            <n-input
+                v-model:value="user.rePassword"
+                :disabled="!user.password"
+                type="password"
+                placeholder="重复密码"
+            />
+          </n-form-item>
+          <n-form-item path="email" label="邮箱" v-if="showType===3">
+            <n-input v-model:value="user.email" placeholder="请输入邮箱"/>
+          </n-form-item>
+        </n-form>
+      </n-modal>
+
+    </div>
     <div class="left">
 
       <div class="item">
@@ -11,7 +62,8 @@
           <h3>账&nbsp;&nbsp;&nbsp;&nbsp;号</h3>
           <div>
             <i>ilpvc</i>
-            <a href="#">修改</a>
+
+            <i @click="change(1)" class="modify">修改</i>
           </div>
         </div>
 
@@ -19,33 +71,16 @@
           <h3>密&nbsp;&nbsp;&nbsp;&nbsp;码</h3>
           <div>
             <i>**********</i>
-            <a href="#">修改</a>
+            <i @click="change(2)" class="modify">修改</i>
           </div>
         </div>
 
-        <div class="item-i">
-          <h3>Q&nbsp;&nbsp;&nbsp;&nbsp;Q</h3>
-          <div>
-            <i>2693285351</i>
-            <a href="#">修改</a>
-
-          </div>
-        </div>
 
         <div class="item-i">
-          <h3>邮&nbsp;&nbsp;&nbsp;&nbsp;箱</h3>
+          <h3>邮箱</h3>
           <div>
             <i>2693285351@qq.com</i>
-            <a href="#">修改</a>
-
-          </div>
-        </div>
-
-        <div class="item-i">
-          <h3>手机号</h3>
-          <div>
-            <i>+861881271237</i>
-            <a href="#">修改</a>
+            <i @click="change(3)" class="modify">修改</i>
           </div>
 
         </div>
@@ -67,7 +102,7 @@
           <h3>黑名单</h3>
           <div>
             <i>ilpvc,colzry</i>
-            <a href="#">修改</a>
+            <i>修改</i>
           </div>
         </div>
 
@@ -194,10 +229,28 @@
   </div>
 </template>
 
-<script setup>
-
-
+<script setup lang="ts">
 import MyEditor from "@/components/MyEditor.vue";
+import {ref} from "vue";
+import {UserSecurity} from "@/Interface/ApiInterface";
+
+
+const showModal = ref(false)
+const user = ref<UserSecurity>({
+  rePassword: "",
+  email: "",
+  originPassword: "",
+  nickname: "",
+  password: ""
+})
+
+const showType = ref()
+
+function change(type: number) {
+  showType.value = type
+  showModal.value = true
+}
+
 </script>
 
 <style scoped lang="less">
@@ -224,6 +277,13 @@ import MyEditor from "@/components/MyEditor.vue";
       .item-i {
         min-height: 70px;
         margin-left: 10px;
+
+        .modify {
+          color: #646cff;
+          &:hover {
+            cursor: pointer;
+          }
+        }
 
         div {
           display: flex;
@@ -260,9 +320,10 @@ import MyEditor from "@/components/MyEditor.vue";
           display: inline-block;
           line-height: 30px;
 
-          a{
+          a {
             color: #8590a6;
           }
+
           a:hover {
             color: #1e90ff;
           }

@@ -88,12 +88,10 @@ async function init(){
     for (let i of res.data.list){
       tasks.value.push(i)
     }
-    console.log(tasks.value)
   })
 }
 
-console.log(tasks.value)
-console.log('nihao')
+
 onMounted(()=>{
   init()
 })
