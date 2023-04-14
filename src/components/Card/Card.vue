@@ -9,7 +9,10 @@
             :src="user?.header"
         />
         <div class="header-detail-dd">
-          <a href="javascript:;">{{ user?.nickname }}</a>
+          <div>
+            <i class="nickname" @click="doGetUser(user?.nickname)">{{ user?.nickname }}</i>&nbsp;
+            <n-tag type="info" size="small"> 关注</n-tag>
+          </div>
           <i>{{ moment(post?.createdTime).format("yyyy-MM-DD") }}</i>
         </div>
       </div>
@@ -149,17 +152,22 @@ import '@wangeditor/editor/dist/css/style.css' // 引入 css
 import {getCurrentInstance, onMounted, ref} from 'vue'
 import {Post, User} from "@/Interface/ApiInterface";
 import moment from "moment";
-import {getCacheUserById} from "@/api/user";
+import {getCacheUserById, getUserByCondition} from "@/api/user";
 import type {DrawerPlacement} from 'naive-ui'
 import Editor from "@/components/Editor.vue";
 import {usePostStore} from "@/store/PostStore";
-import {useMessage} from "naive-ui";
+import {useMessage,useLoadingBar} from "naive-ui";
 import {addCollections, deleteCollections, getCollectionByCondition} from "@/api/Collection";
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {addLikes, deleteLikes, getLikesByCondition} from "@/api/Likes";
 import {debounce} from "lodash";
 import {updatePost} from "@/api/posts";
+import {useUserDetailsStore} from "@/store/UserDetailsStore";
+import {useRouter} from "vue-router";
 
+const router = useRouter()
+const userDetailsStore = useUserDetailsStore()
+const loadingBar = useLoadingBar()
 const webInfoStore = useWebInfoStore()
 const message = useMessage()
 const currentInstance = getCurrentInstance()
@@ -205,7 +213,7 @@ function init() {
     })
   }
   //如果没有登录就不显示是否点赞
-  if (webInfoStore.getUser.id!==undefined){
+  if (webInfoStore.getUser.id !== undefined) {
     getCollectionByCondition({userId: webInfoStore.getUser.id, postId: post.id}).then(res => {
       if (res.data.num !== 0) {
         collection.value = true
@@ -219,8 +227,8 @@ function init() {
     )
   }
 
-  post.count = post.count+1
-  updatePost(post).then(res=>{
+  post.count = post.count + 1
+  updatePost(post).then(res => {
   })
 
 }
@@ -231,7 +239,7 @@ const collection = ref(false)
 
 //点赞和取消点赞
 function doThumb() {
-  if (webInfoStore.getUser.id===undefined){
+  if (webInfoStore.getUser.id === undefined) {
     message.error("你还没有登录，无法点赞")
     return
   }
@@ -241,15 +249,16 @@ function doThumb() {
 
 //收藏和取消收藏
 function doCollect() {
-  if (webInfoStore.getUser.id===undefined){
+  if (webInfoStore.getUser.id === undefined) {
     message.error("你还没有登录，无法点赞")
     return
   }
   collection.value = !collection.value
   handleCollection()
 }
+
 //对点赞操作进行防抖
-const handleThumb = debounce(()=>{
+const handleThumb = debounce(() => {
   if (thumb.value) {
     addLikes({userId: webInfoStore.getUser.id, postId: post.id}).then(res => {
       if (res.code === 200) message.success('点赞成功')
@@ -263,7 +272,7 @@ const handleThumb = debounce(()=>{
   }
 }, 500)
 //对收藏操作进行防抖
-const handleCollection = debounce(()=>{
+const handleCollection = debounce(() => {
   if (collection.value) {
     addCollections({userId: webInfoStore.getUser.id, postId: post.id}).then(res => {
       if (res.code === 200) message.success('收藏成功')
@@ -277,6 +286,21 @@ const handleCollection = debounce(()=>{
   }
 }, 500)
 
+
+//根据昵称跳转个人详情
+async function doGetUser(nickname: string) {
+  loadingBar.start()
+  const userConditionRes = await getUserByCondition({nickname: nickname})
+  if (userConditionRes.data.list !== null)
+    userDetailsStore.setUser(userConditionRes.data.list[0])
+  loadingBar.finish()
+  await router.push({
+    name: 'user',
+    params: {
+      name: nickname
+    }
+  })
+}
 
 onMounted(() => {
   init()
@@ -334,6 +358,12 @@ onMounted(() => {
   flex-direction: column;
   padding-left: 10px;
 
+  .nickname {
+    color: #121212;
+    &:hover{
+      cursor: pointer;
+    }
+  }
 }
 
 .header-detail-dd i {

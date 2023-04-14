@@ -1,67 +1,73 @@
 <template>
-  <div id="login-body">
-    <!-- login/register container -->
-    <div :class="container">
-      <!-- register -->
-      <div class="form-container sign-up-container">
-        <div class="form">
-          <h2>注 册</h2>
-          <input type="text" name="username" id="username" placeholder="用户名..." v-model="userDetails.nickName">
-          <input type="email" name="email" placeholder="邮箱..." v-model="userDetails.email">
-          <input type="password" name="password" placeholder="密码..." v-model="userDetails.password">
-          <div>
-            <input class="send" type="text" name="captcha" placeholder="验证码..." v-model="userDetails.emailCode">
-            <n-button size="large" type="info">发送</n-button>
-          </div>
+  <n-loading-bar-provider>
 
-          <button class="signUp" @click="doSignUp">注 册</button>
-        </div>
-      </div>
-      <!-- login -->
-      <div class="form-container sign-in-container">
-        <div class="form">
-          <h2>登 录</h2>
-          <input type="email" name="username" id="email" placeholder="用户名..."
-                 v-model="userDetails.nickName">
-          <input type="email" name="email" placeholder="邮箱..." v-model="userDetails.email">
+    <div id="login-body">
+      <!-- login/register container -->
+      <div :class="container">
+        <!-- register -->
+        <div class="form-container sign-up-container">
+          <div class="form">
+            <h2>注 册</h2>
+            <input type="text" name="username" id="username" placeholder="用户名..." v-model="userDetails.nickName">
+            <input type="email" name="email" placeholder="邮箱..." v-model="userDetails.email">
+            <input type="password" name="password" placeholder="密码..." v-model="userDetails.password">
+            <div>
+              <input class="send" type="text" name="captcha" placeholder="验证码..." v-model="userDetails.emailCode">
+              <n-button size="large" type="info">发送</n-button>
+            </div>
 
-          <input type="password" name="password" id="password" placeholder="密码..."
-                 v-model="userDetails.password">
-          <a href="#" class="forget-password">忘记密码</a>
-          <button class="signIn" @click="doSignIn">登 录</button>
-        </div>
-      </div>
-      <!-- overlay container -->
-      <div class="overlay_container">
-        <div class="overlay">
-          <!-- overlay left -->
-          <div class="overlay_panel overlay_left_container">
-            <h2>欢迎回来</h2>
-            <p>我已经有账号了</p>
-            <button id="sign-in" @click="signIn">登 录</button>
+            <button class="signUp" @click="doSignUp">注 册</button>
           </div>
-          <!-- overlay right -->
-          <div class="overlay_panel overlay_right_container">
-            <h2>欢迎回来</h2>
-            <p>感谢你使用失物招领系统</p>
-            <button id="sign-up" @click="signUp">注 册</button>
+        </div>
+        <!-- login -->
+        <div class="form-container sign-in-container">
+          <div class="form">
+            <h2>登 录</h2>
+            <input type="email" name="username" id="email" placeholder="用户名..."
+                   v-model="userDetails.nickName">
+            <input type="email" name="email" placeholder="邮箱..." v-model="userDetails.email">
+
+            <input type="password" name="password" id="password" placeholder="密码..."
+                   v-model="userDetails.password">
+            <a href="#" class="forget-password">忘记密码</a>
+            <button class="signIn" @click="doSignIn">登 录</button>
+          </div>
+        </div>
+        <!-- overlay container -->
+        <div class="overlay_container">
+          <div class="overlay">
+            <!-- overlay left -->
+            <div class="overlay_panel overlay_left_container">
+              <h2>欢迎回来</h2>
+              <p>我已经有账号了</p>
+              <button id="sign-in" @click="signIn">登 录</button>
+            </div>
+            <!-- overlay right -->
+            <div class="overlay_panel overlay_right_container">
+              <h2>欢迎回来</h2>
+              <p>感谢你使用失物招领系统</p>
+              <button id="sign-up" @click="signUp">注 册</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </n-loading-bar-provider>
 </template>
 
 <script setup lang="ts">
 import {reactive} from "vue";
 import {register} from "@/api/register.js";
 import {LoginParams, Res, UserQuery} from "@/Interface/ApiInterface";
-import {useMessage} from "naive-ui"
+import {useMessage,useLoadingBar} from "naive-ui"
 import {login} from "@/api/login";
 import {useRouter} from "vue-router";
-import { setToken} from "@/utils/auth";
+import {setToken} from "@/utils/auth";
 import {useWebInfoStore} from "@/store/WebInfoStore";
+import {getAttentionCondition} from "@/api/attention";
+import {useAttentionStore} from "@/store/AttentonStore";
 
+const loadingBar = useLoadingBar()
 const router = useRouter()
 let container = reactive(['container', 'active'])
 const message = useMessage()
@@ -81,7 +87,6 @@ let userDetails: LoginParams = reactive({})
 
 //注册
 function doSignUp() {
-
   console.log(userDetails)
   if (userDetails.nickName === undefined) {
     message.error("请输入用户名")
@@ -91,10 +96,10 @@ function doSignUp() {
     message.error('请输入密码')
   } else {
     register(userDetails).then(res => {
-      if (res.code===200){
+      if (res.code === 200) {
         message.success(res.message)
         signIn()
-      }else{
+      } else {
         message.error(res.message)
       }
 
@@ -104,22 +109,30 @@ function doSignUp() {
 }
 
 //登录
-function doSignIn() {
+async function doSignIn() {
+
+  loadingBar.start()
   if (userDetails.nickName === undefined) {
     message.error("请输入用户名")
   } else if (userDetails.password === undefined) {
     message.error('请输入密码')
   } else {
-    login(userDetails).then(res => {
+    const res = await login(userDetails)
+    if (res.data?.token !== null) {
+      setToken(res.data.token)
+      message.success('登录成功！')
+      const user = res.data.user;
+      userStore.setUser(user)
+      //初始化关注列表
+      const axiosResponse = await getAttentionCondition({attentionUserId: useWebInfoStore().getUser.id});
+      useAttentionStore().setAttentions(axiosResponse.data.list)
+      loadingBar.finish()
+      await router.push({name: 'index'})
+    }else{
+      loadingBar.error()
+    }
 
-      if (res.data?.token !== null) {
-        setToken(res.data.token)
-        message.success('登录成功！')
-        const user = res.data.user;
-        userStore.setUser(user)
-        router.push({name: 'index'})
-      }
-    })
+
   }
 }
 

@@ -1,5 +1,5 @@
 import service from "@/utils/request.js";
-import {R, User, UserSecurity, UserSecurityQuery} from "@/Interface/ApiInterface";
+import {R, User, UserQuery, UserSecurity, UserSecurityQuery} from "@/Interface/ApiInterface";
 import {UnwrapRef} from "vue";
 
 
@@ -54,4 +54,12 @@ export const getUserById = (id: UnwrapRef<User["id"]> | undefined) =>
         method: "get",
         params: {},
         data: {}
+    });
+
+export const getUserByCondition = (params: UserQuery) =>
+    service.request({
+        url: `/user/condition`,
+        method: "post",
+        params: {},
+        data: params
     });

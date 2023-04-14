@@ -30,41 +30,125 @@
         />
         <div class="header-detail-dd">
           <div>
-            <a href="javascript:;" style="size: 12px;color: #646cff">{{ user.nickname }}</a>
+            <i class="user_name" style="size: 12px;color: #646cff" @click="doGetUser(user.nickname)">{{
+                user.nickname
+              }}</i>
           </div>
           <i style="size: 12px">总共寻回{{ user.findNum }}次物品</i>
         </div>
       </div>
-      <a href="javascript:;">
-        <svg width="1.1em" height="1.1em" viewBox="0 0 24 24" class="ZDI ZDI--PlusFill24" fill="currentColor">
-          <path fill-rule="evenodd"
-                d="M13.25 3.25a1.25 1.25 0 1 0-2.5 0v7.5h-7.5a1.25 1.25 0 1 0 0 2.5h7.5v7.5a1.25 1.25 0 1 0 2.5 0v-7.5h7.5a1.25 1.25 0 0 0 0-2.5h-7.5v-7.5Z"
-                clip-rule="evenodd"></path>
-        </svg>
-        <i>
-          关注
-        </i>
-      </a>
+      <div>
+        <n-tag v-if="!attentionsSet.has(user.id)" type="info" class="item_attention" @click="doAddAttention(user.id)">
+          + 关注
+        </n-tag>
+        <n-tag v-if="attentionsSet.has(user.id)" type="error" class="item_attention"
+               @click="doDeleteAttention(user.id)">
+          取消关注
+        </n-tag>
+      </div>
     </div>
 
   </div>
 </template>
 
 <script setup lang="ts">
-import {getRankingUser} from "@/api/user";
+import {getRankingUser, getUserByCondition} from "@/api/user";
 import {getCurrentInstance, onMounted, ref} from "vue";
-import {User} from "@/Interface/ApiInterface";
+import {Attention, AttentionQuery, User} from "@/Interface/ApiInterface";
+import {useUserDetailsStore} from "@/store/UserDetailsStore"
+import {useRouter} from "vue-router";
+import {useLoadingBar, useMessage} from "naive-ui";
+import {useWebInfoStore} from "@/store/WebInfoStore";
+import {addAttention, deleteAttention, getAttentionCondition} from "@/api/attention";
+import {useAttentionStore} from "@/store/AttentonStore";
+import {debounce} from "lodash";
 
+const message = useMessage();
+const loadingBar = useLoadingBar();
+const router = useRouter()
+const userDetailsStore = useUserDetailsStore();
 const currentInstance = getCurrentInstance()
+let attentions: Attention[] = useAttentionStore().getAttentions();
 let users: User[] = []
 
-function init() {
-  getRankingUser().then(res => {
+let attentionsSet = new Set()
+for (let attention of attentions) {
+  attentionsSet.add(attention.attentionedUserId)
+}
+
+async function init() {
+  await getRankingUser().then(res => {
     users = res.data.list
     currentInstance?.proxy?.$forceUpdate()
   })
 }
 
+//根据昵称跳转个人详情
+async function doGetUser(nickname: string) {
+  loadingBar.start()
+  const userConditionRes = await getUserByCondition({nickname: nickname})
+  if (userConditionRes.data.list !== null)
+    userDetailsStore.setUser(userConditionRes.data.list[0])
+  loadingBar.finish()
+  await router.push({
+    name: 'user',
+    params: {
+      name: nickname
+    }
+  })
+}
+
+const isAttention = ref(true)
+
+//新增关注
+async function doAddAttention(id: number) {
+  loadingBar.start()
+  const attention: Attention = {}
+  await debounce(async () => {
+    attention.attentionUserId = useWebInfoStore().getUser.id
+    attention.attentionedUserId = id
+    const res = await addAttention(attention);
+    if (res.code === 200)
+      message.success(res.message)
+    else
+      message.error(res.message)
+    const axiosResponse = await getAttentionCondition({attentionUserId: useWebInfoStore().getUser.id});
+    useAttentionStore().setAttentions(axiosResponse.data.list)
+    attentions = useAttentionStore().getAttentions()
+    attentionsSet.clear()
+    for (let attention of attentions) {
+      attentionsSet.add(attention.attentionedUserId)
+    }
+    loadingBar.finish()
+    currentInstance?.proxy?.$forceUpdate()
+  }, 500)()
+
+}
+
+//删除关注
+async function doDeleteAttention(id: number) {
+  loadingBar.start()
+  const attentionQuery: AttentionQuery = {}
+  await debounce(async () => {
+    attentionQuery.attentionUserId = useWebInfoStore().getUser.id
+    attentionQuery.attentionedUserId = id
+    const res = await deleteAttention(attentionQuery);
+    if (res.code === 200) {
+      message.success(res.message)
+    } else {
+      message.error(res.message)
+    }
+    const axiosResponse = await getAttentionCondition({attentionUserId: useWebInfoStore().getUser.id});
+    useAttentionStore().setAttentions(axiosResponse.data.list)
+    attentions = useAttentionStore().getAttentions()
+    attentionsSet.clear()
+    for (let attention of attentions) {
+      attentionsSet.add(attention.attentionedUserId)
+    }
+    loadingBar.finish()
+    currentInstance?.proxy?.$forceUpdate()
+  }, 500)()
+}
 
 onMounted(() => {
   init()
@@ -80,6 +164,7 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   margin: 5px;
+
   a {
     display: flex;
     color: #646cff;
@@ -87,6 +172,12 @@ onMounted(() => {
     justify-content: flex-start;
     max-width: 160px;
     font-size: 1.1em;
+  }
+
+  .item_attention {
+    &:hover {
+      cursor: pointer;
+    }
   }
 }
 
@@ -97,10 +188,17 @@ onMounted(() => {
   display: flex;
   flex-direction: row;
   /*头像部分的姓名和发布时间*/
+
   .header-detail-dd {
     display: flex;
     flex-direction: column;
     padding-left: 10px;
+
+    .user_name {
+      &:hover {
+        cursor: pointer;
+      }
+    }
 
     i {
       display: inline-block;

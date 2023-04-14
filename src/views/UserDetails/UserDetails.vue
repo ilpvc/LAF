@@ -61,7 +61,8 @@
 
       <div class="header-user">
         <div>
-          <i style="font-size: 1.5em">个人信息</i>&nbsp;<a class="change" @click="isShowModal">修改</a>
+          <i style="font-size: 1.5em">个人信息</i>&nbsp;
+          <a v-if="userInfo.nickname===webInfoStore.getUser.nickname" class="change" @click="isShowModal">修改</a>
         </div>
         <div class="info" style="position: relative;left: -12px">
           <i>姓名:</i> {{ userInfo.realName || '未设置' }}
@@ -92,6 +93,7 @@
               :src="userInfo.header"
           />
           <n-upload
+              v-if="userInfo.nickname===webInfoStore.getUser.nickname"
               :class="classes"
               ref="upload"
               action="http://localhost:8080/lostandfound/upload/image"
@@ -105,10 +107,12 @@
           />
 
         </div>
-        <div class="btn" style="position: relative;left: -42px;top:-100px;">
+        <div v-if="userInfo.nickname===webInfoStore.getUser.nickname" class="btn"
+             style="position: relative;left: -42px;top:-100px;">
           <n-button @click="doUploadHeader">上传头像</n-button>
         </div>
-        <div class="btn" style="position: relative;left: -60px;top:-100px;">
+        <div v-if="userInfo.nickname===webInfoStore.getUser.nickname" class="btn"
+             style="position: relative;left: -60px;top:-100px;">
           <n-upload
               action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
               :headers="{
@@ -140,35 +144,36 @@
         <div class="left-header">
           <n-tabs ref="tab" :default-value="UserPostsType.THUMB" justify-content="space-around"
                   @update:value="changeTabAndGetPosts">
-            <n-tab-pane :name="UserPostsType.THUMB" tab="我点赞的" class="left-content">
-              <n-empty description="你还没有点赞哦" v-if="isEmpty">
+            <n-tab-pane :name="UserPostsType.THUMB" tab="点赞" class="left-content">
+              <n-empty description="空空如也" v-if="isEmpty">
               </n-empty>
               <div>
                 <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
               </div>
             </n-tab-pane>
-            <n-tab-pane :name="UserPostsType.COMMENT" tab="我评论的" class="left-content">
-              <n-empty description="你还没有评论哦" v-if="isEmpty">
+            <n-tab-pane :name="UserPostsType.COMMENT" tab="评论" class="left-content">
+              <n-empty description="空空如也" v-if="isEmpty">
               </n-empty>
               <div>
                 <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
               </div>
             </n-tab-pane>
             <n-tab-pane :name="UserPostsType.COLLECTION" tab="收藏" class="left-content">
-              <n-empty description="你还没有收藏哦" v-if="isEmpty">
+              <n-empty description="空空如也" v-if="isEmpty">
               </n-empty>
               <div>
                 <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
               </div>
             </n-tab-pane>
             <n-tab-pane :name="UserPostsType.ATTENTION" tab="关注" class="left-content">
-              <n-empty description="你还没有点赞哦" v-if="isEmpty">
+              <n-empty description="空空如也" v-if="isEmpty">
               </n-empty>
               <div>
                 <Card v-for="port in posts" :key="port.id" v-bind:pp="port"></Card>
               </div>
             </n-tab-pane>
-            <n-tab-pane :name="UserPostsType.REPORT" tab="举报" class="left-content">
+            <n-tab-pane v-if="webInfoStore.getUser.nickname===userInfo.nickname"
+                        :name="UserPostsType.REPORT" tab="举报" class="left-content">
               <n-empty description="空空如也" v-if="isEmpty">
               </n-empty>
               <div>
@@ -207,6 +212,7 @@ import {getCollectionByCondition} from "@/api/Collection";
 import {getAttentionCondition} from "@/api/attention";
 import {getReportByCondition} from "@/api/Report";
 import service from "@/utils/request";
+import {useUserDetailsStore} from "@/store/UserDetailsStore";
 
 
 const currentInstance = getCurrentInstance()
@@ -214,7 +220,7 @@ const message = useMessage()
 const postStore = usePostStore()
 const webInfoStore = useWebInfoStore()
 let userInfo = reactive<User>({
-  ...webInfoStore.getUser
+  ...useUserDetailsStore().getUser()
 })
 //获取所有帖子
 const posts = ref<Post[]>()

@@ -1,96 +1,96 @@
 <template>
-  <n-loading-bar-provider>
-    <div id="HeaderBody">
-      <!--    logo-->
-      <n-avatar
-          size="48px"
-          src="src/components/Header/img/logo.png"
-      />
-      <!--    导航选项-->
-      <ul class="Tabs">
-        <li class="Tab-items">
-          <router-link to="/home" class="Tab-link" @click="change(0)" :style="{color:fontColor0}">首页</router-link>
-        </li>
-        <li class="Tab-items">
-          <router-link to="/home" class="Tab-link" @click="change(1)" :style="{color:fontColor1}">寻物</router-link>
-        </li>
-        <li class="Tab-items">
-          <router-link to="/home" class="Tab-link" @click="change(2)" :style="{color:fontColor2}">招领</router-link>
-        </li>
-        <li class="Tab-items">
-          <router-link to="/home" class="Tab-link" @click="change(3)" :style="{color:fontColor3}">大厅</router-link>
-        </li>
-      </ul>
-      <!--搜索框-->
-      <div class="SearchBar">
-        <form>
-          <input class="SearchBox" v-model="searchInfo"/>
-          <n-button type="info" attr-type="submit"
-                    style="outline: none" @click="doSearch">
-            搜索
-          </n-button>
-        </form>
-      </div>
-      <!--通知图标等-->
-      <n-space :size="30" align="center" justify="center">
-        <router-link to="/notice" class="Tab-icon">
-          <n-badge :value="value" :max="15">
-            <img src="./img/notice.svg">
-          </n-badge>
-        </router-link>
 
-        <!--    头像和下拉框  -->
-        <n-popover placement="bottom" trigger="click">
-          <template #trigger>
-            <a href="javascript:;" class="Tab-avatar">
-              <n-avatar
-                  round
-                  size="medium"
-                  :src="image.pop()"
-              >
-              </n-avatar>
-            </a>
-          </template>
-          <!--        下拉选项-->
-          <div>
-            <ul class="Tab-select">
-              <li class="Select-item">
-                <a @click="beforeLeaveInUserDetails">
-                  <img src="./img/home.svg" alt="主页">
-                  我的主页
-                </a>
-              </li>
-              <li class="Select-item">
-                <router-link to="/setting">
-                  <img src="./img/settings.svg" alt="设置">
-                  用户设置
-                </router-link>
-              </li>
-              <li class="Select-item">
-                <router-link to="/setting">
-                  <img src="./img/settings.svg" alt="关注">
-                  我的关注
-                </router-link>
-              </li>
-              <li class="Select-item">
-                <router-link to="/login" @click="logout">
-                  <img src="./img/login.svg" alt="登录">
-                  用户登录
-                </router-link>
-              </li>
-              <li class="Select-item">
-                <router-link to="/login" @click="logout">
-                  <img src="./img/exit.svg" alt="退出">
-                  退出登录
-                </router-link>
-              </li>
-            </ul>
-          </div>
-        </n-popover>
-
-      </n-space>
+  <div id="HeaderBody">
+    <!--    logo-->
+    <n-avatar
+        size="48px"
+        src="src/components/Header/img/logo.png"
+    />
+    <!--    导航选项-->
+    <ul class="Tabs">
+      <li class="Tab-items">
+        <router-link to="/home" class="Tab-link" @click="change(0)" :style="{color:fontColor0}">首页</router-link>
+      </li>
+      <li class="Tab-items">
+        <router-link to="/home" class="Tab-link" @click="change(1)" :style="{color:fontColor1}">寻物</router-link>
+      </li>
+      <li class="Tab-items">
+        <router-link to="/home" class="Tab-link" @click="change(2)" :style="{color:fontColor2}">招领</router-link>
+      </li>
+      <li class="Tab-items">
+        <router-link to="/home" class="Tab-link" @click="change(3)" :style="{color:fontColor3}">大厅</router-link>
+      </li>
+    </ul>
+    <!--搜索框-->
+    <div class="SearchBar">
+      <form>
+        <input class="SearchBox" v-model="searchInfo"/>
+        <n-button type="info" attr-type="submit"
+                  style="outline: none" @click="doSearch">
+          搜索
+        </n-button>
+      </form>
     </div>
-  </n-loading-bar-provider>
+    <!--通知图标等-->
+    <n-space :size="30" align="center" justify="center">
+      <router-link to="/notice" class="Tab-icon">
+        <n-badge :value="value" :max="15">
+          <img src="./img/notice.svg">
+        </n-badge>
+      </router-link>
+
+      <!--    头像和下拉框  -->
+      <n-popover placement="bottom" trigger="click">
+        <template #trigger>
+          <a href="javascript:;" class="Tab-avatar">
+            <n-avatar
+                round
+                size="medium"
+                :src="image.pop()"
+            >
+            </n-avatar>
+          </a>
+        </template>
+        <!--        下拉选项-->
+        <div>
+          <ul class="Tab-select">
+            <li class="Select-item">
+              <a @click="beforeLeaveInUserDetails">
+                <img src="./img/home.svg" alt="主页">
+                我的主页
+              </a>
+            </li>
+            <li class="Select-item">
+              <router-link to="/setting">
+                <img src="./img/settings.svg" alt="设置">
+                用户设置
+              </router-link>
+            </li>
+            <li class="Select-item">
+              <router-link to="/setting">
+                <img src="./img/settings.svg" alt="关注">
+                我的关注
+              </router-link>
+            </li>
+            <li class="Select-item">
+              <router-link to="/login" @click="logout">
+                <img src="./img/login.svg" alt="登录">
+                用户登录
+              </router-link>
+            </li>
+            <li class="Select-item">
+              <router-link to="/login" @click="logout">
+                <img src="./img/exit.svg" alt="退出">
+                退出登录
+              </router-link>
+            </li>
+          </ul>
+        </div>
+      </n-popover>
+
+    </n-space>
+  </div>
+
 </template>
 
 <script setup lang="ts">
@@ -102,6 +102,8 @@ import {useLoadingBar} from "naive-ui";
 import {getAllPosts, getPostByCondition} from "@/api/posts";
 import {usePostStore} from "@/store/PostStore";
 import {useRouter} from "vue-router";
+import {getUserByCondition} from "@/api/user";
+import {useUserDetailsStore} from "@/store/UserDetailsStore";
 
 const webInfoStore = useWebInfoStore()
 const value = ref(12)
@@ -115,20 +117,22 @@ if (webInfoStore.getUser !== undefined && webInfoStore.getUser.header !== undefi
   image.push(<string>webInfoStore.getUser.header)
 }
 
-//
-function beforeLeaveInUserDetails() {
+//进入用户详情页之前
+async function beforeLeaveInUserDetails() {
 
   loadBar.start()
-  getAllPosts().then(res => {
+  await getAllPosts().then(res => {
     postStore.setPosts(res.data.list)
-    if (res.code === 200) {
-      loadBar.finish()
-      if (webInfoStore.getUser !== undefined)
-        router.push({name: 'user', params: {name: webInfoStore?.getUser?.nickname}})
-    } else {
+    if (res.code === 400) {
       loadBar.error()
     }
   })
+  if (webInfoStore.getUser !== undefined) {
+    useUserDetailsStore().setUser(webInfoStore.getUser)
+    loadBar.finish()
+    router.push({name: 'user', params: {name: webInfoStore?.getUser?.nickname}})
+  }
+
 }
 
 const fontColor0 = ref("black")
@@ -189,7 +193,7 @@ async function doSearch() {
           info: searchInfo.value
         }
       })
-  searchInfo.value=''
+  searchInfo.value = ''
 
 }
 
