@@ -99,10 +99,9 @@ import {useWebStore} from "@/store/WebStore";
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {removeToken, removeUser} from "@/utils/auth";
 import {useLoadingBar} from "naive-ui";
-import {getAllPosts, getPostByCondition} from "@/api/posts";
+import {getAllNormalPost, getPostByCondition} from "@/api/posts";
 import {usePostStore} from "@/store/PostStore";
 import {useRouter} from "vue-router";
-import {getUserByCondition} from "@/api/user";
 import {useUserDetailsStore} from "@/store/UserDetailsStore";
 
 const webInfoStore = useWebInfoStore()
@@ -121,7 +120,7 @@ if (webInfoStore.getUser !== undefined && webInfoStore.getUser.header !== undefi
 async function beforeLeaveInUserDetails() {
 
   loadBar.start()
-  await getAllPosts().then(res => {
+  await getAllNormalPost().then(res => {
     postStore.setPosts(res.data.list)
     if (res.code === 400) {
       loadBar.error()

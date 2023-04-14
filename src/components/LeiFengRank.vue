@@ -68,9 +68,8 @@ const loadingBar = useLoadingBar();
 const router = useRouter()
 const userDetailsStore = useUserDetailsStore();
 const currentInstance = getCurrentInstance()
-let attentions: Attention[] = useAttentionStore().getAttentions();
 let users: User[] = []
-
+let attentions: Attention[] = useAttentionStore().getAttentions();
 let attentionsSet = new Set()
 for (let attention of attentions) {
   attentionsSet.add(attention.attentionedUserId)

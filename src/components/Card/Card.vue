@@ -11,22 +11,23 @@
         <div class="header-detail-dd">
           <div>
             <i class="nickname" @click="doGetUser(user?.nickname)">{{ user?.nickname }}</i>&nbsp;
-            <n-tag type="info" size="small"> 关注</n-tag>
+            <n-tag class="item_attention" v-if="!attentionsSet.has(user.id)" type="info" size="small"
+                   @click="doAddAttention(user?.id)"> 关注
+            </n-tag>
+            <n-tag class="item_attention" v-if="attentionsSet.has(user.id)" type="success" size="small"
+                   @click="doDeleteAttention(user?.id)"> 已关注
+            </n-tag>
           </div>
           <i>{{ moment(post?.createdTime).format("yyyy-MM-DD") }}</i>
         </div>
       </div>
-      <div>
-        <n-popselect :options="options" trigger="click">
-          <a href="javascript:;">
-            <svg t="1678342889605" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                 p-id="1097" id="mx_n_1678342889605" width="28" height="28">
-              <path
-                  d="M512 704c35.2 0 64 28.8 64 64s-28.8 64-64 64-64-28.8-64-64 28.8-64 64-64z m-64-192c0 35.2 28.8 64 64 64s64-28.8 64-64-28.8-64-64-64-64 28.8-64 64z m0-256c0 35.2 28.8 64 64 64s64-28.8 64-64-28.8-64-64-64-64 28.8-64 64z"
-                  p-id="1098" fill="#707070"></path>
-            </svg>
-          </a>
-        </n-popselect>
+      <div class="status_icon">
+        <n-popover trigger="hover" :show-arrow="false" v-if="post.status===5">
+          <template #trigger>
+            <img  src="./img/finish.svg" alt="物品已找回">
+          </template>
+          <span>物品已找回</span>
+        </n-popover>
 
       </div>
     </div>
@@ -88,17 +89,41 @@
     <!--    评论区-->
 
     <div class="comment">
-      <n-space vertical>
+      <n-space align="center" justify="space-between">
         <div class="comment-ss" @click="activate('right')"><strong
             style="font-size: 1.2rem;color: #121212">评论</strong>&nbsp; {{ 2 }}条/>>
         </div>
-        <n-drawer v-model:show="show" :width="400" :placement="placement">
-          <n-drawer-content title="评论">
-            <div class="comment-detail">
-              <div class="all-item">
-                <n-scrollbar>
-                  <div class="item" v-for="i in 10">
-                    <div class="header-detail">
+        <div class="report">
+          <i>
+            举报
+          </i>
+        </div>
+      </n-space>
+
+    </div>
+    <n-drawer v-model:show="show" :width="400" :placement="placement">
+      <n-drawer-content title="评论">
+        <div class="comment-detail">
+          <div class="all-item">
+            <n-scrollbar>
+              <div class="item" v-for="i in 10">
+                <div class="header-detail">
+                  <n-avatar
+                      round
+                      size="medium"
+                      src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+                  />
+                  <div class="header-detail-dd">
+                    <div>
+                      <a href="javascript:;" style="size: 12px;color: #646cff">昵称</a>&nbsp;:
+                      <n-text>你可真可爱</n-text>
+                    </div>
+                    <i style="size: 12px">8小时前发布</i>
+                  </div>
+                </div>
+                <ul>
+                  <li v-for="i in 2">
+                    <div class="header-detail" style="margin-left: 40px">
                       <n-avatar
                           round
                           size="medium"
@@ -106,43 +131,25 @@
                       />
                       <div class="header-detail-dd">
                         <div>
-                          <a href="javascript:;" style="size: 12px;color: #646cff">昵称</a>&nbsp;:
-                          <n-text>你可真可爱</n-text>
+                          <a href="javascript:;" style="size: 12px;color: #646cff">昵称</a>&nbsp;回复&nbsp;
+                          <a href="javascript:;" style="size: 12px;color: #646cff">另一个人</a>&nbsp;:
+                          <n-text>你也很可爱</n-text>
                         </div>
                         <i style="size: 12px">8小时前发布</i>
                       </div>
                     </div>
-                    <ul>
-                      <li v-for="i in 2">
-                        <div class="header-detail" style="margin-left: 40px">
-                          <n-avatar
-                              round
-                              size="medium"
-                              src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
-                          />
-                          <div class="header-detail-dd">
-                            <div>
-                              <a href="javascript:;" style="size: 12px;color: #646cff">昵称</a>&nbsp;回复&nbsp;
-                              <a href="javascript:;" style="size: 12px;color: #646cff">另一个人</a>&nbsp;:
-                              <n-text>你也很可爱</n-text>
-                            </div>
-                            <i style="size: 12px">8小时前发布</i>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                </n-scrollbar>
-
+                  </li>
+                </ul>
               </div>
+            </n-scrollbar>
 
-              <Editor></Editor>
-            </div>
-          </n-drawer-content>
-        </n-drawer>
-      </n-space>
+          </div>
 
-    </div>
+          <Editor></Editor>
+        </div>
+      </n-drawer-content>
+    </n-drawer>
+
   </div>
 
 </template>
@@ -150,13 +157,13 @@
 <script setup lang="ts">
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
 import {getCurrentInstance, onMounted, ref} from 'vue'
-import {Post, User} from "@/Interface/ApiInterface";
+import {Attention, AttentionQuery, Post, User} from "@/Interface/ApiInterface";
 import moment from "moment";
 import {getCacheUserById, getUserByCondition} from "@/api/user";
 import type {DrawerPlacement} from 'naive-ui'
 import Editor from "@/components/Editor.vue";
 import {usePostStore} from "@/store/PostStore";
-import {useMessage,useLoadingBar} from "naive-ui";
+import {useMessage, useLoadingBar} from "naive-ui";
 import {addCollections, deleteCollections, getCollectionByCondition} from "@/api/Collection";
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {addLikes, deleteLikes, getLikesByCondition} from "@/api/Likes";
@@ -164,6 +171,8 @@ import {debounce} from "lodash";
 import {updatePost} from "@/api/posts";
 import {useUserDetailsStore} from "@/store/UserDetailsStore";
 import {useRouter} from "vue-router";
+import {addAttention, deleteAttention, getAttentionCondition} from "@/api/attention";
+import {useAttentionStore} from "@/store/AttentonStore";
 
 const router = useRouter()
 const userDetailsStore = useUserDetailsStore()
@@ -286,7 +295,6 @@ const handleCollection = debounce(() => {
   }
 }, 500)
 
-
 //根据昵称跳转个人详情
 async function doGetUser(nickname: string) {
   loadingBar.start()
@@ -300,6 +308,62 @@ async function doGetUser(nickname: string) {
       name: nickname
     }
   })
+}
+
+let attentions: Attention[] = useAttentionStore().getAttentions();
+let attentionsSet = new Set()
+for (let attention of attentions) {
+  attentionsSet.add(attention.attentionedUserId)
+}
+
+//新增关注
+async function doAddAttention(id: number) {
+  loadingBar.start()
+  const attention: Attention = {}
+  await debounce(async () => {
+    attention.attentionUserId = useWebInfoStore().getUser.id
+    attention.attentionedUserId = id
+    const res = await addAttention(attention);
+    if (res.code === 200)
+      message.success(res.message)
+    else
+      message.error(res.message)
+    const axiosResponse = await getAttentionCondition({attentionUserId: useWebInfoStore().getUser.id});
+    useAttentionStore().setAttentions(axiosResponse.data.list)
+    attentions = useAttentionStore().getAttentions()
+    attentionsSet.clear()
+    for (let attention of attentions) {
+      attentionsSet.add(attention.attentionedUserId)
+    }
+    loadingBar.finish()
+    currentInstance?.proxy?.$forceUpdate()
+  }, 500)()
+
+}
+
+//删除关注
+async function doDeleteAttention(id: number) {
+  loadingBar.start()
+  const attentionQuery: AttentionQuery = {}
+  await debounce(async () => {
+    attentionQuery.attentionUserId = useWebInfoStore().getUser.id
+    attentionQuery.attentionedUserId = id
+    const res = await deleteAttention(attentionQuery);
+    if (res.code === 200) {
+      message.success(res.message)
+    } else {
+      message.error(res.message)
+    }
+    const axiosResponse = await getAttentionCondition({attentionUserId: useWebInfoStore().getUser.id});
+    useAttentionStore().setAttentions(axiosResponse.data.list)
+    attentions = useAttentionStore().getAttentions()
+    attentionsSet.clear()
+    for (let attention of attentions) {
+      attentionsSet.add(attention.attentionedUserId)
+    }
+    loadingBar.finish()
+    currentInstance?.proxy?.$forceUpdate()
+  }, 500)()
 }
 
 onMounted(() => {
@@ -324,6 +388,18 @@ onMounted(() => {
     &:hover {
       cursor: pointer;
       color: #646cff;
+    }
+  }
+
+  .report {
+    margin-right: 10px;
+
+    i {
+      color: #8590a6;
+
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 }
@@ -358,9 +434,16 @@ onMounted(() => {
   flex-direction: column;
   padding-left: 10px;
 
+  .item_attention {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
   .nickname {
     color: #121212;
-    &:hover{
+
+    &:hover {
       cursor: pointer;
     }
   }
@@ -392,6 +475,13 @@ onMounted(() => {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+
+  .status_icon {
+    position: relative;
+    top: -12px;
+    right: -12px;
+
+  }
 }
 
 

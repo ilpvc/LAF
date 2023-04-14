@@ -203,7 +203,7 @@ import {Attention, Collection, Comments, Likes, Post, Report, User} from "@/Inte
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {usePostStore} from "@/store/PostStore";
 import {getCacheUserById, updateUser} from "@/api/user";
-import {UploadCustomRequestOptions, UploadFileInfo, useMessage} from "naive-ui";
+import {UploadCustomRequestOptions, useMessage, useLoadingBar} from "naive-ui";
 import {UserPostsType} from "@/Interface/enum"
 import {getPostIdByLikeUserId} from "@/api/thumb";
 import {getPostByCondition} from "@/api/posts";
@@ -214,7 +214,7 @@ import {getReportByCondition} from "@/api/Report";
 import service from "@/utils/request";
 import {useUserDetailsStore} from "@/store/UserDetailsStore";
 
-
+const loadingBar = useLoadingBar()
 const currentInstance = getCurrentInstance()
 const message = useMessage()
 const postStore = usePostStore()
@@ -257,9 +257,10 @@ const genderComputed = computed(() => {
 
 //点击切换页面获取数据
 async function changeTabAndGetPosts(tabName: number) {
+
+  loadingBar.start()
   const postsId: number[] = []
   const usersId: number[] = []
-
   switch (tabName) {
     case UserPostsType.THUMB:
       await getPostIdByLikeUserId(userInfo.id || 0).then(res => {
@@ -271,7 +272,8 @@ async function changeTabAndGetPosts(tabName: number) {
         posts.value = res.data.list
         currentInstance?.proxy?.$forceUpdate()
       })
-      break;
+      loadingBar.finish()
+      return true
     case UserPostsType.COMMENT:
       await getCommentCondition({commenterId: userInfo.id}).then(res => {
         if (res.data !== null)
@@ -279,11 +281,17 @@ async function changeTabAndGetPosts(tabName: number) {
             postsId.push(item.postId)
           }
       })
-      await getPostByCondition({collection: postsId}).then(res => {
-        posts.value = res.data.list
-        currentInstance?.proxy?.$forceUpdate()
-      })
-      break;
+      if (postsId.length !== 0) {
+        await getPostByCondition({collection: postsId}).then(res => {
+          posts.value = res.data.list
+          currentInstance?.proxy?.$forceUpdate()
+        })
+      } else {
+        posts.value = []
+      }
+
+      loadingBar.finish()
+      return true
     case UserPostsType.COLLECTION:
       await getCollectionByCondition({userId: userInfo.id}).then(res => {
         if (res.data !== null)
@@ -291,11 +299,16 @@ async function changeTabAndGetPosts(tabName: number) {
             postsId.push(item.postId)
           }
       })
-      await getPostByCondition({collection: postsId}).then(res => {
-        posts.value = res.data.list
-        currentInstance?.proxy?.$forceUpdate()
-      })
-      break;
+      if (postsId.length !== 0) {
+        await getPostByCondition({collection: postsId}).then(res => {
+          posts.value = res.data.list
+          currentInstance?.proxy?.$forceUpdate()
+        })
+      } else {
+        posts.value = []
+      }
+      loadingBar.finish()
+      return true
     case UserPostsType.ATTENTION:
       await getAttentionCondition({attentionUserId: userInfo.id}).then(res => {
         if (res.data !== null)
@@ -303,11 +316,16 @@ async function changeTabAndGetPosts(tabName: number) {
             usersId.push(item.attentionedUserId)
           }
       })
-      await getPostByCondition({collectionUserId: usersId}).then(res => {
-        posts.value = res.data.list
-        currentInstance?.proxy?.$forceUpdate()
-      })
-      break;
+      if (usersId.length !== 0) {
+        await getPostByCondition({collectionUserId: usersId}).then(res => {
+          posts.value = res.data.list
+          currentInstance?.proxy?.$forceUpdate()
+        })
+      } else {
+        posts.value = []
+      }
+      loadingBar.finish()
+      return true
     case UserPostsType.REPORT:
       await getReportByCondition({userId: userInfo.id}).then(res => {
         if (res.data !== null)
@@ -315,14 +333,17 @@ async function changeTabAndGetPosts(tabName: number) {
             postsId.push(item.postId)
           }
       })
-      await getPostByCondition({collection: postsId}).then(res => {
-        console.log(res.data)
-        posts.value = res.data.list
-        currentInstance?.proxy?.$forceUpdate()
-      })
-      break;
+      if (postsId.length !== 0) {
+        await getPostByCondition({collection: postsId}).then(res => {
+          posts.value = res.data.list
+          currentInstance?.proxy?.$forceUpdate()
+        })
+      } else {
+        posts.value = []
+      }
+      loadingBar.finish()
+      return true
   }
-  return true
 }
 
 //判断目前posts是否为空

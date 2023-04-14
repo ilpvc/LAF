@@ -173,7 +173,7 @@ export interface PostQuery {
     searchInfo?: string;
     createdTime?: string;
     updatedTime?: string;
-    status?: number;
+    status?: number[];
     collection?: number[];
     collectionUserId?: number[];
 

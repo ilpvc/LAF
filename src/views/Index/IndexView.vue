@@ -15,7 +15,7 @@
 import Card from "@/components/Card/Card.vue";
 import NavigationCard from "@/components/NavigationCard.vue";
 import LeiFengRank from "@/components/LeiFengRank.vue";
-import {getAllPosts, getPostByCondition} from "@/api/posts";
+import {getAllNormalPost, getPostByCondition} from "@/api/posts";
 import {getCurrentInstance, nextTick, onMounted, ref, watch} from "vue";
 import {useWebStore} from "@/store/WebStore";
 import {Type} from "@/Interface/enum";
@@ -28,7 +28,7 @@ const webStore = useWebStore()
 async function init() {
   //获取后端数据，将数据赋值，并且重新加载页面
   if (webStore.getPage === Type.ALL) {
-    await getAllPosts().then(res => {
+    await getAllNormalPost().then(res => {
       ports.value = res.data.list
     })
   } else {
