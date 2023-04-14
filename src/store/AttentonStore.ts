@@ -1,11 +1,14 @@
 import {defineStore} from "pinia";
 import {Attention} from "@/Interface/ApiInterface";
+import {getToken} from "@/utils/auth";
 
 export const useAttentionStore = defineStore('attentionStore', () => {
     let attentions:Attention[] = []
 
     function getAttentions(){
-        if (attentions.length===0&&localStorage.getItem("attentions")!==null){
+        if (getToken()===undefined){
+            attentions=[]
+        } else if (attentions.length===0&&localStorage.getItem("attentions")!==null){
             // @ts-ignore
             attentions = JSON.parse(localStorage.getItem("attentions"))
         }

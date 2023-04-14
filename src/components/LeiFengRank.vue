@@ -109,8 +109,10 @@ async function doAddAttention(id: number) {
     const res = await addAttention(attention);
     if (res.code === 200)
       message.success(res.message)
-    else
+    else{
+      loadingBar.error()
       message.error(res.message)
+    }
     const axiosResponse = await getAttentionCondition({attentionUserId: useWebInfoStore().getUser.id});
     useAttentionStore().setAttentions(axiosResponse.data.list)
     attentions = useAttentionStore().getAttentions()
@@ -135,6 +137,7 @@ async function doDeleteAttention(id: number) {
     if (res.code === 200) {
       message.success(res.message)
     } else {
+      loadingBar.error()
       message.error(res.message)
     }
     const axiosResponse = await getAttentionCondition({attentionUserId: useWebInfoStore().getUser.id});
@@ -174,6 +177,7 @@ onMounted(() => {
   }
 
   .item_attention {
+
     &:hover {
       cursor: pointer;
     }

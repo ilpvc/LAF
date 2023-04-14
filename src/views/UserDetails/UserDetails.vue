@@ -80,7 +80,7 @@
           <i>QQ:</i> {{ userInfo.qq || '未设置' }}
         </div>
         <div class="info" style="position: relative;left: -72px">
-          <i>邮箱:</i> {{ userInfo.email || '未设置' }}
+          <i>积分:</i> {{ userInfo.integral || '未设置' }}
         </div>
 
       </div>

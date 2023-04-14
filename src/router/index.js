@@ -47,6 +47,16 @@ const constantRoutes = [
                 name: 'write',
                 component: () => import('@/views/WritePost/WritePost.vue')
             },
+            {
+                path: 'learn',
+                name: 'learn',
+                component: () => import('@/views/Learn/Learn.vue')
+            },
+            {
+                path: 'mall',
+                name: 'mall',
+                component: () => import('@/views/Mall/Mall.vue')
+            },
         ]
     },
     {

@@ -326,8 +326,11 @@ async function doAddAttention(id: number) {
     const res = await addAttention(attention);
     if (res.code === 200)
       message.success(res.message)
-    else
+    else{
       message.error(res.message)
+      loadingBar.error()
+    }
+
     const axiosResponse = await getAttentionCondition({attentionUserId: useWebInfoStore().getUser.id});
     useAttentionStore().setAttentions(axiosResponse.data.list)
     attentions = useAttentionStore().getAttentions()

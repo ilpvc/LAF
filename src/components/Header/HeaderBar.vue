@@ -18,7 +18,13 @@
         <router-link to="/home" class="Tab-link" @click="change(2)" :style="{color:fontColor2}">招领</router-link>
       </li>
       <li class="Tab-items">
-        <router-link to="/home" class="Tab-link" @click="change(3)" :style="{color:fontColor3}">大厅</router-link>
+        <router-link to="/home" class="Tab-link" @click="change(3)" :style="{color:fontColor3}">娱乐大厅</router-link>
+      </li>
+      <li class="Tab-items">
+        <router-link to="/learn" class="Tab-link" @click="change(4)" :style="{color:fontColor4}">学习交流</router-link>
+      </li>
+      <li class="Tab-items">
+        <router-link to="/mall" class="Tab-link" @click="change(5)" :style="{color:fontColor5}">积分商城</router-link>
       </li>
     </ul>
     <!--搜索框-->
@@ -138,6 +144,10 @@ const fontColor0 = ref("black")
 const fontColor1 = ref("#8590a6")
 const fontColor2 = ref("#8590a6")
 const fontColor3 = ref("#8590a6")
+const fontColor4 = ref("#8590a6")
+const fontColor5 = ref("#8590a6")
+
+
 
 //切换页面
 function change(type: number) {
@@ -147,24 +157,48 @@ function change(type: number) {
     fontColor1.value = "#8590a6"
     fontColor2.value = "#8590a6"
     fontColor3.value = "#8590a6"
+    fontColor4.value = "#8590a6"
+    fontColor5.value = "#8590a6"
   }
   if (type === 1) {
     fontColor0.value = "#8590a6"
     fontColor1.value = "black"
     fontColor2.value = "#8590a6"
     fontColor3.value = "#8590a6"
+    fontColor4.value = "#8590a6"
+    fontColor5.value = "#8590a6"
   }
   if (type === 2) {
     fontColor0.value = "#8590a6"
     fontColor1.value = "#8590a6"
     fontColor2.value = "black"
     fontColor3.value = "#8590a6"
+    fontColor4.value = "#8590a6"
+    fontColor5.value = "#8590a6"
   }
   if (type === 3) {
     fontColor0.value = "#8590a6"
     fontColor1.value = "#8590a6"
     fontColor2.value = "#8590a6"
     fontColor3.value = "black"
+    fontColor4.value = "#8590a6"
+    fontColor5.value = "#8590a6"
+  }
+  if (type === 4) {
+    fontColor0.value = "#8590a6"
+    fontColor1.value = "#8590a6"
+    fontColor2.value = "#8590a6"
+    fontColor4.value = "black"
+    fontColor3.value = "#8590a6"
+    fontColor5.value = "#8590a6"
+  }
+  if (type === 5) {
+    fontColor0.value = "#8590a6"
+    fontColor1.value = "#8590a6"
+    fontColor2.value = "#8590a6"
+    fontColor5.value = "black"
+    fontColor3.value = "#8590a6"
+    fontColor4.value = "#8590a6"
   }
 }
 
