@@ -59,7 +59,7 @@
 import {reactive} from "vue";
 import {register} from "@/api/register.js";
 import {LoginParams, Res, UserQuery} from "@/Interface/ApiInterface";
-import {useMessage,useLoadingBar} from "naive-ui"
+import {useMessage, useLoadingBar} from "naive-ui"
 import {login} from "@/api/login";
 import {useRouter} from "vue-router";
 import {setToken} from "@/utils/auth";
@@ -117,19 +117,28 @@ async function doSignIn() {
   } else if (userDetails.password === undefined) {
     message.error('请输入密码')
   } else {
-    const res = await login(userDetails)
-    if (res.data?.token !== null) {
-      setToken(res.data.token)
-      message.success('登录成功！')
-      const user = res.data.user;
-      userStore.setUser(user)
-      //初始化关注列表
-      const axiosResponse = await getAttentionCondition({attentionUserId: useWebInfoStore().getUser.id});
-      useAttentionStore().setAttentions(axiosResponse.data.list)
-      loadingBar.finish()
-      await router.push({name: 'index'})
-    }else{
-      loadingBar.error()
+    try {
+      const res = await login(userDetails)
+      if (res.status === 403) {
+        message.error("账号不存在")
+        loadingBar.error()
+
+      } else if (res.code === 200) {
+        setToken(res.data.token)
+        message.success('登录成功！')
+        const user = res.data.user;
+        userStore.setUser(user)
+        //初始化关注列表
+        const axiosResponse = await getAttentionCondition({attentionUserId: useWebInfoStore().getUser.id});
+        useAttentionStore().setAttentions(axiosResponse.data.list)
+        loadingBar.finish()
+        await router.push({name: 'index'})
+      } else {
+        message.error(res.message)
+        loadingBar.error()
+      }
+    } catch (e) {
+      console.log(e)
     }
 
 

@@ -2,6 +2,7 @@ import axios from "axios";
 import {getToken, removeToken} from "./auth";
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {R} from "@/Interface/ApiInterface";
+import {useRouter} from "vue-router";
 
 const webInfoStore = useWebInfoStore()
 
@@ -34,6 +35,10 @@ service.interceptors.response.use(
             webInfoStore.removeUser
         }
         return res
+    },
+    error => {
+        error.response.data.status = error.response.status
+        return error.response.data
     }
 )
 

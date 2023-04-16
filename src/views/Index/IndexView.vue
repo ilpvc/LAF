@@ -19,24 +19,37 @@ import {getAllNormalPost, getPostByCondition} from "@/api/posts";
 import {getCurrentInstance, nextTick, onMounted, ref, watch} from "vue";
 import {useWebStore} from "@/store/WebStore";
 import {Type} from "@/Interface/enum";
+import {useHttpStatusStore} from "@/store/HttpStatusStore";
+import {useRouter} from "vue-router";
+import {useLoadingBar} from "naive-ui"
 
+const loadingBar = useLoadingBar()
+const router = useRouter()
 const currentInstance = getCurrentInstance()
 let ports = ref([])
 let load = false
 const webStore = useWebStore()
 
 async function init() {
+  loadingBar.start()
   //获取后端数据，将数据赋值，并且重新加载页面
   if (webStore.getPage === Type.ALL) {
     await getAllNormalPost().then(res => {
       ports.value = res.data.list
+      if (useHttpStatusStore().getErrorStatus().has(res.status)){
+        confirm("你还没有登录，请登录")
+        router.push({name: 'login'})
+      }
     })
   } else {
-    await getPostByCondition({type: webStore.getPage}).then(res => {
-      ports.value = res.data.list
-    })
+    const res = await getPostByCondition({type: webStore.getPage});
+    ports.value = res.data.list
+    if (useHttpStatusStore().getErrorStatus().has(res.status)){
+      confirm("你还没有登录，请登录")
+      await router.push({name: 'login'})
+    }
   }
-
+  loadingBar.finish()
   load = true
   currentInstance?.proxy?.$forceUpdate()
 

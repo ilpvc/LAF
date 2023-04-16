@@ -12,3 +12,8 @@ export enum UserPostsType {
     ATTENTION = 3,
     REPORT = 4
 }
+
+export enum HttpStatus {
+    NO_AUTH = 401,
+    FORBID = 403
+}
