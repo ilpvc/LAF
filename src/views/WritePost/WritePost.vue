@@ -71,7 +71,7 @@ import {ref} from "vue";
 import {UploadCustomRequestOptions, UploadFileInfo, useMessage, UploadInst} from "naive-ui";
 import service from "@/utils/request";
 import {useWebInfoStore} from "@/store/WebInfoStore";
-import {debounce} from "lodash";
+import {debounce, reject} from "lodash";
 import {addPost} from "@/api/posts";
 import {useRouter} from "vue-router";
 
@@ -138,10 +138,11 @@ const customRequest = ({
     url: action as string,
     method: 'post',
     data: formData,
-  })
-      .then((res) => {
+  }).then((res) => {
         images.push(res)
-      })
+      },reject=>{
+      console.log(reject)
+  })
 }
 </script>
 

@@ -37,6 +37,7 @@ service.interceptors.response.use(
         return res
     },
     error => {
+        console.log(error)
         error.response.data.status = error.response.status
         return error.response.data
     }
