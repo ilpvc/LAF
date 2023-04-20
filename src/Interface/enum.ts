@@ -10,7 +10,8 @@ export enum UserPostsType {
     COMMENT = 1,
     COLLECTION = 2,
     ATTENTION = 3,
-    REPORT = 4
+    REPORT = 4,
+    MY = 5
 }
 
 export enum HttpStatus {

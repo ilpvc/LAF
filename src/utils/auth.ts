@@ -16,8 +16,9 @@ export function removeToken() {
 }
 
 export function removeUser(){
-    console.log('removeUser')
-    console.log(Cookies.remove(UserKey))
-    console.log(Cookies.get('user'))
-    return
+    Cookies.remove(UserKey)
+}
+
+export function getLoginUser(){
+    return Cookies.get(UserKey)
 }

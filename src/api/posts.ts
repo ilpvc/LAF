@@ -12,7 +12,7 @@ export function getAllPosts() {
 
 export function getPostByCondition(params: PostQuery){
     if (Object.keys(params).length!==0)
-    params.status=[1,5]
+    params.status=[1]
     return service({
         url: `/post/condition`,
         method: "post",
@@ -41,9 +41,9 @@ export const addPost = (params: Post) =>
 
 export function getAllNormalPost(){
     let params: PostQuery = {}
-    params.status=[1,5]
+    params.status=[1]
     return service({
-        url: `/post/condition`,
+        url: `/post/normalCondition`,
         method: "post",
         params: {},
         data: params
