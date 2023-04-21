@@ -30,14 +30,14 @@
 
         </div>
         <div>
-          <n-button type="success" size="tiny" round>发送</n-button>
+          <n-button type="success" size="tiny" round @click="doSubmitComment">发送</n-button>
         </div>
 
       </div>
 
       <div class="b-input">
         <n-input
-          v-model:value="message"
+          v-model:value="content"
           type="textarea"
           :placeholder="responsePlaceHolder"
           :autosize="{minRows: 5,maxRows: 5}"
@@ -50,19 +50,49 @@
 
 <script setup lang="ts">
 import Emoji from "@/components/Emoji.vue"
-import {getCurrentInstance, ref} from "vue";
+import {getCurrentInstance, ref, unref} from "vue";
 import {useCommentStore} from "@/store/CommentStore";
+import {Comments} from "@/Interface/ApiInterface";
+import {useLoadingBar,useMessage} from 'naive-ui'
+import {useWebInfoStore} from "@/store/WebInfoStore";
+import {addComments} from "@/api/comment";
+import {useRouter} from "vue-router";
 
+const router = useRouter()
+const message = useMessage()
+const loadingBar = useLoadingBar();
 const commentStore = useCommentStore();
+const webInfoStore = useWebInfoStore();
 const currentInstance = getCurrentInstance()
-let message = ref("")
-
+let content = ref("")
+const emit = defineEmits(['refresh'])
 const responsePlaceHolder = "@ 回复 " + commentStore.getCurrentCommenter().get('info').name
 
 function emoji(e){
-  message.value = message.value+e
+    content.value = content.value+e
 }
 
+const comment:Comments={}
+async function doSubmitComment(){
+    loadingBar.start()
+    if (webInfoStore.getUser.id===undefined){
+        message.error('你还没有登录')
+        loadingBar.error()
+        return
+    }
+    comment.postId = commentStore.getCurrentPost().id
+    comment.commentType = commentStore.getCurrentCommentType();
+    comment.commenterId = webInfoStore.getUser.id
+    if (comment.commentType===2){
+        comment.commentedUserId = commentStore.getCurrentCommenter().get('info').id
+        comment.parentId = commentStore.getCurrentParentId()
+    }
+    comment.content = unref(content)
+    await addComments(comment)
+    message.success("评论成功")
+    emit('refresh')
+    loadingBar.finish()
+}
 
 </script>
 
