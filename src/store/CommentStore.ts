@@ -32,7 +32,6 @@ export const useCommentStore = defineStore("commentStore", () => {
             comment1.userName2 = userNameMap.get(comment1.commentedUserId)
             tempComment.push(comment1)
             comment.childComment=tempComment
-            console.log(comment.childComment)
           }
         }
         comments.push(comment)
@@ -46,9 +45,23 @@ export const useCommentStore = defineStore("commentStore", () => {
   }
 
 
+
+  let currentCommenter = new Map()
+
+  function setCurrentCommenter(id:number,name:string){
+    currentCommenter.clear()
+    currentCommenter.set('info', {id,name})
+  }
+
+  function getCurrentCommenter(){
+    return currentCommenter
+  }
+
   return {
     setComment,
-    getComments
+    getComments,
+    setCurrentCommenter,
+    getCurrentCommenter
   }
 
 })

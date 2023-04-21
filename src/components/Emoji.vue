@@ -1,13 +1,23 @@
 <template>
   <div id="emoji-body">
-    <i>😀</i><i>😁</i><i>😂</i><i>😃</i><i>😄</i><i>😅</i><i>😆</i><i>😇</i>
-    <i>😉</i><i>😊</i><i>😍</i><i>😓</i><i>😔</i><i>😕</i><i>😘</i><i>😛</i>
-    <i>😡</i><i>😤</i><i>😨</i><i>😪</i><i>😭</i><i>😱</i><i>😵</i><i>😷</i>
-    <i>🙈</i><i>🙏</i><i>🙅🏻</i><i>👫🏿</i><i>👰🏿</i><i>👴🏿</i><i>👷🏿</i><i>🖕🏿</i>
+    <i @click="submit('😀')">😀</i><i @click="submit('😁')">😁</i><i @click="submit('😂')">😂</i><i @click="submit('😃')">😃</i>
+    <i @click="submit('😉')">😉</i><i @click="submit('😊')">😊</i><i @click="submit('😍')">😍</i><i @click="submit('😓')">😓</i>
+    <i @click="submit('😡')">😡</i><i @click="submit('😤')">😤</i><i @click="submit('😨')">😨</i><i @click="submit('😪')">😪</i>
+    <i @click="submit('🙈')">🙈</i><i @click="submit('🙏')">🙏</i><i @click="submit('🙅🏻')">🙅🏻</i><i @click="submit('👫🏿')">👫🏿</i>
+    <i @click="submit('😄')">😄</i><i @click="submit('😅')">😅</i><i @click="submit('😆')">😆</i><i @click="submit('😇')">😇</i>
+    <i @click="submit('😔')">😔</i><i @click="submit('😕')">😕</i><i @click="submit('😘')">😘</i><i @click="submit('😛')">😛</i>
+    <i @click="submit('😭')">😭</i><i @click="submit('😱')">😱</i><i @click="submit('😵')">😵</i><i @click="submit('😷')">😷</i>
+    <i @click="submit('👰🏿')">👰🏿</i><i @click="submit('👴🏿')">👴🏿</i><i @click="submit('👷🏿')">👷🏿</i><i @click="submit('🖕🏿')">🖕🏿</i>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+
+const emit = defineEmits(['get-emoji'])
+const submit=(emoji)=>{
+  emit('get-emoji', emoji)
+}
+
 
 </script>
 

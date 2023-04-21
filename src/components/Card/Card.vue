@@ -142,7 +142,7 @@
                         <a href="javascript:;" style="size: 12px;color: #646cff">{{ comment.userName }}</a>&nbsp;:
                         <n-ellipsis style="max-width: 100px">{{ comment.content }}</n-ellipsis>
                       </div>
-                      <i class="showResponse" @click="showEditor(comment.commenterId)">回复</i>
+                      <i class="showResponse" @click="showEditor(comment.commenterId,comment.userName)">回复</i>
                     </div>
                     <i style="size: 12px">{{ moment(comment.createdTime).format("yyyy-MM-DD") }}</i>
 
@@ -165,7 +165,7 @@
                                style="size: 12px;color: #646cff">{{ cc.userName2 }}</a>&nbsp;:
                             <n-ellipsis style="max-width: 100px">{{ cc.content }}</n-ellipsis>
                           </div>
-                          <i class="showResponse res2" @click="showEditor(cc.commenterId)">回复</i>
+                          <i class="showResponse res2" @click="showEditor(cc.commenterId,cc.userName)">回复</i>
                         </div>
                         <i style="size: 12px">{{ moment(cc.createdTime).format("yyyy-MM-DD") }}</i>
                       </div>
@@ -176,8 +176,9 @@
             </n-scrollbar>
 
           </div>
-
-          <Editor v-if="response"></Editor>
+          <transition name="slide-fade">
+            <Editor v-if="response"></Editor>
+          </transition>
         </div>
       </n-drawer-content>
     </n-drawer>
@@ -471,9 +472,12 @@ const activate = async (place: DrawerPlacement) => {
 
 const response = ref(false)
 
-function showEditor(id: number) {
+async function showEditor(id: number,name:string) {
+  response.value = false
 
-  response.value = true
+  commentStore.setCurrentCommenter(id,name)
+  setTimeout(()=>response.value = true,500)
+
 }
 
 onMounted(() => {
@@ -629,5 +633,19 @@ a {
   color: #121212;
 }
 
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
+}
 
 </style>
