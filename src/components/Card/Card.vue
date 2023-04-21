@@ -123,42 +123,51 @@
       </n-space>
 
     </div>
-    <n-drawer v-model:show="show" :width="400" :placement="placement">
+    <n-drawer v-model:show="show" :width="400" :placement="placement" :auto-focus="false">
       <n-drawer-content title="评论">
         <div class="comment-detail">
           <div class="all-item">
             <n-scrollbar>
-              <div class="item" v-for="i in 10">
+              <div class="item" v-for="comment in comments" :key="comment">
                 <div class="header-detail">
                   <n-avatar
                     round
                     size="medium"
-                    src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+                    :src="comment.userHeader"
                   />
                   <div class="header-detail-dd">
-                    <div>
-                      <a href="javascript:;" style="size: 12px;color: #646cff">昵称</a>&nbsp;:
-                      <n-text>你可真可爱</n-text>
+
+                    <div class="detail-and-response">
+                      <div>
+                        <a href="javascript:;" style="size: 12px;color: #646cff">{{ comment.userName }}</a>&nbsp;:
+                        <n-ellipsis style="max-width: 100px">{{ comment.content }}</n-ellipsis>
+                      </div>
+                      <i class="showResponse" @click="showEditor(comment.commenterId)">回复</i>
                     </div>
-                    <i style="size: 12px">8小时前发布</i>
+                    <i style="size: 12px">{{ moment(comment.createdTime).format("yyyy-MM-DD") }}</i>
+
+
                   </div>
                 </div>
                 <ul>
-                  <li v-for="i in 2">
+                  <li v-for="cc in comment.childComment" :key="cc">
                     <div class="header-detail" style="margin-left: 40px">
                       <n-avatar
                         round
                         size="medium"
-                        src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+                        :src="cc.userHeader"
                       />
                       <div class="header-detail-dd">
-                        <div>
-                          <a href="javascript:;" style="size: 12px;color: #646cff">昵称</a>&nbsp;回复&nbsp;
-                          <a href="javascript:;"
-                             style="size: 12px;color: #646cff">另一个人</a>&nbsp;:
-                          <n-text>你也很可爱</n-text>
+                        <div class="detail-and-response">
+                          <div>
+                            <a href="javascript:;" style="size: 12px;color: #646cff">{{ cc.userName }}</a>&nbsp;回复&nbsp;
+                            <a href="javascript:;"
+                               style="size: 12px;color: #646cff">{{ cc.userName2 }}</a>&nbsp;:
+                            <n-ellipsis style="max-width: 100px">{{ cc.content }}</n-ellipsis>
+                          </div>
+                          <i class="showResponse res2" @click="showEditor(cc.commenterId)">回复</i>
                         </div>
-                        <i style="size: 12px">8小时前发布</i>
+                        <i style="size: 12px">{{ moment(cc.createdTime).format("yyyy-MM-DD") }}</i>
                       </div>
                     </div>
                   </li>
@@ -168,7 +177,7 @@
 
           </div>
 
-          <Editor></Editor>
+          <Editor v-if="response"></Editor>
         </div>
       </n-drawer-content>
     </n-drawer>
@@ -180,7 +189,7 @@
 <script setup lang="ts">
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
 import {getCurrentInstance, onMounted, ref, unref} from 'vue'
-import {Attention, AttentionQuery, Post, Report, User} from "@/Interface/ApiInterface";
+import {Attention, AttentionQuery, Comments, Post, Report, User} from "@/Interface/ApiInterface";
 import moment from "moment";
 import {getCacheUserById, getUserByCondition} from "@/api/user";
 import type {DrawerPlacement} from 'naive-ui'
@@ -199,6 +208,7 @@ import {useAttentionStore} from "@/store/AttentonStore";
 import {getLoginUser} from "@/utils/auth";
 import {addReport, getReportByCondition} from "@/api/Report";
 import {getCommentCondition} from "@/api/comment";
+import {useCommentStore} from "@/store/CommentStore";
 
 const router = useRouter()
 const userDetailsStore = useUserDetailsStore()
@@ -445,15 +455,25 @@ function submitReport() {
   })
 }
 
-
+const commentStore = useCommentStore();
+let comments: Comments[] = []
 //弹出评论框
 const activate = async (place: DrawerPlacement) => {
   loadingBar.start()
-  const resComment = await getCommentCondition({postId:post.id,commentType:1});
-
-
+  const resComment = await getCommentCondition({postId: post.id});
+  await commentStore.setComment(resComment.data.list)
+  comments = commentStore.getComments()
   show.value = true
   placement.value = place
+  loadingBar.finish()
+}
+
+
+const response = ref(false)
+
+function showEditor(id: number) {
+
+  response.value = true
 }
 
 onMounted(() => {
@@ -530,6 +550,29 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   padding-left: 10px;
+  //width: 300px;
+
+
+  .detail-and-response {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .showResponse {
+      opacity: 0;
+    }
+
+    &:hover .showResponse {
+      opacity: 1;
+    }
+
+    i {
+      &:hover {
+        color: #646cff;
+        cursor: pointer;
+      }
+    }
+  }
 
   .item_attention {
     &:hover {

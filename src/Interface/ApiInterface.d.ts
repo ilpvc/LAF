@@ -145,6 +145,10 @@ export interface Comments {
     deletedTime?: string;
     commentType?: number;
     parentId?: number;
+    childComment?:Comments[];
+    userName?:string;
+    userHeader?:string;
+    userName2?:string;
 }
 
 export interface UserQuery {
