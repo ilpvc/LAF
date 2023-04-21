@@ -1,12 +1,33 @@
 <template>
 
   <div id="body">
+    <!--        举报模态框-->
+    <n-modal v-model:show="showReportModal" preset="dialog" title="Dialog" :auto-focus="false">
+      <template #header>
+        <div>举报</div>
+      </template>
+      <n-form ref="formRef" :model="report" :rules="reportRule">
+        <n-form-item path="user" label="举报人">
+          <n-input v-model:value="webInfoStore.getUser.nickname" @keydown.enter.prevent disabled/>
+        </n-form-item>
+        <n-form-item path="post" label="贴子">
+          <n-input v-model:value="post.content" type="textarea" disabled/>
+        </n-form-item>
+        <n-form-item path="content" label="举报原因">
+          <n-input v-model:value="report.content" type="textarea" placeholder="举报原因(不得少于10字,最大100字)"/>
+        </n-form-item>
+      </n-form>
+      <template #action>
+        <n-button type="info" @click="submitReport">提交</n-button>
+      </template>
+    </n-modal>
+
     <div class="card-header">
       <div class="header-detail">
         <n-avatar
-            round
-            size="large"
-            :src="user?.header"
+          round
+          size="large"
+          :src="user?.header"
         />
         <div class="header-detail-dd">
           <div>
@@ -24,7 +45,7 @@
       <div class="status_icon">
         <n-popover trigger="hover" :show-arrow="false" v-if="post.status===5">
           <template #trigger>
-            <img  src="./img/finish.svg" alt="物品已找回">
+            <img src="./img/finish.svg" alt="物品已找回">
           </template>
           <span>物品已找回</span>
         </n-popover>
@@ -41,9 +62,9 @@
       <n-image-group show-toolbar-tooltip>
         <n-space>
           <n-image
-              v-for="image in images"
-              width="150"
-              :src="image"
+            v-for="image in images"
+            width="150"
+            :src="image"
           />
         </n-space>
       </n-image-group>
@@ -65,15 +86,16 @@
             <template #trigger>
               <a href="javascript:;" style="display: inline-block;height: 25px" @click="doCollect">
                 <img
-                    :src="collection ? 'src/components/Card/img/collection_check.svg':'src/components/Card/img/collection.svg'"
-                    alt="收藏">
+                  :src="collection ? 'src/components/Card/img/collection_check.svg':'src/components/Card/img/collection.svg'"
+                  alt="收藏">
               </a>
             </template>
             <span>收藏</span>
           </n-popover>
           <n-popover trigger="hover" :show-arrow="false">
             <template #trigger>
-              <a href="javascript:;" style="display: inline-block;height: 25px" @click="activate('right')">
+              <a href="javascript:;" style="display: inline-block;height: 25px"
+                 @click="activate('right')">
                 <img src="./img/response.svg" alt="回复">
               </a>
             </template>
@@ -90,11 +112,11 @@
 
     <div class="comment">
       <n-space align="center" justify="space-between">
-        <div class="comment-ss" @click="activate('right')"><strong
-            style="font-size: 1.2rem;color: #121212">评论</strong>&nbsp; {{ 2 }}条/>>
+        <div class="comment-ss" @click="activate('right')">
+          <strong class="comment-strong">评论</strong>&nbsp; {{ 2 }}条/>>
         </div>
         <div class="report">
-          <i>
+          <i @click="doReport">
             举报
           </i>
         </div>
@@ -109,9 +131,9 @@
               <div class="item" v-for="i in 10">
                 <div class="header-detail">
                   <n-avatar
-                      round
-                      size="medium"
-                      src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+                    round
+                    size="medium"
+                    src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
                   />
                   <div class="header-detail-dd">
                     <div>
@@ -125,14 +147,15 @@
                   <li v-for="i in 2">
                     <div class="header-detail" style="margin-left: 40px">
                       <n-avatar
-                          round
-                          size="medium"
-                          src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+                        round
+                        size="medium"
+                        src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
                       />
                       <div class="header-detail-dd">
                         <div>
                           <a href="javascript:;" style="size: 12px;color: #646cff">昵称</a>&nbsp;回复&nbsp;
-                          <a href="javascript:;" style="size: 12px;color: #646cff">另一个人</a>&nbsp;:
+                          <a href="javascript:;"
+                             style="size: 12px;color: #646cff">另一个人</a>&nbsp;:
                           <n-text>你也很可爱</n-text>
                         </div>
                         <i style="size: 12px">8小时前发布</i>
@@ -156,14 +179,14 @@
 
 <script setup lang="ts">
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
-import {getCurrentInstance, onMounted, ref} from 'vue'
-import {Attention, AttentionQuery, Post, User} from "@/Interface/ApiInterface";
+import {getCurrentInstance, onMounted, ref, unref} from 'vue'
+import {Attention, AttentionQuery, Post, Report, User} from "@/Interface/ApiInterface";
 import moment from "moment";
 import {getCacheUserById, getUserByCondition} from "@/api/user";
 import type {DrawerPlacement} from 'naive-ui'
 import Editor from "@/components/Editor.vue";
 import {usePostStore} from "@/store/PostStore";
-import {useMessage, useLoadingBar} from "naive-ui";
+import {useMessage, useLoadingBar, useDialog, FormRules, FormInst} from "naive-ui";
 import {addCollections, deleteCollections, getCollectionByCondition} from "@/api/Collection";
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {addLikes, deleteLikes, getLikesByCondition} from "@/api/Likes";
@@ -173,19 +196,20 @@ import {useUserDetailsStore} from "@/store/UserDetailsStore";
 import {useRouter} from "vue-router";
 import {addAttention, deleteAttention, getAttentionCondition} from "@/api/attention";
 import {useAttentionStore} from "@/store/AttentonStore";
+import {getLoginUser} from "@/utils/auth";
+import {addReport, getReportByCondition} from "@/api/Report";
+import {getCommentCondition} from "@/api/comment";
 
 const router = useRouter()
 const userDetailsStore = useUserDetailsStore()
 const loadingBar = useLoadingBar()
+const dialog = useDialog();
 const webInfoStore = useWebInfoStore()
 const message = useMessage()
 const currentInstance = getCurrentInstance()
 const postStore = usePostStore()
 const placement = ref<DrawerPlacement>('right')
-const activate = (place: DrawerPlacement) => {
-  show.value = true
-  placement.value = place
-}
+
 //下拉选项
 let options = [
   {
@@ -229,10 +253,10 @@ function init() {
       }
     })
     getLikesByCondition({userId: webInfoStore.getUser.id, postId: post.id}).then(res => {
-          if (res.data.num !== 0) {
-            thumb.value = true
-          }
+        if (res.data.num !== 0) {
+          thumb.value = true
         }
+      }
     )
   }
 
@@ -326,7 +350,7 @@ async function doAddAttention(id: number) {
     const res = await addAttention(attention);
     if (res.code === 200)
       message.success(res.message)
-    else{
+    else {
       message.error(res.message)
       loadingBar.error()
     }
@@ -369,6 +393,69 @@ async function doDeleteAttention(id: number) {
   }, 500)()
 }
 
+const showReportModal = ref(false)
+
+//举报功能
+async function doReport() {
+  if (getLoginUser() === undefined) {
+    message.error('你还没有登录,不能举报')
+  } else if (JSON.parse(getLoginUser()).id === post.userId) {
+    message.warning('不能举报自己的贴子')
+  } else {
+    const res = await getReportByCondition({userId: webInfoStore.getUser.id, postId: post.id})
+    if (res.data.num !== 0) {
+      message.warning('你已经举报过该贴,请等待管理员处理')
+    } else {
+      showReportModal.value = true
+    }
+
+  }
+}
+
+const formRef = ref<FormInst | null>(null)
+const report = ref<Report>({
+  userId: webInfoStore.getUser.id,
+  postId: post.id,
+  content: '',
+  status: 1
+})
+const reportRule: FormRules = {
+  content: [{
+    required: true,
+    trigger: 'blur',
+    message: '格式错误,请输入10到100字的举报原因',
+    validator(rule, value: string) {
+      return !(value.length < 10 || value.length > 100)
+    }
+  }]
+}
+
+//向后端发起举报请求
+function submitReport() {
+  loadingBar.start()
+  formRef.value?.validate(async (errors) => {
+    if (!errors) {
+      await addReport(unref(report))
+      message.success('举报成功')
+      showReportModal.value = false
+      loadingBar.finish()
+    } else {
+      message.error('举报失败')
+    }
+  })
+}
+
+
+//弹出评论框
+const activate = async (place: DrawerPlacement) => {
+  loadingBar.start()
+  const resComment = await getCommentCondition({postId:post.id,commentType:1});
+
+
+  show.value = true
+  placement.value = place
+}
+
 onMounted(() => {
   init()
 
@@ -392,6 +479,12 @@ onMounted(() => {
       cursor: pointer;
       color: #646cff;
     }
+
+    .comment-strong {
+      font-size: 1.2rem;
+      color: #121212;
+    }
+
   }
 
   .report {
@@ -401,6 +494,7 @@ onMounted(() => {
       color: #8590a6;
 
       &:hover {
+        color: #eccc68;
         cursor: pointer;
       }
     }
