@@ -211,7 +211,7 @@ export interface LoginParams {
     nickName?: string;
     password?: string;
     email?: string;
-    emailCode?: string;
+    code?: string;
 }
 
 export interface Res {
@@ -292,5 +292,7 @@ export interface R {
     data?: Record<string | number | symbol, any>;
 }
 
-
+export interface Mail {
+    userEmail?:string
+}
 

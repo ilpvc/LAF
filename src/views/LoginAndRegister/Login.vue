@@ -12,8 +12,8 @@
             <input type="email" name="email" placeholder="邮箱..." v-model="userDetails.email">
             <input type="password" name="password" placeholder="密码..." v-model="userDetails.password">
             <div>
-              <input class="send" type="text" name="captcha" placeholder="验证码..." v-model="userDetails.emailCode">
-              <n-button size="large" type="info">发送</n-button>
+              <input class="send" type="text" name="captcha" placeholder="验证码..." v-model="userDetails.code">
+              <n-button size="large" type="info" @click="sendCode">发送</n-button>
             </div>
 
             <button class="signUp" @click="doSignUp">注 册</button>
@@ -60,7 +60,7 @@ import {reactive} from "vue";
 import {register} from "@/api/register.js";
 import {LoginParams, Res, UserQuery} from "@/Interface/ApiInterface";
 import {useMessage, useLoadingBar} from "naive-ui"
-import {login} from "@/api/login";
+import {getEmailCode, login} from "@/api/login";
 import {useRouter} from "vue-router";
 import {setToken} from "@/utils/auth";
 import {useWebInfoStore} from "@/store/WebInfoStore";
@@ -140,9 +140,16 @@ async function doSignIn() {
     } catch (e) {
       console.log(e)
     }
-
-
   }
+}
+//获取验证码
+function sendCode(){
+  if (userDetails.email===null){
+    message.error('请输入邮箱')
+    return
+  }
+  getEmailCode({userEmail:userDetails.email})
+  message.success('发送成功')
 }
 
 </script>
