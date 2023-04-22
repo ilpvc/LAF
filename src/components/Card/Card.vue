@@ -117,6 +117,9 @@
           <strong class="comment-strong">评论</strong>&nbsp; 查看/>>
         </div>
         <div class="report">
+          <i @click="doDeletePost">
+            删除
+          </i>
           <i @click="doReport">
             举报
           </i>
@@ -143,7 +146,9 @@
                     <div class="detail-and-response">
                       <div>
                         <a href="javascript:;"
-                           style="size: 12px;color: #646cff" @click="doGetUser(comment.userName)">{{ comment.userName }}</a>&nbsp;:
+                           style="size: 12px;color: #646cff" @click="doGetUser(comment.userName)">{{
+                            comment.userName
+                          }}</a>&nbsp;:
                         <n-ellipsis style="max-width: 100px">{{ comment.content }}</n-ellipsis>
                       </div>
                       <i class="showResponse"
@@ -199,7 +204,7 @@
 
 <script setup lang="ts">
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
-import {getCurrentInstance, onMounted, ref, unref} from 'vue'
+import {computed, getCurrentInstance, onBeforeMount, onMounted, reactive, ref, unref} from 'vue'
 import {Attention, AttentionQuery, Comments, Post, Report, User} from "@/Interface/ApiInterface";
 import moment from "moment";
 import {getCacheUserById, getUserByCondition} from "@/api/user";
@@ -211,7 +216,7 @@ import {addCollections, deleteCollections, getCollectionByCondition} from "@/api
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {addLikes, deleteLikes, getLikesByCondition} from "@/api/Likes";
 import {debounce} from "lodash";
-import {updatePost} from "@/api/posts";
+import {deletePost, updatePost} from "@/api/posts";
 import {useUserDetailsStore} from "@/store/UserDetailsStore";
 import {useRouter} from "vue-router";
 import {addAttention, deleteAttention, getAttentionCondition} from "@/api/attention";
@@ -252,12 +257,16 @@ let post: Post = {
 }
 
 let images = post.image?.split(" ")
-let user: User = {}
+let user = reactive<User>({})
 
 //帖子类型和标签颜色
 const type = postStore.getPostType
 const color = postStore.getPostColor
 
+
+// let isMyPost = computed(()=>{
+//   return user.id===webInfoStore.getUser.id
+// })
 //初始化
 function init() {
   if (post.userId !== undefined) {
@@ -491,16 +500,42 @@ async function showEditor(id: number, name: string, type: number, parentId: numb
   commentStore.setCurrentParentId(parentId)
   setTimeout(() => response.value = true, 500)
 }
-
+//刷新评论区
 function doRefresh() {
   response.value = false
   show.value = false
   setTimeout(() => activate('right'), 200)
 }
 
-onMounted(() => {
-  init()
 
+//删除自己的帖子
+function doDeletePost(){
+  if (user.id!==webInfoStore.getUser.id){
+    message.error('不能删除别人的帖子')
+    return
+  }
+  dialog.warning({
+    title:'警告',
+    content:'确认删除？',
+    positiveText:'确认',
+    negativeText:'取消',
+    onPositiveClick:async ()=>{
+      loadingBar.start()
+      if (post.id != null) {
+        await deletePost(post.id)
+        message.success('删除成功')
+        location.reload()
+        loadingBar.finish()
+      }else{
+        message.error('删除失败')
+        loadingBar.error()
+      }
+    }
+  })
+}
+
+onBeforeMount(() => {
+  init()
 })
 
 
@@ -516,7 +551,7 @@ onMounted(() => {
     font-size: 0.8rem;
     transition: color 0.75s;
     color: #8590a6;
-
+    user-select: none;
     &:hover {
       cursor: pointer;
       color: #646cff;
@@ -525,6 +560,7 @@ onMounted(() => {
     .comment-strong {
       font-size: 1.2rem;
       color: #121212;
+      user-select: none;
     }
 
   }
@@ -534,9 +570,10 @@ onMounted(() => {
 
     i {
       color: #8590a6;
-
+      margin: 0 8px;
+      user-select: none;
       &:hover {
-        color: #eccc68;
+        color: red;
         cursor: pointer;
       }
     }
@@ -620,7 +657,7 @@ onMounted(() => {
 
   .nickname {
     color: #121212;
-
+    user-select: none;
     &:hover {
       cursor: pointer;
     }

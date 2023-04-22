@@ -2,51 +2,99 @@ import service from "@/utils/request"
 import {Post, PostQuery} from "@/Interface/ApiInterface";
 
 export function getAllPosts() {
-    return service({
-        url: `/post/`,
-        method: "get",
-        params: {},
-        data: {}
-    })
+  return service({
+    url: `/post/`,
+    method: "get",
+    params: {},
+    data: {}
+  })
 }
 
-export function getPostByCondition(params: PostQuery){
-    if (Object.keys(params).length!==0)
-    params.status=[1]
-    return service({
-        url: `/post/condition`,
-        method: "post",
-        params: {},
-        data: params
-    })
+export function getPostByCondition(params: PostQuery) {
+  if (Object.keys(params).length !== 0)
+    params.status = [1]
+  return service({
+    url: `/post/condition`,
+    method: "post",
+    params: {},
+    data: params
+  })
 
 }
 
 export const updatePost = (params: Post) =>
-    service.request({
-        url: `/post/updateUser`,
-        method: "put",
-        params: {},
-        data: params
-    });
+  service.request({
+    url: `/post/updateUser`,
+    method: "put",
+    params: {},
+    data: params
+  });
 
 
 export const addPost = (params: Post) =>
-    service.request({
-        url: `/post/addPost`,
-        method: "post",
-        params: {},
-        data: params
-    });
+  service.request({
+    url: `/post/addPost`,
+    method: "post",
+    params: {},
+    data: params
+  });
 
-export function getAllNormalPost(){
-    let params: PostQuery = {}
-    params.status=[1]
-    return service({
-        url: `/post/normalCondition`,
-        method: "post",
-        params: {},
-        data: params
-    })
+export function getAllNormalPost() {
+  let params: PostQuery = {}
+  params.status = [1]
+  return service({
+    url: `/post/normalCondition`,
+    method: "post",
+    params: {},
+    data: params
+  })
 
 }
+
+export const getPagePost = (pageNo: number, pageCount: number) =>
+  service.request({
+    url: `/post/pagePost/${pageNo}/${pageCount}`,
+    method: "get",
+    params: {},
+    data: {}
+  });
+
+
+export const deletePost = (id: number) =>
+  service.request({
+    url: `/post/${id}`,
+    method: "delete",
+    params: {},
+    data: {}
+  });
+
+
+export const getPostById = (id: number) =>
+  service.request({
+    url: `/post/${id}`,
+    method: "get",
+    params: {},
+    data: {}
+  });
+
+
+export const pagePostCondition = (
+  params: PostQuery,
+  pageNo: number,
+  pageCount: number
+) =>
+  service.request({
+    url: `/post/pagePostCondition/${pageNo}/${pageCount}`,
+    method: "post",
+    params: {},
+    data: params
+  });
+
+
+export const PostNormalCondition = (params: PostQuery) =>
+  service.request({
+    url: `/post/normalCondition`,
+    method: "post",
+    params: {},
+    data: params
+  });
