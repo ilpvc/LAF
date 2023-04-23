@@ -67,7 +67,7 @@
 import NavigationCard from "@/components/NavigationCard.vue";
 import LeiFengRank from "@/components/LeiFengRank.vue";
 import {Post} from "@/Interface/ApiInterface";
-import {ref} from "vue";
+import {ref, unref} from "vue";
 import {UploadCustomRequestOptions, UploadFileInfo, useMessage, UploadInst} from "naive-ui";
 import service from "@/utils/request";
 import {useWebInfoStore} from "@/store/WebInfoStore";
@@ -93,27 +93,29 @@ let post = ref<Post>({
 })
 
 
+const isUpload = ref(true)
 async function submit() {
-  console.log(upload.value);
   await upload.value?.submit()
-  doAddPost()
+  if (unref(isUpload)){
+    doAddPost()
+    message.success('提交成功')
+  }else {
+    message.error('上传失败')
+  }
 
-  message.success('提交成功')
 }
 
 const doAddPost= debounce(()=>{
 
   post.value.image = images.toString().replace(/,/g,' ')
-  // console.log(post.value)
   addPost(post.value).then(res=>{
-    message.success('发送成功')
     router.push({name:'index'})
   })
 },800)
 
 let images:string[]=[]
 //自定义图片上传请求
-const customRequest = ({
+const customRequest = async ({
                          file,
                          data,
                          headers,
@@ -134,15 +136,22 @@ const customRequest = ({
     })
   }
   formData.append('file', file.file as File)
-  service({
-    url: action as string,
-    method: 'post',
-    data: formData,
-  }).then((res) => {
-        images.push(res)
-      },reject=>{
+  if (file.file.size>4194304){
+    message.error('上传图片不能大于4M')
+    isUpload.value = false
+    return
+  }else {
+    await service({
+      url: action as string,
+      method: 'post',
+      data: formData,
+    }).then((res) => {
+      images.push(res)
+    },reject=>{
       console.log(reject)
-  })
+    })
+  }
+
 }
 </script>
 
