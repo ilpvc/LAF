@@ -1,38 +1,61 @@
 <template>
   <div class="learn_body">
+
     <div class="nav">
 
       <ul ref="allItem">
-        <li ref="defaultItem" tabindex="-1" class="nav-item">全部学科</li>
-        <li tabindex="1" class="nav-item">高等数学</li>
-        <li tabindex="2" class="nav-item">大学英语</li>
-        <li tabindex="3" class="nav-item">教资</li>
-        <li tabindex="4" class="nav-item">四六级</li>
-        <li tabindex="5" class="nav-item">C语言</li>
-        <li tabindex="6" class="nav-item">其他</li>
+        <li class="nav-item" :class="{onFocus:isActive[0]}" @click="changeNav(0)">全部学科</li>
+        <li class="nav-item" :class="{onFocus:isActive[1]}" @click="changeNav(1)">高等数学</li>
+        <li class="nav-item" :class="{onFocus:isActive[2]}" @click="changeNav(2)">大学英语</li>
+        <li class="nav-item" :class="{onFocus:isActive[3]}" @click="changeNav(3)">教资</li>
+        <li class="nav-item" :class="{onFocus:isActive[4]}" @click="changeNav(4)">四六级</li>
+        <li class="nav-item" :class="{onFocus:isActive[5]}" @click="changeNav(5)">C语言</li>
+        <li class="nav-item" :class="{onFocus:isActive[6]}" @click="changeNav(6)">其他</li>
       </ul>
     </div>
 
     <div class="center">
-      <router-view></router-view>
+      <index></index>
+<!--      <router-view></router-view>-->
     </div>
 
     <div class="right">
-
+      <UserInfo></UserInfo>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 
-import {onMounted, ref} from "vue";
-const defaultItem = ref()
+import { onMounted, ref, unref} from "vue";
+import UserInfo from "./components/UserInfo.vue";
+import Index from "./views/index.vue";
+
 const allItem = ref()
+const isActive = ref([
+  true,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+])
 
-onMounted(()=>{
-  defaultItem.value.focus()
+function changeNav(nav: number) {
+  isActive.value = [false, false, false, false, false, false,false]
+  for (let i = 0; i < unref(isActive).length; i++) {
+    if (i === nav) {
+      unref(isActive).splice(i,1,true)
+    }
+  }
 
-  console.log(allItem.value)
+
+}
+
+
+onMounted(() => {
+  console.log(allItem.value.children[1])
 })
 </script>
 
@@ -52,17 +75,24 @@ onMounted(()=>{
       font-size: 16px;
       padding: 15px 20px;
       font-weight: 500;
+      user-select: none;
       &:hover {
         user-select: none;
         background-color: #f9f9fa;
         cursor: pointer;
         color: #646cff;
       }
-      &:focus {
-        background-color: #eaf2ff;
-        color: #646cff;
-      }
+
     }
   }
+
+  .center {
+    width: 600px;
+  }
+}
+
+.onFocus {
+  background-color: #eaf2ff;
+  color: #646cff;
 }
 </style>

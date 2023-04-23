@@ -389,23 +389,29 @@ const customRequest = async ({
                              }: UploadCustomRequestOptions) => {
     const formData = new FormData()
     formData.append('file', file.file as File)
-    await service({
-        url: action as string,
-        method: 'post',
-        data: formData,
-    }).then((res) => {
-        userInfo.header = res
-    })
-    await updateUser(userInfo).then(res => {
-        if (res.code === 200) {
-            message.success('保存成功')
-
-        }
-    })
-    await getCacheUserById(userInfo.id).then(res => {
-        webInfoStore.setUser(res.data.item)
-    })
-
+    console.log(file)
+    if (file.file.size<=4194304){
+        await service({
+            url: action as string,
+            method: 'post',
+            data: formData,
+        }).then((res) => {
+            userInfo.header = res
+        })
+        await updateUser(userInfo).then(res => {
+            if (res.code === 200) {
+                message.success('保存成功')
+            }
+        })
+        await getCacheUserById(userInfo.id).then(res => {
+            webInfoStore.setUser(res.data.item)
+        })
+        location.reload()
+    // }else if(file.file.size===undefined){
+    //     message.warning('请选择头像上传')
+    }else {
+        message.error('头像大于4M,上传失败')
+    }
 
 }
 
