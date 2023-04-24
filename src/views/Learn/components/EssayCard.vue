@@ -30,17 +30,17 @@
         <div class="footer">
           <ul class="footer">
             <li class="footer-item">
-              <img src="./img/look.svg" alt="look">
+              <img class="image" src="./img/look.svg" alt="look">
               <span>1.5w</span>
             </li>
             <li class="footer-item">
-              <img src="./img/dianzan.svg" alt="dianzan" style="position: relative;top: -3px"/>
+              <img class="image" src="./img/dianzan.svg" alt="dianzan" style="position: relative;top: -2px"/>
               <span>
                 233
               </span>
             </li>
             <li class="footer-item">
-              <img src="./img/comment.svg" alt="comment">
+              <img class="image" src="./img/comment.svg" alt="comment">
               <span>
                 43
               </span>
@@ -72,7 +72,7 @@
   display: flex;
   flex-direction: column;
   width: 580px;
-  padding: 0 10px;
+  padding: 10px 10px 0;
   border-bottom: 1px solid #e5e6eb;
 
   .header {
@@ -114,14 +114,17 @@
         //padding: 5px 0;
         width: 400px;
         color: #8590a6;
+        user-select: none;
 
         .footer-item {
           display: flex;
           align-items: center;
           width: 60px;
 
-          img {
+          .image {
             margin-right: 3px;
+            opacity: 0.6;
+
           }
         }
       }

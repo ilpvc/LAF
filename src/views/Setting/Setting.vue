@@ -62,7 +62,7 @@
           <div>
             <i>{{ webInfoStore.getUser.nickname }}</i>
 
-            <i @click="change(1)" class="modify">修改</i>
+<!--            <i @click="change(1)" class="modify">修改</i>-->
           </div>
         </div>
 
@@ -101,7 +101,7 @@
           <h3>黑名单</h3>
           <div>
             <i>ilpvc,colzry</i>
-            <i>修改</i>
+            <i class="modify" @click="toRelated">查看</i>
           </div>
         </div>
 
@@ -234,8 +234,14 @@ import {getCurrentInstance, ref} from "vue";
 import {UserSecurity} from "@/Interface/ApiInterface";
 import {getUserById, updateUserSecurity} from "@/api/user";
 import {useWebInfoStore} from "@/store/WebInfoStore";
-import {useMessage} from "naive-ui";
+import {useMessage,useLoadingBar} from "naive-ui";
+import {useRouter} from "vue-router";
+import {useUserRelatedStore} from "@/store/UserRelatedStore";
+import {Nav} from "../UserRelated/enums/nav";
 
+
+const loadingBar = useLoadingBar();
+const router = useRouter();
 const message = useMessage()
 const webInfoStore = useWebInfoStore()
 const showModal = ref(false)
@@ -256,6 +262,7 @@ function change(type: number) {
 }
 
 async function confirmModification() {
+  loadingBar.start()
   await updateUserSecurity(user.value).then(res => {
     if (res.code===200){
       message.success(res.message)
@@ -267,7 +274,19 @@ async function confirmModification() {
     webInfoStore.setUser(res.data.item)
     getCurrentInstance()?.proxy?.$forceUpdate()
   })
+  loadingBar.finish()
 
+}
+
+const userRelatedStore = useUserRelatedStore();
+//跳转到拉黑名单
+async function toRelated(){
+  loadingBar.start()
+  userRelatedStore.setNav(Nav.BLACKLIST)
+  await router.push({
+    name:'blacklist'
+  })
+  loadingBar.finish()
 }
 
 </script>

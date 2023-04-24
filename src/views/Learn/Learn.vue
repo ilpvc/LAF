@@ -16,7 +16,7 @@
 
     <div class="center">
       <index></index>
-<!--      <router-view></router-view>-->
+<!--      <router-views></router-views>-->
     </div>
 
     <div class="right">

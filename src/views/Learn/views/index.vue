@@ -9,7 +9,7 @@
         </List>
       </div>
       <div class="list">
-        <List style="border-right: 1px solid #bbbbbb;border-left: 1px solid #bbbbbb;">
+        <List style="border-right: 1px solid #e5e6eb;border-left: 1px solid #e5e6eb;">
           <template #title>
             本周榜单
           </template>
@@ -67,7 +67,7 @@ import EssayCard from "../components/EssayCard.vue";
     .body-header {
       font-family: Avenir,serif;
       padding: 5px 10px;
-      border-bottom: 1px #bbbbbb solid;
+      border-bottom: 1px #e5e6eb solid;
     }
 
     .body-essay {

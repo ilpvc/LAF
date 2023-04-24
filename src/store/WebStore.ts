@@ -13,5 +13,7 @@ export const useWebStore = defineStore('web', () => {
         page.value = p;
     }
 
+
+
     return { changePage,getPage}
 })
