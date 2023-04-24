@@ -2,13 +2,35 @@
   <div id="learn-index">
     <div class="lists">
       <div class="list">
-        <List></List>
+        <List>
+          <template #title>
+            今日榜单
+          </template>
+        </List>
       </div>
       <div class="list">
-        榜单二
+        <List style="border-right: 1px solid #bbbbbb;border-left: 1px solid #bbbbbb;">
+          <template #title>
+            本周榜单
+          </template>
+        </List>
       </div>
       <div class="list">
-        榜单三
+        <List>
+          <template #title>
+            本月榜单
+          </template>
+        </List>
+      </div>
+    </div>
+
+    <div class="body">
+      <div class="body-header">
+        <h3>全部文章</h3>
+      </div>
+
+      <div class="body-essay">
+        <EssayCard v-for="i in 5"></EssayCard>
       </div>
     </div>
   </div>
@@ -17,6 +39,7 @@
 <script setup lang="ts">
 
 import List from "../components/List.vue";
+import EssayCard from "../components/EssayCard.vue";
 
 
 </script>
@@ -31,7 +54,27 @@ import List from "../components/List.vue";
     flex-direction: row;
     background-color: white;
     justify-content: space-between;
+    padding: 10px;
+  }
 
+  .body {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+    margin-top: 10px;
+    background-color: white;
+
+    .body-header {
+      font-family: Avenir,serif;
+      padding: 5px 10px;
+      border-bottom: 1px #bbbbbb solid;
+    }
+
+    .body-essay {
+      display: flex;
+      flex-direction: column;
+
+    }
   }
 
 }

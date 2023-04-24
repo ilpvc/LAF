@@ -70,7 +70,7 @@ onMounted(() => {
     flex-direction: column;
     background-color: white;
     padding: 10px 0;
-
+    max-height: 400px;
     .nav-item {
       font-size: 16px;
       padding: 15px 20px;
