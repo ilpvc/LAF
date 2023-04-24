@@ -6,7 +6,7 @@
     </div>
     <div class="body">
       <n-scrollbar style="max-height: 700px">
-        <AttentionUser v-for="i in 100"></AttentionUser>
+        <AttentionUser v-for="user of attentionUsers" :key="user.id" :user="user"></AttentionUser>
       </n-scrollbar>
     </div>
   </div>
@@ -15,6 +15,19 @@
 <script setup lang="ts">
 
 import AttentionUser from "../components/AttentionUser.vue";
+import {User} from "@/Interface/ApiInterface";
+import {onBeforeMount, ref} from "vue";
+import {useUserRelatedStore} from "@/store/UserRelatedStore";
+
+const relatedStore = useUserRelatedStore();
+
+//加载关注用户信息
+const attentionUsers = ref<User[]>()
+
+
+onBeforeMount(()=>{
+  attentionUsers.value = relatedStore.getUsers()
+})
 </script>
 
 <style scoped lang="less">

@@ -5,12 +5,12 @@
         <n-avatar
           round
           :size="45"
-          src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+          :src="user.header"
         />
       </div>
 
       <div class="body">
-        {{'ilpvc'}}
+        {{ user.nickname }}
       </div>
     </div>
 
@@ -27,21 +27,42 @@
 </template>
 
 <script setup lang="ts">
-import {useMessage} from 'naive-ui'
-import {ref, unref} from "vue";
+import {useMessage, useLoadingBar} from 'naive-ui'
+import {onBeforeMount, reactive, ref, unref} from "vue";
+import {User} from "@/Interface/ApiInterface";
+import {addAttention, deleteAttention} from "@/api/attention";
+import {useWebInfoStore} from "@/store/WebInfoStore";
 
+const loadingBar = useLoadingBar();
+const webInfoStore = useWebInfoStore();
 const message = useMessage();
 
 //关注功能
 const isAttention = ref(true)
-function doAttention(){
-  isAttention.value=!unref(isAttention)
+
+async function doAttention() {
+  loadingBar.start()
+  if (unref(isAttention)) {
+    await deleteAttention({attentionUserId: webInfoStore.getUser.id, attentionedUserId: user.id})
+  } else {
+    await addAttention({attentionUserId: webInfoStore.getUser.id, attentionedUserId: user.id})
+  }
+  isAttention.value = !unref(isAttention)
   if (unref(isAttention))
-  message.success('关注成功')
+    message.success('关注成功')
   else
     message.success('取消关注')
+
+  loadingBar.finish()
 }
 
+
+const props = defineProps(['user']);
+const user = reactive<User>({...props.user})
+onBeforeMount(() => {
+
+
+})
 
 </script>
 
@@ -53,26 +74,29 @@ function doAttention(){
   justify-content: space-between;
   height: 96px;
   border-bottom: 1px solid #ececec;
-  .header{
+
+  .header {
     display: flex;
     align-items: center;
-    .header-image{
+
+    .header-image {
 
     }
 
     .body {
       font-size: 20px;
-      font-family: "微软雅黑",serif;
+      font-family: "微软雅黑", serif;
       margin-left: 20px;
     }
   }
+
   .footer {
     .button {
       background-color: #8cc855;
 
     }
 
-    .button-width{
+    .button-width {
       width: 80px;
       outline: none;
     }

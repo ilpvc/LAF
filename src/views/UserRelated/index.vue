@@ -26,6 +26,11 @@ import {onBeforeMount, ref, unref} from "vue";
 import {useRouter} from "vue-router";
 import {useUserRelatedStore} from "@/store/UserRelatedStore";
 import {useLoadingBar} from 'naive-ui'
+import {User} from "@/Interface/ApiInterface";
+import {Nav} from "./enums/nav";
+import {getAttentionCondition} from "@/api/attention";
+import {getUserByCondition} from "@/api/user";
+import {useWebInfoStore} from "@/store/WebInfoStore";
 
 const loadingBar = useLoadingBar();
 const userRelatedStore = useUserRelatedStore();
@@ -43,9 +48,17 @@ const isActive = ref([
 
 //我的关注拉黑消息导航栏控制
 let navMap = new Map()
-
+const webInfoStore = useWebInfoStore();
 async function changeNav(nav: number) {
   loadingBar.start()
+  if (nav===Nav.ATTENTION){
+    const attentionRes = await getAttentionCondition({attentionUserId:webInfoStore.getUser.id});
+    const useIds = attentionRes.data.list.map((v)=>v.attentionedUserId)
+    const userRes = await getUserByCondition({userIds: useIds});
+    const users = userRes.data.list
+    userRelatedStore.setUsers(users)
+    userRelatedStore.setNav(Nav.ATTENTION)
+  }
   await router.push({
     name: navMap.get(nav)
   })
@@ -59,12 +72,12 @@ async function changeNav(nav: number) {
   loadingBar.finish()
 }
 
+
 onBeforeMount(() => {
   navMap.set(0, 'attention')
   navMap.set(1, 'message')
   navMap.set(2, 'blacklist')
   changeNav(userRelatedStore.getNav())
-
 })
 </script>
 

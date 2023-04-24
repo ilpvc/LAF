@@ -164,6 +164,7 @@ export interface UserQuery {
     findNum?: number;
     lostNum?: number;
     status?: number;
+    userIds?: number[];
     integral?: number;
     createdTime?: string;
     updatedTime?: string;

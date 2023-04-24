@@ -73,10 +73,10 @@
               </router-link>
             </li>
             <li class="Select-item">
-              <router-link to="/setting">
+              <a @click="toAttention">
                 <img src="./img/settings.svg" alt="关注">
                 我的关注
-              </router-link>
+              </a>
             </li>
             <li class="Select-item">
               <router-link to="/login" @click="logout">
@@ -109,6 +109,10 @@ import {getAllNormalPost, getPostByCondition} from "@/api/posts";
 import {usePostStore} from "@/store/PostStore";
 import {useRouter} from "vue-router";
 import {useUserDetailsStore} from "@/store/UserDetailsStore";
+import {useUserRelatedStore} from "@/store/UserRelatedStore";
+import {Nav} from "../../views/UserRelated/enums/nav";
+import {getAttentionCondition} from "@/api/attention";
+import {getUserByCondition} from "@/api/user";
 
 const webInfoStore = useWebInfoStore()
 const value = ref(12)
@@ -228,6 +232,22 @@ async function doSearch() {
       })
   searchInfo.value = ''
 
+}
+
+const relatedStore = useUserRelatedStore();
+//跳转到关注页面
+async function toAttention(){
+  loadBar.start()
+  const attentionRes = await getAttentionCondition({attentionUserId:webInfoStore.getUser.id});
+  const useIds = attentionRes.data.list.map((v)=>v.attentionedUserId)
+  const userRes = await getUserByCondition({userIds: useIds});
+  const users = userRes.data.list
+  relatedStore.setUsers(users)
+  relatedStore.setNav(Nav.ATTENTION)
+  await router.push({
+    name:'attention'
+  })
+  loadBar.finish()
 }
 
 </script>
