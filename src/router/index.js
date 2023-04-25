@@ -58,6 +58,11 @@ const constantRoutes = [
         component: () => import('@/views/Mall/Mall.vue')
       },
       {
+        path: '/blank',
+        name: 'blank',
+        component: () => import('@/components/BlankVue.vue')
+      },
+      {
         path: 'related',
         name: 'related',
         component: () => import('@/views/UserRelated/index.vue'),
@@ -95,6 +100,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  if (to.name===from.name){
+    console.log('同页面')
+  }
   if (to.meta.isAuth) {
     if (getToken() !== undefined) {
       next();

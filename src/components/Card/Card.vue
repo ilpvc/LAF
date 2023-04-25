@@ -358,9 +358,12 @@ async function doGetUser(nickname: string) {
     userDetailsStore.setUser(userConditionRes.data.list[0])
   loadingBar.finish()
   await router.push({
-    name: 'user',
+    name: 'blank',
     params: {
       name: nickname
+    },
+    query:{
+      name:nickname
     }
   })
 }

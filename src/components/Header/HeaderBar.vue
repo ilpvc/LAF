@@ -140,7 +140,7 @@ async function beforeLeaveInUserDetails() {
   if (webInfoStore.getUser !== undefined) {
     useUserDetailsStore().setUser(webInfoStore.getUser)
     loadBar.finish()
-    router.push({name: 'user', params: {name: webInfoStore?.getUser?.nickname}})
+    await router.push({name: 'blank', params: {name: webInfoStore?.getUser?.nickname},query:{name:webInfoStore?.getUser?.nickname}})
   }
 
 }
