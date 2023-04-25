@@ -10,7 +10,12 @@
       </div>
 
       <div class="body">
-        {{ user.nickname }}
+        <div>
+          {{ user.nickname }}
+        </div>
+        <div class="motor">
+          {{user.otherContacts}}
+        </div>
       </div>
     </div>
 
@@ -84,12 +89,17 @@ onBeforeMount(() => {
       font-size: 20px;
       font-family: "微软雅黑", serif;
       margin-left: 20px;
+      .motor {
+        font-size: 16px;
+        color: #8590a6;
+      }
+
     }
   }
 
   .footer {
     .button {
-      background-color: #8cc855;
+      background-color: #e74c3c;
 
     }
 

@@ -11,8 +11,6 @@ export function getAllPosts() {
 }
 
 export function getPostByCondition(params: PostQuery) {
-  if (Object.keys(params).length !== 0)
-    params.status = [1]
   return service({
     url: `/post/condition`,
     method: "post",

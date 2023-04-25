@@ -100,7 +100,10 @@
         <div class="item-i">
           <h3>黑名单</h3>
           <div>
-            <i>ilpvc,colzry</i>
+            <i>
+              <i v-for="user in blacklistUsers" :key="user.id">{{ user.nickname+" " }} </i>
+            </i>
+
             <i class="modify" @click="toRelated">查看</i>
           </div>
         </div>
@@ -288,6 +291,8 @@ async function toRelated(){
   })
   loadingBar.finish()
 }
+
+const blacklistUsers = userRelatedStore.getUsers()
 
 </script>
 

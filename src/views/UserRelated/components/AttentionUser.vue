@@ -10,7 +10,12 @@
       </div>
 
       <div class="body">
-        {{ user.nickname }}
+        <div>
+          {{ user.nickname }}
+        </div>
+        <div class="motor">
+          {{user.otherContacts}}
+        </div>
       </div>
     </div>
 
@@ -48,11 +53,6 @@ async function doAttention() {
     await addAttention({attentionUserId: webInfoStore.getUser.id, attentionedUserId: user.id})
   }
   isAttention.value = !unref(isAttention)
-  if (unref(isAttention))
-    message.success('拉黑成功')
-  else
-    message.success('取消拉黑')
-
   loadingBar.finish()
 }
 
@@ -87,12 +87,16 @@ onBeforeMount(() => {
       font-size: 20px;
       font-family: "微软雅黑", serif;
       margin-left: 20px;
+      .motor {
+        font-size: 16px;
+        color: #8590a6;
+      }
     }
   }
 
   .footer {
     .button {
-      background-color: #e74c3c;
+      background-color: #8cc855;
 
     }
 

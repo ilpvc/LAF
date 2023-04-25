@@ -95,12 +95,13 @@
           </n-popover>
           <n-popover trigger="hover" :show-arrow="false">
             <template #trigger>
-              <a href="javascript:;" style="display: inline-block;height: 25px"
-                 @click="activate('right')">
-                <img src="./img/response.svg" alt="回复">
-              </a>
+              <n-button :disabled="post.userId!==webInfoStore.getUser.id||post.status===5" text :focusable="false"
+                 @click="doAccomplish">
+                <img v-if="post.status===1" src="./img/response.svg" alt="回复">
+                <img v-if="post.status===5" src="./img/accomplish.svg" alt="回复">
+              </n-button>
             </template>
-            <span>回复</span>
+            <span>已寻回</span>
           </n-popover>
 
 
@@ -531,6 +532,26 @@ function doDeletePost(){
         loadingBar.error()
       }
     }
+  })
+}
+
+
+//帖子完成点击事件
+function doAccomplish(){
+  dialog.success({
+    title:'确认',
+    content:'确认物品已找回,完成后帖子将不在大厅展示',
+    negativeText:'确认',
+    positiveText:'取消',
+    autoFocus:false,
+    onNegativeClick:async ()=>{
+      loadingBar.start()
+      post.status=5
+      await updatePost(post)
+      loadingBar.finish()
+      location.reload()
+    },
+
   })
 }
 

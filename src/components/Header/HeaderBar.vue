@@ -67,10 +67,10 @@
               </a>
             </li>
             <li class="Select-item">
-              <router-link to="/setting">
+              <a @click="toSetting">
                 <img src="./img/settings.svg" alt="设置">
                 用户设置
-              </router-link>
+              </a>
             </li>
             <li class="Select-item">
               <a @click="toAttention">
@@ -113,6 +113,7 @@ import {useUserRelatedStore} from "@/store/UserRelatedStore";
 import {Nav} from "../../views/UserRelated/enums/nav";
 import {getAttentionCondition} from "@/api/attention";
 import {getUserByCondition} from "@/api/user";
+import {blacklistCondition} from "@/api/blacklist";
 
 const webInfoStore = useWebInfoStore()
 const value = ref(12)
@@ -219,7 +220,7 @@ const searchInfo = ref()
 
 async function doSearch() {
   loadBar.start()
-  await getPostByCondition({searchInfo: searchInfo.value}).then(res => {
+  await getPostByCondition({searchInfo: searchInfo.value,status:[1]}).then(res => {
     postStore.setSearchPost(res.data.list)
   })
   loadBar.finish()
@@ -246,6 +247,21 @@ async function toAttention(){
   relatedStore.setNav(Nav.ATTENTION)
   await router.push({
     name:'attention'
+  })
+  loadBar.finish()
+}
+
+//跳转到设置页面
+async function toSetting(){
+  loadBar.start()
+  const blacklistUserListRes = await blacklistCondition({userId: webInfoStore.getUser.id});
+  const blacklists = blacklistUserListRes.data.list
+  const userIds = blacklists.map((v)=>v.otherUserId)
+  const usersRes = await getUserByCondition({userIds: userIds});
+  const users = usersRes.data.list
+  relatedStore.setUsers(users)
+  await router.push({
+    name: 'setting'
   })
   loadBar.finish()
 }

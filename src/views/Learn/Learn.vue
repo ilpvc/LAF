@@ -55,7 +55,6 @@ function changeNav(nav: number) {
 
 
 onMounted(() => {
-  console.log(allItem.value.children[1])
 })
 </script>
 

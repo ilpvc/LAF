@@ -1,7 +1,7 @@
 <template>
   <div class="index">
     <div>
-      <Card v-show="load" v-for="port in ports" :key="port.id" v-bind:pp="port"></Card>
+      <Card v-for="port in ports" :key="port.id" v-bind:pp="port"></Card>
     </div>
     <div>
       <NavigationCard></NavigationCard>
@@ -42,7 +42,7 @@ async function init() {
       }
     })
   } else {
-    const res = await getPostByCondition({type: webStore.getPage});
+    const res = await getPostByCondition({type: webStore.getPage,status:[1]});
     ports.value = res.data.list
     if (useHttpStatusStore().getErrorStatus().has(res.status)){
       confirm("你还没有登录，请登录")
