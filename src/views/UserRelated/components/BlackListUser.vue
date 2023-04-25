@@ -16,11 +16,11 @@
 
 
     <div class="footer">
-      <n-button v-if="isAttention" class="button-width button" @click="doAttention">
-        已关注
+      <n-button v-if="isBlacklist" class="button-width button" @click="doBlacklist">
+        已拉黑
       </n-button>
-      <n-button v-if="!isAttention" class="button-width" @click="doAttention">
-        关注
+      <n-button v-if="!isBlacklist" class="button-width" @click="doBlacklist">
+        拉黑
       </n-button>
     </div>
   </div>
@@ -32,26 +32,23 @@ import {onBeforeMount, reactive, ref, unref} from "vue";
 import {User} from "@/Interface/ApiInterface";
 import {addAttention, deleteAttention} from "@/api/attention";
 import {useWebInfoStore} from "@/store/WebInfoStore";
+import {addBlacklist, deleteBlacklist} from "@/api/blacklist";
 
 const loadingBar = useLoadingBar();
 const webInfoStore = useWebInfoStore();
 const message = useMessage();
 
 //关注功能
-const isAttention = ref(true)
+const isBlacklist = ref(true)
 
-async function doAttention() {
+async function doBlacklist() {
   loadingBar.start()
-  if (unref(isAttention)) {
-    await deleteAttention({attentionUserId: webInfoStore.getUser.id, attentionedUserId: user.id})
+  if (unref(isBlacklist)) {
+    await deleteBlacklist({userId: webInfoStore.getUser.id, otherUserId: user.id})
   } else {
-    await addAttention({attentionUserId: webInfoStore.getUser.id, attentionedUserId: user.id})
+    await addBlacklist({userId: webInfoStore.getUser.id, otherUserId: user.id})
   }
-  isAttention.value = !unref(isAttention)
-  if (unref(isAttention))
-    message.success('拉黑成功')
-  else
-    message.success('取消拉黑')
+  isBlacklist.value = !unref(isBlacklist)
 
   loadingBar.finish()
 }
@@ -92,7 +89,7 @@ onBeforeMount(() => {
 
   .footer {
     .button {
-      background-color: #e74c3c;
+      background-color: #8cc855;
 
     }
 

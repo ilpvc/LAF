@@ -297,3 +297,14 @@ export interface Mail {
     userEmail?:string
 }
 
+export interface Blacklist {
+    id?: number;
+    userId?: number;
+    otherUserId?: number;
+    createdTime?: string;
+}
+
+export interface BlacklistQuery {
+    userId?: number;
+    otherUserId?: number;
+}

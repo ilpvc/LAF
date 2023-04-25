@@ -31,6 +31,7 @@ import {Nav} from "./enums/nav";
 import {getAttentionCondition} from "@/api/attention";
 import {getUserByCondition} from "@/api/user";
 import {useWebInfoStore} from "@/store/WebInfoStore";
+import {blacklistCondition} from "@/api/blacklist";
 
 const loadingBar = useLoadingBar();
 const userRelatedStore = useUserRelatedStore();
@@ -54,10 +55,25 @@ async function changeNav(nav: number) {
   if (nav===Nav.ATTENTION){
     const attentionRes = await getAttentionCondition({attentionUserId:webInfoStore.getUser.id});
     const useIds = attentionRes.data.list.map((v)=>v.attentionedUserId)
-    const userRes = await getUserByCondition({userIds: useIds});
-    const users = userRes.data.list
-    userRelatedStore.setUsers(users)
+    if (useIds.length!==0){
+      const userRes = await getUserByCondition({userIds: useIds});
+      const users = userRes.data.list
+      userRelatedStore.setUsers(users)
+    }else {
+      userRelatedStore.setUsers([])
+    }
     userRelatedStore.setNav(Nav.ATTENTION)
+  }
+  if (nav===Nav.BLACKLIST){
+    const blacklistRes = await blacklistCondition({userId:webInfoStore.getUser.id})
+    const useIds = blacklistRes.data.list.map((v)=>v.otherUserId)
+    if (useIds.length!==0){
+      const userRes = await getUserByCondition({userIds: useIds});
+      const users = userRes.data.list
+      userRelatedStore.setUsers(users)
+    }else {
+      userRelatedStore.setUsers([])
+    }
   }
   await router.push({
     name: navMap.get(nav)

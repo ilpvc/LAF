@@ -2,10 +2,11 @@
   <div id="attention">
     <!--头部-->
     <div class="header">
-      <span>关注用户</span> {{ 16 }}
+      <span>关注用户</span> {{ attentionUsers.length }}
     </div>
     <div class="body">
       <n-scrollbar style="max-height: 700px">
+        <n-empty v-if="attentionUsers===null" description="什么都没有"></n-empty>
         <AttentionUser v-for="user of attentionUsers" :key="user.id" :user="user"></AttentionUser>
       </n-scrollbar>
     </div>
