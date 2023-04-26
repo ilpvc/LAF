@@ -102,6 +102,8 @@ export interface Post {
     image?: string | "";
     count: number | 0;
     userId?: number;
+    userNickname?:string;
+    tags?:string;
     createdTime?: string;
     updatedTime?: string;
     isDeleted?: boolean;
@@ -178,6 +180,7 @@ export interface PostQuery {
     searchInfo?: string;
     createdTime?: string;
     updatedTime?: string;
+    types?:number[];
     status?: number[];
     collection?: number[];
     collectionUserId?: number[];
@@ -266,6 +269,7 @@ export interface Report {
 export interface LikesQuery {
     userId?: number;
     postId?: number;
+    postIds?:any[];
 }
 
 export interface UserSecurity {

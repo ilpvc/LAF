@@ -30,7 +30,14 @@
       </div>
 
       <div class="body-essay">
-        <EssayCard v-for="i in 5"></EssayCard>
+        <EssayCard v-for="post in posts" :key="post.id" :post="post"></EssayCard>
+        <div class="footer" v-if="page===pages">
+          已经到底了
+        </div>
+        <div class="footer" @click="getMorePosts" v-else>
+          点击查看更多
+        </div>
+
       </div>
     </div>
   </div>
@@ -40,6 +47,25 @@
 
 import List from "../components/List.vue";
 import EssayCard from "../components/EssayCard.vue";
+import {usePostStore} from "@/store/PostStore";
+import {onBeforeMount, ref, unref} from "vue";
+import {Post} from "@/Interface/ApiInterface";
+import {pagePostCondition} from "@/api/posts";
+
+const postStore = usePostStore();
+const posts = ref<Post[]>([])
+onBeforeMount(() => {
+  posts.value = posts.value.concat(...postStore.getCurrentPagePost())
+})
+
+let page=2
+let pages = 0
+async function getMorePosts(){
+  const morePosts = await pagePostCondition({types:[4]},page++,5);
+  pages = morePosts.data.items.pages
+  console.log(morePosts)
+  posts.value = unref(posts).concat(morePosts.data.items.records)
+}
 
 
 </script>
@@ -65,7 +91,7 @@ import EssayCard from "../components/EssayCard.vue";
     background-color: white;
 
     .body-header {
-      font-family: Avenir,serif;
+      font-family: Avenir, serif;
       padding: 5px 10px;
       border-bottom: 1px #e5e6eb solid;
     }
@@ -74,6 +100,16 @@ import EssayCard from "../components/EssayCard.vue";
       display: flex;
       flex-direction: column;
 
+      .footer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 10px;
+        &:hover {
+          cursor: pointer;
+          user-select: none;
+        }
+      }
     }
   }
 

@@ -4,13 +4,13 @@
     <div class="announcement">
       <div class="announcement-header">公告</div>
       <div class="announcement-body">
-        努力学习,卷死其他人
+        {{ webInfoStore.getUser.otherContacts }}
       </div>
     </div>
 
     <div class="title">
       <div class="title-header">
-        {{ 'ilpvc' }}
+        {{ webInfoStore.getUser.nickname }}
       </div>
       <div class="title-search">
         <input type="search" placeholder="搜索"/>
@@ -23,14 +23,14 @@
         <n-avatar
           round
           :size="50"
-          src="http://q1.qlogo.cn/g?b=qq&nk=2693285351&s=640"
+          :src="webInfoStore.getUser.header"
         />
       </div>
 
       <div class="info-body">
-        <i class="info-body-item"><i>{{ 80 }}</i><i>文章</i></i>
+        <i class="info-body-item"><i>{{ postStore.getMyLearnPostsNum() }}</i><i>文章</i></i>
         <i class="info-body-item info-body-item-center"><i>{{ 80 }}</i><i>创作金</i></i>
-        <i class="info-body-item"><i>{{ 80 }}</i><i>点赞</i></i>
+        <i class="info-body-item"><i>{{ postStore.getMyLikesNum() }}</i><i>点赞</i></i>
       </div>
     </div>
 
@@ -39,6 +39,12 @@
 
 <script setup lang="ts">
 import {NAvatar} from 'naive-ui'
+import {useWebInfoStore} from "@/store/WebInfoStore";
+import {usePostStore} from "@/store/PostStore";
+
+const webInfoStore = useWebInfoStore();
+const postStore = usePostStore();
+
 
 </script>
 

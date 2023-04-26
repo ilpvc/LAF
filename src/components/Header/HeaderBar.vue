@@ -9,22 +9,22 @@
     <!--    导航选项-->
     <ul class="Tabs">
       <li class="Tab-items">
-        <router-link to="/home" class="Tab-link" @click="change(0)" :style="{color:fontColor0}">首页</router-link>
+        <router-link to="/home" class="Tab-link" @click="changeNav(0)" :class="{'on-focus':isActive[0]}">首页</router-link>
       </li>
       <li class="Tab-items">
-        <router-link to="/home" class="Tab-link" @click="change(1)" :style="{color:fontColor1}">寻物</router-link>
+        <router-link to="/home" class="Tab-link" @click="changeNav(1)" :class="{'on-focus':isActive[1]}">寻物</router-link>
       </li>
       <li class="Tab-items">
-        <router-link to="/home" class="Tab-link" @click="change(2)" :style="{color:fontColor2}">招领</router-link>
+        <router-link to="/home" class="Tab-link" @click="changeNav(2)" :class="{'on-focus':isActive[2]}">招领</router-link>
       </li>
       <li class="Tab-items">
-        <router-link to="/home" class="Tab-link" @click="change(3)" :style="{color:fontColor3}">娱乐大厅</router-link>
+        <router-link to="/home" class="Tab-link" @click="changeNav(3)" :class="{'on-focus':isActive[3]}">娱乐大厅</router-link>
       </li>
       <li class="Tab-items">
-        <router-link to="/learn" class="Tab-link" @click="change(4)" :style="{color:fontColor4}">学习交流</router-link>
+        <a class="Tab-link" @click="changeNav(4)" :class="{'on-focus':isActive[4]}">学习交流</a>
       </li>
       <li class="Tab-items">
-        <router-link to="/mall" class="Tab-link" @click="change(5)" :style="{color:fontColor5}">积分商城</router-link>
+        <router-link to="/mall" class="Tab-link" @click="changeNav(5)" :class="{'on-focus':isActive[5]}">积分商城</router-link>
       </li>
     </ul>
     <!--搜索框-->
@@ -100,12 +100,12 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
+import {ref, unref} from "vue";
 import {useWebStore} from "@/store/WebStore";
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {removeToken, removeUser} from "@/utils/auth";
 import {useLoadingBar} from "naive-ui";
-import {getAllNormalPost, getPostByCondition} from "@/api/posts";
+import {getAllNormalPost, getPostByCondition, pagePostCondition} from "@/api/posts";
 import {usePostStore} from "@/store/PostStore";
 import {useRouter} from "vue-router";
 import {useUserDetailsStore} from "@/store/UserDetailsStore";
@@ -114,6 +114,7 @@ import {Nav} from "../../views/UserRelated/enums/nav";
 import {getAttentionCondition} from "@/api/attention";
 import {getUserByCondition} from "@/api/user";
 import {blacklistCondition} from "@/api/blacklist";
+import {getLikesByCondition} from "@/api/Likes";
 
 const webInfoStore = useWebInfoStore()
 const value = ref(12)
@@ -145,67 +146,41 @@ async function beforeLeaveInUserDetails() {
 
 }
 
-const fontColor0 = ref("black")
-const fontColor1 = ref("#8590a6")
-const fontColor2 = ref("#8590a6")
-const fontColor3 = ref("#8590a6")
-const fontColor4 = ref("#8590a6")
-const fontColor5 = ref("#8590a6")
 
-
-
+const isActive = ref([
+  true,
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+])
 //切换页面
-function change(type: number) {
-  webStore.changePage(type)
-  if (type === 0) {
-    fontColor0.value = "black"
-    fontColor1.value = "#8590a6"
-    fontColor2.value = "#8590a6"
-    fontColor3.value = "#8590a6"
-    fontColor4.value = "#8590a6"
-    fontColor5.value = "#8590a6"
+async function changeNav(nav: number) {
+  loadBar.start()
+  if (nav<=3){
+    webStore.changePage(nav)
   }
-  if (type === 1) {
-    fontColor0.value = "#8590a6"
-    fontColor1.value = "black"
-    fontColor2.value = "#8590a6"
-    fontColor3.value = "#8590a6"
-    fontColor4.value = "#8590a6"
-    fontColor5.value = "#8590a6"
+  isActive.value = [false, false, false, false, false, false,false]
+  for (let i = 0; i < unref(isActive).length; i++) {
+    if (i === nav) {
+      unref(isActive).splice(i,1,true)
+    }
   }
-  if (type === 2) {
-    fontColor0.value = "#8590a6"
-    fontColor1.value = "#8590a6"
-    fontColor2.value = "black"
-    fontColor3.value = "#8590a6"
-    fontColor4.value = "#8590a6"
-    fontColor5.value = "#8590a6"
+  if (nav===4){
+    const postsRes = await getPostByCondition({types:[4]});
+    const pagePost = await pagePostCondition({types:[4]},1,5);
+    postStore.setCurrentPagePost(pagePost.data.items.records)
+    await postStore.setLearnPost(postsRes.data.list)
+    await router.push({
+      name:'learn'
+    })
   }
-  if (type === 3) {
-    fontColor0.value = "#8590a6"
-    fontColor1.value = "#8590a6"
-    fontColor2.value = "#8590a6"
-    fontColor3.value = "black"
-    fontColor4.value = "#8590a6"
-    fontColor5.value = "#8590a6"
-  }
-  if (type === 4) {
-    fontColor0.value = "#8590a6"
-    fontColor1.value = "#8590a6"
-    fontColor2.value = "#8590a6"
-    fontColor4.value = "black"
-    fontColor3.value = "#8590a6"
-    fontColor5.value = "#8590a6"
-  }
-  if (type === 5) {
-    fontColor0.value = "#8590a6"
-    fontColor1.value = "#8590a6"
-    fontColor2.value = "#8590a6"
-    fontColor5.value = "black"
-    fontColor3.value = "#8590a6"
-    fontColor4.value = "#8590a6"
-  }
+  loadBar.finish()
+
 }
+
 
 //退出登录
 function logout() {
@@ -220,7 +195,7 @@ const searchInfo = ref()
 
 async function doSearch() {
   loadBar.start()
-  await getPostByCondition({searchInfo: searchInfo.value,status:[1]}).then(res => {
+  await getPostByCondition({searchInfo: searchInfo.value,status:[1],types:[1,2,3]}).then(res => {
     postStore.setSearchPost(res.data.list)
   })
   loadBar.finish()
@@ -381,5 +356,8 @@ async function toSetting(){
   padding: 10px;
 }
 
+.on-focus {
+  color: black;
+}
 
 </style>

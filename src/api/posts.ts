@@ -40,6 +40,7 @@ export const addPost = (params: Post) =>
 export function getAllNormalPost() {
   let params: PostQuery = {}
   params.status = [1]
+  params.types=[1,2,3]
   return service({
     url: `/post/normalCondition`,
     method: "post",

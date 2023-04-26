@@ -6,6 +6,9 @@
       </slot>
     </div>
     <div class="list-body">
+<!--      <n-skeleton text :repeat="2" />-->
+<!--      <n-skeleton text style="width: 60%" />-->
+
       <div class="list-body-item">
         <strong class="list-body-num" style="color: #ff6348">1</strong>
         <n-ellipsis style="max-width: 240px">我是怎么在掘金找到老婆的</n-ellipsis>

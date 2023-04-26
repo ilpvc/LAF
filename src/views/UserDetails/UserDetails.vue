@@ -273,7 +273,7 @@ async function changeTabAndGetPosts(tabName: number) {
           postsId.push(item.postId)
         }
       })
-      await getPostByCondition({collection: postsId,status:[1,5]}).then(res => {
+      await getPostByCondition({collection: postsId,status:[1,5],types:[1,2,3]}).then(res => {
         posts.value = res.data.list
         currentInstance?.proxy?.$forceUpdate()
       })
@@ -287,7 +287,7 @@ async function changeTabAndGetPosts(tabName: number) {
           }
       })
       if (postsId.length !== 0) {
-        await getPostByCondition({collection: postsId,status:[1,5]}).then(res => {
+        await getPostByCondition({collection: postsId,status:[1,5],types:[1,2,3]}).then(res => {
           posts.value = res.data.list
           currentInstance?.proxy?.$forceUpdate()
         })
@@ -305,7 +305,7 @@ async function changeTabAndGetPosts(tabName: number) {
           }
       })
       if (postsId.length !== 0) {
-        await getPostByCondition({collection: postsId,status:[1,5]}).then(res => {
+        await getPostByCondition({collection: postsId,status:[1,5],types:[1,2,3]}).then(res => {
           posts.value = res.data.list
           currentInstance?.proxy?.$forceUpdate()
         })
@@ -322,7 +322,7 @@ async function changeTabAndGetPosts(tabName: number) {
           }
       })
       if (usersId.length !== 0) {
-        await getPostByCondition({collectionUserId: usersId,status:[1,5]}).then(res => {
+        await getPostByCondition({collectionUserId: usersId,status:[1,5],types:[1,2,3]}).then(res => {
           posts.value = res.data.list
           currentInstance?.proxy?.$forceUpdate()
         })
@@ -339,7 +339,7 @@ async function changeTabAndGetPosts(tabName: number) {
           }
       })
       if (postsId.length !== 0) {
-        await getPostByCondition({collection: postsId,status:[1,5]}).then(res => {
+        await getPostByCondition({collection: postsId,status:[1,5],types:[1,2,3]}).then(res => {
           posts.value = res.data.list
           currentInstance?.proxy?.$forceUpdate()
         })
@@ -350,7 +350,7 @@ async function changeTabAndGetPosts(tabName: number) {
       return true
     case UserPostsType.MY:
 
-      await getPostByCondition({userId: userInfo.id,status:[1,5]}).then(res => {
+      await getPostByCondition({userId: userInfo.id,status:[1,5],types:[1,2,3]}).then(res => {
         posts.value = res.data.list
         currentInstance?.proxy?.$forceUpdate()
       })

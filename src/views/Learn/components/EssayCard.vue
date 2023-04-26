@@ -1,48 +1,54 @@
 <template>
   <div id="essay-card">
-    <div class="header">
+    <n-skeleton v-if="!isLoad" text style="width: 60%;margin-bottom: 10px" />
+
+    <n-skeleton v-if="!isLoad" text style="width: 60%;margin-bottom: 10px" />
+
+    <n-skeleton v-if="!isLoad" text style="margin-bottom: 10px"/>
+
+    <n-skeleton v-if="!isLoad" text style="width: 60%;margin-bottom: 10px" />
+    <div v-if="isLoad" class="header">
       <div>
         {{ 'ilpvc' }}
       </div>
       <span>|</span>
       <div>
-        一个月前
+        {{moment(post.updatedTime).format('YYYY-MM-DD')}}
       </div>
       <span>|</span>
       <div>
-        标签
+        {{ post.tags }}
       </div>
     </div>
 
 
-    <div class="body">
+    <div v-if="isLoad" class="body">
 
       <div class="left">
         <div class="title">
-          <h3>分享十个sql高级写法</h3>
+          <h3>{{ post.title }}</h3>
         </div>
 
         <div class="content">
-          我们项目原先使用的hutool版本是5.7.2，在代码中，我们的数据传输对象DTO和数据实体对象中大量使用了工具包中的BeanUtil.copyProperties(),
-          大体代码如下：
+          {{post.content }}
         </div>
 
         <div class="footer">
           <ul class="footer">
             <li class="footer-item">
               <img class="image" src="./img/look.svg" alt="look">
-              <span>1.5w</span>
+              <span>{{ post.count }}</span>
             </li>
             <li class="footer-item">
               <img class="image" src="./img/dianzan.svg" alt="dianzan" style="position: relative;top: -2px"/>
               <span>
-                233
+                {{ likes }}
               </span>
             </li>
             <li class="footer-item">
               <img class="image" src="./img/comment.svg" alt="comment">
               <span>
-                43
+                {{ commentNums }}
               </span>
             </li>
           </ul>
@@ -63,6 +69,32 @@
 </template>
 
 <script setup lang="ts">
+
+import {onMounted, ref, unref} from "vue";
+import {Post} from "@/Interface/ApiInterface";
+import {getLikesByCondition} from "@/api/Likes";
+import moment from "moment";
+import {getCommentCondition} from "@/api/comment";
+
+
+
+const props = defineProps(['post'])
+const post =ref<Post>({...props.post})
+
+const isLoad = ref(false)
+let likes = ref<number>(0)
+let commentNums = ref(0)
+async function init(){
+  const likesByCondition =await getLikesByCondition({postId:unref(post).id});
+  likes = likesByCondition.data.list.length  //点赞数目
+  const commentsRes = await getCommentCondition({postId: unref(post).id});
+  commentNums.value = commentsRes.data.list.length
+  isLoad.value = true
+}
+
+onMounted(()=>{
+  init()
+})
 
 </script>
 

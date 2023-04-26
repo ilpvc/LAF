@@ -42,7 +42,7 @@ async function init() {
       }
     })
   } else {
-    const res = await getPostByCondition({type: webStore.getPage,status:[1]});
+    const res = await getPostByCondition({types: [webStore.getPage],status:[1]});
     ports.value = res.data.list
     if (useHttpStatusStore().getErrorStatus().has(res.status)){
       confirm("你还没有登录，请登录")
