@@ -104,6 +104,9 @@ export interface Post {
     userId?: number;
     userNickname?:string;
     tags?:string;
+    commentNum?:number;
+    collectionNum?:number;
+    likesNum?:number;
     createdTime?: string;
     updatedTime?: string;
     isDeleted?: boolean;
@@ -184,6 +187,7 @@ export interface PostQuery {
     status?: number[];
     collection?: number[];
     collectionUserId?: number[];
+    rankType?:number;
 
 }
 

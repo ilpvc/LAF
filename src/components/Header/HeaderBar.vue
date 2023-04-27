@@ -114,7 +114,11 @@ import {Nav} from "../../views/UserRelated/enums/nav";
 import {getAttentionCondition} from "@/api/attention";
 import {getUserByCondition} from "@/api/user";
 import {blacklistCondition} from "@/api/blacklist";
-import {getLikesByCondition} from "@/api/Likes";
+import {allLikes, getLikesByCondition} from "@/api/Likes";
+import {useLikesStore} from "@/store/LikesStore";
+import {all} from "axios";
+import {getAllComments} from "@/api/comment";
+import {useCommentStore} from "@/store/CommentStore";
 
 const webInfoStore = useWebInfoStore()
 const value = ref(12)
@@ -156,6 +160,9 @@ const isActive = ref([
   false,
   false,
 ])
+
+const likesStore = useLikesStore();
+const commentStore = useCommentStore();
 //切换页面
 async function changeNav(nav: number) {
   loadBar.start()
@@ -173,6 +180,13 @@ async function changeNav(nav: number) {
     const pagePost = await pagePostCondition({types:[4]},1,5);
     postStore.setCurrentPagePost(pagePost.data.items.records)
     await postStore.setLearnPost(postsRes.data.list)
+    /**
+     * 后端新增字段不需要单独查询
+     */
+    // const allLikesRes = await allLikes();
+    // likesStore.setLikes(allLikesRes.data.list)
+    // const allCommentsRes = await getAllComments();
+    // commentStore.setAllComments(allCommentsRes.data.list)
     await router.push({
       name:'learn'
     })

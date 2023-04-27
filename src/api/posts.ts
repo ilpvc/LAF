@@ -97,3 +97,12 @@ export const PostNormalCondition = (params: PostQuery) =>
     params: {},
     data: params
   });
+
+
+export const getRankPost = (params: PostQuery) =>
+  service.request({
+    url: `/post/rank`,
+    method: "post",
+    params: {},
+    data: params
+  });

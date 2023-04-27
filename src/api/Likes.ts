@@ -26,3 +26,11 @@ export const deleteLikes = (params: LikesQuery) =>
     });
 
 
+export const allLikes = () =>
+  service.request({
+    url: `/likes/`,
+    method: "get",
+    params: {},
+    data:{}
+  });
+

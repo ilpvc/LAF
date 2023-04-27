@@ -1,22 +1,22 @@
 <template>
   <div id="essay-card">
-    <n-skeleton v-if="!isLoad" text style="width: 60%;margin-bottom: 10px" />
+    <n-skeleton v-if="!isLoad" text style="width: 60%;margin-bottom: 10px"/>
 
-    <n-skeleton v-if="!isLoad" text style="width: 60%;margin-bottom: 10px" />
+    <n-skeleton v-if="!isLoad" text style="width: 60%;margin-bottom: 10px"/>
 
     <n-skeleton v-if="!isLoad" text style="margin-bottom: 10px"/>
 
-    <n-skeleton v-if="!isLoad" text style="width: 60%;margin-bottom: 10px" />
+    <n-skeleton v-if="!isLoad" text style="width: 60%;margin-bottom: 10px"/>
     <div v-if="isLoad" class="header">
-      <div>
+      <div class="header-name header-item">
         {{ 'ilpvc' }}
       </div>
       <span>|</span>
-      <div>
-        {{moment(post.updatedTime).format('YYYY-MM-DD')}}
+      <div class="header-time header-item">
+        {{ moment(post.updatedTime).format('YYYY-MM-DD') }}
       </div>
       <span>|</span>
-      <div>
+      <div class="header-tags header-item">
         {{ post.tags }}
       </div>
     </div>
@@ -30,7 +30,7 @@
         </div>
 
         <div class="content">
-          {{post.content }}
+          {{ post.content }}
         </div>
 
         <div class="footer">
@@ -42,13 +42,13 @@
             <li class="footer-item">
               <img class="image" src="./img/dianzan.svg" alt="dianzan" style="position: relative;top: -2px"/>
               <span>
-                {{ likes }}
+                {{ post.likesNum }}
               </span>
             </li>
             <li class="footer-item">
               <img class="image" src="./img/comment.svg" alt="comment">
               <span>
-                {{ commentNums }}
+                {{ post.commentNum }}
               </span>
             </li>
           </ul>
@@ -75,24 +75,20 @@ import {Post} from "@/Interface/ApiInterface";
 import {getLikesByCondition} from "@/api/Likes";
 import moment from "moment";
 import {getCommentCondition} from "@/api/comment";
-
+import {useLikesStore} from "@/store/LikesStore";
+import {useCommentStore} from "@/store/CommentStore";
 
 
 const props = defineProps(['post'])
-const post =ref<Post>({...props.post})
+const post = ref<Post>({...props.post})
 
 const isLoad = ref(false)
-let likes = ref<number>(0)
-let commentNums = ref(0)
-async function init(){
-  const likesByCondition =await getLikesByCondition({postId:unref(post).id});
-  likes = likesByCondition.data.list.length  //点赞数目
-  const commentsRes = await getCommentCondition({postId: unref(post).id});
-  commentNums.value = commentsRes.data.list.length
+
+async function init() {
   isLoad.value = true
 }
 
-onMounted(()=>{
+onMounted(() => {
   init()
 })
 
@@ -106,11 +102,25 @@ onMounted(()=>{
   width: 580px;
   padding: 10px 10px 0;
   border-bottom: 1px solid #e5e6eb;
+  transition: background-color 0.4s;
+
+  &:hover {
+    background-color: #f1f2f6;
+  }
 
   .header {
     display: flex;
     flex-direction: row;
     color: #9599a7;
+
+
+    .header-item {
+      cursor: pointer;
+      &:hover{
+        color: #646cff;
+
+      }
+    }
 
     span {
       padding: 0 15px;
@@ -120,14 +130,18 @@ onMounted(()=>{
   .body {
     display: flex;
     width: 580px;
-    &:hover{
+
+    &:hover {
       cursor: pointer;
     }
+
     .left {
       width: 430px;
 
       .title {
         padding: 5px 0;
+        font-weight: 900;
+        font-family: 微软雅黑,serif;
       }
 
       .content {

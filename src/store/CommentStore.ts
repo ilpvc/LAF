@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import {Comments, Post} from "@/Interface/ApiInterface";
 import {getAllUser} from "@/api/user";
+import {all} from "axios";
 
 export const useCommentStore = defineStore("commentStore", () => {
 
@@ -87,6 +88,16 @@ export const useCommentStore = defineStore("commentStore", () => {
         return currentParentId
     }
 
+
+    let allComment:Comments[] = []
+
+    function setAllComments(c:Comments[]){
+        allComment = c
+    }
+    function getAllComments(){
+        return allComment
+    }
+
     return {
         setComment,
         getComments,
@@ -97,7 +108,9 @@ export const useCommentStore = defineStore("commentStore", () => {
         setCurrentCommentType,
         getCurrentCommentType,
         setCurrentParentId,
-        getCurrentParentId
+        getCurrentParentId,
+        setAllComments,
+        getAllComments
     }
 
 })

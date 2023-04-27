@@ -50,7 +50,10 @@ const constantRoutes = [
       {
         path: 'learn',
         name: 'learn',
-        component: () => import('@/views/Learn/Learn.vue')
+        component: () => import('@/views/Learn/Learn.vue'),
+        children: [
+
+        ]
       },
       {
         path: 'mall',
@@ -61,6 +64,11 @@ const constantRoutes = [
         path: '/blank',
         name: 'blank',
         component: () => import('@/components/BlankVue.vue')
+      },
+      {
+        path: 'write',
+        name: 'learnWrite',
+        component: () => import('@/views/LearnPostWrite/LearnPostWrite.vue'),
       },
       {
         path: 'related',

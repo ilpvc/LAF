@@ -4,21 +4,34 @@
       <div class="list">
         <List>
           <template #title>
-            今日榜单
+            最多浏览
+          </template>
+          <template v-for="(countPost,index) in countRankPost" :key="index" #[index]>
+            {{countPost.title}}
           </template>
         </List>
       </div>
       <div class="list">
+        <!--      <n-skeleton text :repeat="2" />-->
+        <!--      <n-skeleton text style="width: 60%" />-->
+
         <List style="border-right: 1px solid #e5e6eb;border-left: 1px solid #e5e6eb;">
           <template #title>
-            本周榜单
+            点赞榜
+          </template>
+          <template v-for="(likesPost,index) in likesRankPost" :key="index" #[index]>
+            {{likesPost.title}}
           </template>
         </List>
       </div>
       <div class="list">
+
         <List>
           <template #title>
-            本月榜单
+            争议贴
+          </template>
+          <template v-for="(commentPost,index) in commentRankPost" :key="index" #[index]>
+            {{commentPost.title}}
           </template>
         </List>
       </div>
@@ -27,17 +40,20 @@
     <div class="body">
       <div class="body-header">
         <h3>全部文章</h3>
+        <n-button type="info" class="release-essay" @click="toWriteEssay">发布文章</n-button>
       </div>
 
       <div class="body-essay">
-        <EssayCard v-for="post in posts" :key="post.id" :post="post"></EssayCard>
-        <div class="footer" v-if="page===pages">
-          已经到底了
-        </div>
-        <div class="footer" @click="getMorePosts" v-else>
-          点击查看更多
-        </div>
+        <n-scrollbar style="max-height: 650px">
+          <EssayCard v-for="post in posts" :key="post.id" :post="post"></EssayCard>
 
+          <div class="footer" v-if="page===pages">
+            已经到底了
+          </div>
+          <div class="footer" @click="getMorePosts" v-else>
+            点击查看更多
+          </div>
+        </n-scrollbar>
       </div>
     </div>
   </div>
@@ -50,24 +66,48 @@ import EssayCard from "../components/EssayCard.vue";
 import {usePostStore} from "@/store/PostStore";
 import {onBeforeMount, ref, unref} from "vue";
 import {Post} from "@/Interface/ApiInterface";
-import {pagePostCondition} from "@/api/posts";
+import {getRankPost, pagePostCondition} from "@/api/posts";
+import {useRouter} from "vue-router";
+import {useLoadingBar} from "naive-ui";
 
 const postStore = usePostStore();
 const posts = ref<Post[]>([])
-onBeforeMount(() => {
-  posts.value = posts.value.concat(...postStore.getCurrentPagePost())
-})
+const router = useRouter();
+const loadingBar = useLoadingBar();
 
-let page=2
+let page = 2
 let pages = 0
-async function getMorePosts(){
-  const morePosts = await pagePostCondition({types:[4]},page++,5);
+
+async function getMorePosts() {
+  const morePosts = await pagePostCondition({types: [4]}, page++, 5);
   pages = morePosts.data.items.pages
-  console.log(morePosts)
   posts.value = unref(posts).concat(morePosts.data.items.records)
 }
 
+async function toWriteEssay(){
+  loadingBar.start()
+  await router.push({
+    name:'learnWrite'
+  })
+  loadingBar.finish()
+}
 
+
+const loadingFinish = ref(false)
+const commentRankPost = ref<Post[]>([])
+const likesRankPost = ref<Post[]>([])
+const countRankPost = ref<Post[]>([])
+onBeforeMount(async () => {
+  posts.value = posts.value.concat(...postStore.getCurrentPagePost())
+  const commentRankPostResponse = await getRankPost({rankType: 1});
+  const likesRankPostResponse = await getRankPost({rankType: 2});
+  const countRankPostResponse = await getRankPost({rankType: 3});
+  commentRankPost.value = commentRankPostResponse.data.list
+  likesRankPost.value = likesRankPostResponse.data.list
+  countRankPost.value = countRankPostResponse.data.list
+  console.log(countRankPostResponse)
+  loadingFinish.value=true
+})
 </script>
 
 <style scoped lang="less">
@@ -91,9 +131,15 @@ async function getMorePosts(){
     background-color: white;
 
     .body-header {
+      display: flex;
+      justify-content: space-between;
       font-family: Avenir, serif;
       padding: 5px 10px;
       border-bottom: 1px #e5e6eb solid;
+
+      .release-essay {
+        outline: none;
+      }
     }
 
     .body-essay {
@@ -105,6 +151,8 @@ async function getMorePosts(){
         justify-content: center;
         align-items: center;
         padding-top: 10px;
+        color: #2ecc71;
+
         &:hover {
           cursor: pointer;
           user-select: none;

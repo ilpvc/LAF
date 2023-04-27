@@ -69,7 +69,7 @@ const emit = defineEmits(['refresh'])
 const responsePlaceHolder = "@ 回复 " + commentStore.getCurrentCommenter().get('info').name
 
 function emoji(e){
-    content.value = content.value+e
+    content.value = content.value.concat(e)
 }
 
 const comment:Comments={}

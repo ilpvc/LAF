@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "^5.1.12",
     "js-cookie": "^3.0.1",
+    "mavon-editor": "^3.0.1",
     "moment": "^2.29.4",
     "pinia": "^2.0.33",
     "unplugin-vue-components": "^0.24.0",
