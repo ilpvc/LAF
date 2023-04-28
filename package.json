@@ -9,10 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vavt/md-editor-extension": "^2.0.0",
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "^5.1.12",
     "js-cookie": "^3.0.1",
-    "mavon-editor": "^3.0.1",
+    "md-editor-v3": "^2.11.2",
     "moment": "^2.29.4",
     "pinia": "^2.0.33",
     "unplugin-vue-components": "^0.24.0",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.192",
+    "@types/marked": "^4.0.8",
     "@types/node": "^18.14.6",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vueuse/core": "^9.13.0",

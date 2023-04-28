@@ -97,12 +97,12 @@ export interface RolePermission {
 export interface Post {
     id?: number;
     type?: number;
-    title?: string;
-    content?: string;
+    title?: string| '';
+    content?: string |'';
     image?: string | "";
     count: number | 0;
     userId?: number;
-    userNickname?:string;
+    userNickname?:string|'';
     tags?:string;
     commentNum?:number;
     collectionNum?:number;

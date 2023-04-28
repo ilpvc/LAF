@@ -9,7 +9,7 @@
     <n-skeleton v-if="!isLoad" text style="width: 60%;margin-bottom: 10px"/>
     <div v-if="isLoad" class="header">
       <div class="header-name header-item">
-        {{ 'ilpvc' }}
+        {{ post.userNickname }}
       </div>
       <span>|</span>
       <div class="header-time header-item">

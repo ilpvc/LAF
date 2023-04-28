@@ -77,6 +77,17 @@ export const usePostStore = defineStore('postStore', () => {
     return currentPagePost
   }
 
+  let currentPost:Post = {count:0}
+
+  function setCurrentPost(p:Post){
+    currentPost = p
+  }
+
+  function getCurrentPost(){
+    return currentPost
+  }
+
+
   return {
     getPostType,
     getPostColor,
@@ -89,6 +100,8 @@ export const usePostStore = defineStore('postStore', () => {
     getMyLearnPostsNum,
     getMyLikesNum,
     setCurrentPagePost,
-    getCurrentPagePost
+    getCurrentPagePost,
+    setCurrentPost,
+    getCurrentPost
   }
 })

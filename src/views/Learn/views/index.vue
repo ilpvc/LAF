@@ -7,7 +7,7 @@
             最多浏览
           </template>
           <template v-for="(countPost,index) in countRankPost" :key="index" #[index]>
-            {{countPost.title}}
+            {{ countPost.title }}
           </template>
         </List>
       </div>
@@ -20,7 +20,7 @@
             点赞榜
           </template>
           <template v-for="(likesPost,index) in likesRankPost" :key="index" #[index]>
-            {{likesPost.title}}
+            {{ likesPost.title }}
           </template>
         </List>
       </div>
@@ -31,7 +31,7 @@
             争议贴
           </template>
           <template v-for="(commentPost,index) in commentRankPost" :key="index" #[index]>
-            {{commentPost.title}}
+            {{ commentPost.title }}
           </template>
         </List>
       </div>
@@ -45,7 +45,7 @@
 
       <div class="body-essay">
         <n-scrollbar style="max-height: 650px">
-          <EssayCard v-for="post in posts" :key="post.id" :post="post"></EssayCard>
+          <EssayCard v-for="post in posts" :key="post.id" :post="post" @click="toViewLearnPost(post)"></EssayCard>
 
           <div class="footer" v-if="page===pages">
             已经到底了
@@ -75,21 +75,29 @@ const posts = ref<Post[]>([])
 const router = useRouter();
 const loadingBar = useLoadingBar();
 
-let page = 2
+let page = 1
 let pages = 0
 
 async function getMorePosts() {
-  const morePosts = await pagePostCondition({types: [4]}, page++, 5);
+  const morePosts = await pagePostCondition({types: [4]}, ++page, 5);
   pages = morePosts.data.items.pages
   posts.value = unref(posts).concat(morePosts.data.items.records)
 }
 
-async function toWriteEssay(){
+async function toWriteEssay() {
   loadingBar.start()
   await router.push({
-    name:'learnWrite'
+    name: 'learnWrite'
   })
   loadingBar.finish()
+}
+
+//点击跳转到详情页面
+function toViewLearnPost(p: Post) {
+  postStore.setCurrentPost(p)
+  router.push({
+    name: 'viewLearnPost'
+  })
 }
 
 
@@ -105,8 +113,7 @@ onBeforeMount(async () => {
   commentRankPost.value = commentRankPostResponse.data.list
   likesRankPost.value = likesRankPostResponse.data.list
   countRankPost.value = countRankPostResponse.data.list
-  console.log(countRankPostResponse)
-  loadingFinish.value=true
+  loadingFinish.value = true
 })
 </script>
 
