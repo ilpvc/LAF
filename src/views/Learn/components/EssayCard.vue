@@ -8,7 +8,7 @@
 
     <n-skeleton v-if="!isLoad" text style="width: 60%;margin-bottom: 10px"/>
     <div v-if="isLoad" class="header">
-      <div class="header-name header-item">
+      <div class="header-name header-item" @click.stop="doGetUser(post.userNickname)">
         {{ post.userNickname }}
       </div>
       <span>|</span>
@@ -39,8 +39,10 @@
               <img class="image" src="./img/look.svg" alt="look">
               <span>{{ post.count }}</span>
             </li>
-            <li class="footer-item">
-              <img class="image" src="./img/dianzan.svg" alt="dianzan" style="position: relative;top: -2px"/>
+            <li class="footer-item" @click.stop="doDianZhan">
+              <img v-if="!isLiked" class="image" src="./img/dianzan.svg" alt="dianzan"
+                   style="position: relative;top: -2px"/>
+              <img v-else class="image" src="./img/do_dianzan.svg" alt="dianzan" style="position: relative;top: -2px"/>
               <span>
                 {{ post.likesNum }}
               </span>
@@ -75,20 +77,80 @@
 
 import {onMounted, ref, unref} from "vue";
 import {Post} from "@/Interface/ApiInterface";
-import {getLikesByCondition} from "@/api/Likes";
+import {addLikes, deleteLikes, getLikesByCondition} from "@/api/Likes";
 import moment from "moment";
-import {getCommentCondition} from "@/api/comment";
-import {useLikesStore} from "@/store/LikesStore";
-import {useCommentStore} from "@/store/CommentStore";
+import {updatePost} from "@/api/posts";
+import {useWebInfoStore} from "@/store/WebInfoStore";
+import {useLoadingBar} from 'naive-ui'
+import {getUserByCondition} from "@/api/user";
+import {useUserDetailsStore} from "@/store/UserDetailsStore";
+import {useRouter} from "vue-router";
 
 
+const router = useRouter();
+const userDetailsStore = useUserDetailsStore();
+const loadingBar = useLoadingBar();
+const webInfoStore = useWebInfoStore();
 const props = defineProps(['post'])
 const post = ref<Post>({...props.post})
 
 const isLoad = ref(false)
 
 async function init() {
+  const likesRes = await getLikesByCondition({userId: webInfoStore.getUser.id, postId: post.value.id});
+  if (likesRes.data.num === 0) {
+    isLiked.value = false
+  } else {
+    isLiked.value = true
+  }
   isLoad.value = true
+}
+
+
+const isLiked = ref(false)
+
+async function doDianZhan() {
+  loadingBar.start()
+  let tempPost = post.value
+  if (isLiked.value) {
+    if (tempPost.likesNum === undefined) {
+      tempPost.likesNum = 0
+    } else {
+      tempPost.likesNum = tempPost.likesNum - 1
+    }
+    await updatePost(tempPost)
+    await deleteLikes({userId: webInfoStore.getUser.id, postId: unref(post).id})
+    isLiked.value = !isLiked.value
+  } else {
+    if (tempPost.likesNum === undefined) {
+      tempPost.likesNum = 1
+    } else {
+      tempPost.likesNum = 1 + tempPost.likesNum
+    }
+    await updatePost(tempPost)
+    await addLikes({userId: webInfoStore.getUser.id, postId: unref(post).id})
+    isLiked.value = !isLiked.value
+  }
+  loadingBar.finish()
+
+}
+
+//跳转用户页面
+async function doGetUser(nickname: string) {
+  loadingBar.start()
+  const userConditionRes = await getUserByCondition({nickname: nickname})
+  if (userConditionRes.data.list !== null)
+    userDetailsStore.setUser(userConditionRes.data.list[0])
+  loadingBar.finish()
+  await router.push({
+    name: 'blank',
+    params: {
+      name: nickname
+    },
+    query: {
+      name: nickname
+    }
+  })
 }
 
 onMounted(() => {
@@ -119,7 +181,8 @@ onMounted(() => {
 
     .header-item {
       cursor: pointer;
-      &:hover{
+
+      &:hover {
         color: #646cff;
 
       }
@@ -144,7 +207,7 @@ onMounted(() => {
       .title {
         padding: 5px 0;
         font-weight: 900;
-        font-family: 微软雅黑,serif;
+        font-family: 微软雅黑, serif;
       }
 
       .content {

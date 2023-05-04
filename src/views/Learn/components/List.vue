@@ -7,20 +7,20 @@
     </div>
     <div class="list-body">
 
-      <div class="list-body-item item1">
-        <strong class="list-body-num">1</strong>
+      <div class="list-body-item ">
+        <strong class="list-body-num item1">1</strong>
         <n-ellipsis style="max-width: 240px;">
           <slot name="0"></slot>
         </n-ellipsis>
       </div>
-      <div class="list-body-item item2">
-        <strong class="list-body-num">2</strong>
+      <div class="list-body-item">
+        <strong class="list-body-num item2">2</strong>
         <n-ellipsis style="max-width: 240px">
           <slot name="1"></slot>
         </n-ellipsis>
       </div>
-      <div class="list-body-item item3">
-        <strong class="list-body-num">3</strong>
+      <div class="list-body-item">
+        <strong class="list-body-num item3">3</strong>
         <n-ellipsis style="max-width: 240px">
           <slot name="2"></slot>
         </n-ellipsis>

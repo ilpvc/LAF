@@ -6,7 +6,7 @@
         <div>
 
 
-          <div class="show-emoji" tabindex="0" >
+          <div class="show-emoji" tabindex="0">
             <Emoji class="emoji" @get-emoji="emoji"></Emoji>
             <svg t="1679299088420" class="icon" viewBox="0 0 1024 1024" version="1.1"
                  xmlns="http://www.w3.org/2000/svg"
@@ -50,48 +50,58 @@
 
 <script setup lang="ts">
 import Emoji from "@/components/Emoji.vue"
-import {getCurrentInstance, ref, unref} from "vue";
+import {ref, unref} from "vue";
 import {useCommentStore} from "@/store/CommentStore";
-import {Comments} from "@/Interface/ApiInterface";
-import {useLoadingBar,useMessage} from 'naive-ui'
+import {Comments, Post} from "@/Interface/ApiInterface";
+import {useLoadingBar, useMessage} from 'naive-ui'
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {addComments} from "@/api/comment";
 import {useRouter} from "vue-router";
+import {getPostById, updatePost} from "@/api/posts";
 
 const router = useRouter()
 const message = useMessage()
 const loadingBar = useLoadingBar();
 const commentStore = useCommentStore();
 const webInfoStore = useWebInfoStore();
-const currentInstance = getCurrentInstance()
 let content = ref("")
 const emit = defineEmits(['refresh'])
 const responsePlaceHolder = "@ 回复 " + commentStore.getCurrentCommenter().get('info').name
 
-function emoji(e){
-    content.value = content.value.concat(e)
+function emoji(e) {
+  content.value = content.value.concat(e)
 }
 
-const comment:Comments={}
-async function doSubmitComment(){
-    loadingBar.start()
-    if (webInfoStore.getUser.id===undefined){
-        message.error('你还没有登录')
-        loadingBar.error()
-        return
-    }
-    comment.postId = commentStore.getCurrentPost().id
-    comment.commentType = commentStore.getCurrentCommentType();
-    comment.commenterId = webInfoStore.getUser.id
-    if (comment.commentType===2){
-        comment.commentedUserId = commentStore.getCurrentCommenter().get('info').id
-        comment.parentId = commentStore.getCurrentParentId()
-    }
-    comment.content = unref(content)
-    await addComments(comment)
-    message.success("评论成功")
-    emit('refresh')
-    loadingBar.finish()
+const comment: Comments = {}
+
+async function doSubmitComment() {
+  loadingBar.start()
+  if (webInfoStore.getUser.id === undefined) {
+    message.error('你还没有登录')
+    loadingBar.error()
+    return
+  }
+  comment.postId = commentStore.getCurrentPost().id
+  comment.commentType = commentStore.getCurrentCommentType();
+  comment.commenterId = webInfoStore.getUser.id
+  if (comment.commentType === 2) {
+    comment.commentedUserId = commentStore.getCurrentCommenter().get('info').id
+    comment.parentId = commentStore.getCurrentParentId()
+  }
+  comment.content = unref(content)
+  await addComments(comment)
+  const postRes = await getPostById(comment.postId);
+  let tempPost:Post = postRes.data.item
+  if (tempPost.commentNum===undefined){
+    tempPost.commentNum=1
+  }else{
+    tempPost.commentNum++
+  }
+
+  await updatePost(tempPost)
+  message.success("评论成功")
+  emit('refresh')
+  loadingBar.finish()
 }
 
 </script>

@@ -68,7 +68,7 @@ export const deletePost = (id: number) =>
   });
 
 
-export const getPostById = (id: number) =>
+export const getPostById = (id: number|undefined) =>
   service.request({
     url: `/post/${id}`,
     method: "get",

@@ -59,14 +59,15 @@
 
 <script setup lang="ts">
 
-import {ref, unref} from "vue";
+import {ref, unref, watch} from "vue";
 import MdEditor from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
-import {UploadCustomRequestOptions, useMessage,useLoadingBar} from "naive-ui"
+import {UploadCustomRequestOptions, useMessage, useLoadingBar} from "naive-ui"
 import service from "@/utils/request";
 import {useWebInfoStore} from "@/store/WebInfoStore";
-import {addPost} from "@/api/posts";
+import {addPost, getPostByCondition, pagePostCondition} from "@/api/posts";
 import {useRouter} from "vue-router";
+import {usePostStore} from "@/store/PostStore";
 
 const message = useMessage();
 const toolbarsExclude = ref(['github', 'save', 'fullscreen', 'htmlPreview'])
@@ -82,39 +83,54 @@ const postTemp = ref({
   image: ''
 })
 
-const rules ={
+const rules = {
   title: {
     required: true,
-      trigger: [ 'input'],
-      message: '请输入标题'
+    trigger: ['input'],
+    message: '请输入标题'
   },
 }
 
 const loadingBar = useLoadingBar()
 const router = useRouter()
 const upload = ref()
+
 //提交文件
 async function doSubmitEssay() {
-  loadingBar.start()
   await upload.value?.submit()
-  console.log(postTemp.value)
+
+}
+
+const postStore = usePostStore();
+//监听图片是否成功返回
+watch(() => postTemp.value.image, async () => {
+
   await addPost({
-    userId:webInfoStore.getUser.id,
-    type:4,
+    userId: webInfoStore.getUser.id,
+    type: 4,
     title: unref(postTemp).title,
     userNickname: unref(postTemp).userNickname,
     tags: unref(postTemp).tags.toString(),
-    image: unref(postTemp).image,
+    image: postTemp.value.image,
     content: unref(editorContent),
-    count:0
+    count: 0
   })
-  showDetailModal.value=false
-  message.success('保存成功')
-  loadingBar.finish()
-}
-
-function shadowModal(){
   showDetailModal.value = false
+  message.success('保存成功')
+  const postsRes = await getPostByCondition({types:[4]});
+  const pagePost = await pagePostCondition({types:[4]},1,5);
+  postStore.setCurrentPagePost(pagePost.data.items.records)
+  postStore.setPages(pagePost.data.items.pages)
+  await postStore.setLearnPost(postsRes.data.list)
+  await router.push({
+    name:'learn'
+  })
+  loadingBar.finish()
+})
+
+function shadowModal() {
+  showDetailModal.value = false
+
 }
 
 //上传图片
@@ -126,6 +142,7 @@ async function onUploadImg(files, callback) {
         form.append('file', file);
         if (file.size > 4194304) {
           message.error('上传图片不能大于4M')
+          loadingBar.error()
           return "error"
         }
         service
@@ -149,6 +166,7 @@ const customRequest = async ({
                                data,
                                action,
                              }: UploadCustomRequestOptions) => {
+  loadingBar.start()
   const formData = new FormData()
   if (data) {
     Object.keys(data).forEach((key) => {
@@ -168,7 +186,7 @@ const customRequest = async ({
       method: 'post',
       data: formData,
     }).then((res) => {
-      postTemp.value.image = res
+      postTemp.value.image = postTemp.value.image.concat(res)
     }, reject => {
       console.log(reject)
     })

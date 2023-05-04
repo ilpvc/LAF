@@ -79,16 +79,16 @@
               </a>
             </li>
             <li class="Select-item">
-              <router-link to="/login" @click="logout">
+              <a @click="logout">
                 <img src="./img/login.svg" alt="登录">
                 用户登录
-              </router-link>
+              </a>
             </li>
             <li class="Select-item">
-              <router-link to="/login" @click="logout">
+              <a @click="logout">
                 <img src="./img/exit.svg" alt="退出">
                 退出登录
-              </router-link>
+              </a>
             </li>
           </ul>
         </div>
@@ -104,7 +104,7 @@ import {ref, unref} from "vue";
 import {useWebStore} from "@/store/WebStore";
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {removeToken, removeUser} from "@/utils/auth";
-import {useLoadingBar} from "naive-ui";
+import {useLoadingBar,useDialog} from "naive-ui";
 import {getAllNormalPost, getPostByCondition, pagePostCondition} from "@/api/posts";
 import {usePostStore} from "@/store/PostStore";
 import {useRouter} from "vue-router";
@@ -114,10 +114,7 @@ import {Nav} from "../../views/UserRelated/enums/nav";
 import {getAttentionCondition} from "@/api/attention";
 import {getUserByCondition} from "@/api/user";
 import {blacklistCondition} from "@/api/blacklist";
-import {allLikes, getLikesByCondition} from "@/api/Likes";
 import {useLikesStore} from "@/store/LikesStore";
-import {all} from "axios";
-import {getAllComments} from "@/api/comment";
 import {useCommentStore} from "@/store/CommentStore";
 
 const webInfoStore = useWebInfoStore()
@@ -127,7 +124,7 @@ const postStore = usePostStore()
 const image = ['src/components/Header/img/default_header.svg']
 const loadBar = useLoadingBar()
 const router = useRouter()
-
+const dialog = useDialog();
 if (webInfoStore.getUser !== undefined && webInfoStore.getUser.header !== undefined) {
   image.push(<string>webInfoStore.getUser.header)
 }
@@ -199,10 +196,20 @@ async function changeNav(nav: number) {
 
 //退出登录
 function logout() {
-  removeToken()
-  removeUser()
-  //将user值设为空
-  webInfoStore.setUser({})
+  dialog.warning({
+    title:'退出登录',
+    content: '确认退出登录,登录信息将被清除',
+    negativeText: '取消',
+    positiveText:'确认',
+    onPositiveClick:()=>{
+      removeToken()
+      removeUser()
+      //将user值设为空
+      webInfoStore.setUser({})
+      router.push({path:'/login'})
+    }
+  })
+
 }
 
 //搜索框内容
@@ -247,9 +254,14 @@ async function toSetting(){
   const blacklistUserListRes = await blacklistCondition({userId: webInfoStore.getUser.id});
   const blacklists = blacklistUserListRes.data.list
   const userIds = blacklists.map((v)=>v.otherUserId)
-  const usersRes = await getUserByCondition({userIds: userIds});
-  const users = usersRes.data.list
-  relatedStore.setUsers(users)
+  if (userIds.length!==0){
+    const userRes = await getUserByCondition({userIds: userIds});
+    const users = userRes.data.list
+    relatedStore.setUsers(users)
+  }else {
+    relatedStore.setUsers([])
+  }
+
   await router.push({
     name: 'setting'
   })

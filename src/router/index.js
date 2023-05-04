@@ -1,5 +1,6 @@
 import {createRouter, createWebHashHistory} from "vue-router/dist/vue-router"
 import {getToken} from "@/utils/auth.ts";
+import {last} from "lodash";
 
 
 const constantRoutes = [
@@ -75,6 +76,10 @@ const constantRoutes = [
         name: 'viewLearnPost',
         component: () => import('@/views/ViewLearnPost/ViewLearnPost.vue'),
       },
+      // {
+      //   path: "redirect",
+      //   redirect: "/home"
+      // },
       {
         path: 'related',
         name: 'related',
@@ -112,16 +117,16 @@ const router = createRouter({
   history: createWebHashHistory(),
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, from) => {
   if (to.name===from.name){
     console.log('同页面')
   }
 
   if (to.path.includes('%')){
-    console.log(to.path)
+    return false
   } else if (to.meta.isAuth) {
     if (getToken() !== undefined) {
-      next();
+      return true
     } else {
       if (confirm("你还没有登录或者登录信息过期，请重新登录")) {
         router.push({
@@ -131,7 +136,7 @@ router.beforeEach((to, from, next) => {
 
     }
   } else {
-    next()
+    return true
   }
 })
 export default router
