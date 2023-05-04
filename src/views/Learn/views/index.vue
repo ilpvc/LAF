@@ -7,7 +7,7 @@
             最多浏览
           </template>
           <template v-for="(countPost,index) in countRankPost" :key="index" #[index]>
-            {{ countPost.title }}
+            <i @click="toViewLearnPost(countPost)">{{ countPost.title }}</i>
           </template>
         </List>
       </div>
@@ -20,7 +20,7 @@
             点赞榜
           </template>
           <template v-for="(likesPost,index) in likesRankPost" :key="index" #[index]>
-            {{ likesPost.title }}
+            <i @click="toViewLearnPost(likesPost)">{{ likesPost.title }}</i>
           </template>
         </List>
       </div>
@@ -31,7 +31,7 @@
             争议贴
           </template>
           <template v-for="(commentPost,index) in commentRankPost" :key="index" #[index]>
-            {{ commentPost.title }}
+            <i @click="toViewLearnPost(commentPost)">{{ commentPost.title }}</i>
           </template>
         </List>
       </div>
@@ -76,7 +76,7 @@ const router = useRouter();
 const loadingBar = useLoadingBar();
 
 let page = 1
-let pages = 0
+let pages = postStore.getPages()
 
 async function getMorePosts() {
   const morePosts = await pagePostCondition({types: [4]}, ++page, 5);
@@ -107,9 +107,9 @@ const likesRankPost = ref<Post[]>([])
 const countRankPost = ref<Post[]>([])
 onBeforeMount(async () => {
   posts.value = posts.value.concat(...postStore.getCurrentPagePost())
-  const commentRankPostResponse = await getRankPost({rankType: 1});
-  const likesRankPostResponse = await getRankPost({rankType: 2});
-  const countRankPostResponse = await getRankPost({rankType: 3});
+  const commentRankPostResponse = await getRankPost({rankType: 1,types:[4]});
+  const likesRankPostResponse = await getRankPost({rankType: 2,types:[4]});
+  const countRankPostResponse = await getRankPost({rankType: 3,types:[4]});
   commentRankPost.value = commentRankPostResponse.data.list
   likesRankPost.value = likesRankPostResponse.data.list
   countRankPost.value = countRankPostResponse.data.list

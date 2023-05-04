@@ -179,6 +179,7 @@ async function changeNav(nav: number) {
     const postsRes = await getPostByCondition({types:[4]});
     const pagePost = await pagePostCondition({types:[4]},1,5);
     postStore.setCurrentPagePost(pagePost.data.items.records)
+    postStore.setPages(pagePost.data.items.pages)
     await postStore.setLearnPost(postsRes.data.list)
     /**
      * 后端新增字段不需要单独查询

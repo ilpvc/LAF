@@ -67,14 +67,23 @@ export const usePostStore = defineStore('postStore', () => {
     return myLikesNum
   }
 
+  //当前学习页面的帖子数和总页数
   let currentPagePost:Post[] = []
-
+  let pages = 0
   function setCurrentPagePost(p:Post[]){
     currentPagePost = p
   }
 
   function getCurrentPagePost(){
     return currentPagePost
+  }
+
+  function setPages(p:number){
+    pages = p
+  }
+
+  function getPages(){
+    return pages
   }
 
   let currentPost:Post = {count:0}
@@ -102,6 +111,8 @@ export const usePostStore = defineStore('postStore', () => {
     setCurrentPagePost,
     getCurrentPagePost,
     setCurrentPost,
-    getCurrentPost
+    getCurrentPost,
+    setPages,
+    getPages
   }
 })

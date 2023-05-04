@@ -57,8 +57,11 @@
 
       <div class="right">
         <n-image
+          v-if="post.image!==''"
+          width="100"
+          height="100"
           class="right-image"
-          src="https://picsum.photos/id/4/100/100">
+          :src="post.image">
 
         </n-image>
       </div>

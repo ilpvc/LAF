@@ -116,7 +116,10 @@ router.beforeEach((to, from, next) => {
   if (to.name===from.name){
     console.log('同页面')
   }
-  if (to.meta.isAuth) {
+
+  if (to.path.includes('%')){
+    console.log(to.path)
+  } else if (to.meta.isAuth) {
     if (getToken() !== undefined) {
       next();
     } else {
