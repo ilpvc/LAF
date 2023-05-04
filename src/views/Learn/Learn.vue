@@ -15,7 +15,8 @@
     </div>
 
     <div class="center">
-      <index></index>
+      <n-skeleton v-if="isLoad" circle></n-skeleton>
+      <index v-else></index>
     </div>
 
     <div class="right">
@@ -26,9 +27,12 @@
 
 <script setup lang="ts">
 
-import { onMounted, ref, unref} from "vue";
+import {onMounted, ref, unref} from "vue";
 import UserInfo from "./components/UserInfo.vue";
 import Index from "./views/index.vue";
+import {getPostByCondition, pagePostCondition} from "@/api/posts";
+import {usePostStore} from "@/store/PostStore";
+import {useLoadingBar} from 'naive-ui'
 
 const allItem = ref()
 const isActive = ref([
@@ -41,15 +45,41 @@ const isActive = ref([
   false,
 ])
 
-function changeNav(nav: number) {
-  isActive.value = [false, false, false, false, false, false,false]
-  for (let i = 0; i < unref(isActive).length; i++) {
-    if (i === nav) {
-      unref(isActive).splice(i,1,true)
-    }
+const postStore = usePostStore();
+const loadingBar = useLoadingBar();
+
+const isLoad = ref(false)
+
+async function changeNav(nav: number) {
+  isLoad.value = true
+  isActive.value = [false, false, false, false, false, false, false]
+  switch (nav) {
+    case 0:
+      await init('')
+      break
+    case 1:
+      await init('高数')
+      break
+    case 2:
+      await init('英语')
+      break
   }
 
 
+  for (let i = 0; i < unref(isActive).length; i++) {
+    if (i === nav) {
+      unref(isActive).splice(i, 1, true)
+    }
+  }
+}
+
+async function init(tags: string) {
+  const postsRes = await getPostByCondition({types: [4]});
+  const pagePost = await pagePostCondition({types: [4], tags: tags}, 1, 5);
+  postStore.setCurrentPagePost(pagePost.data.items.records)
+  postStore.setPages(pagePost.data.items.pages)
+  await postStore.setLearnPost(postsRes.data.list)
+  isLoad.value = false
 }
 
 
@@ -69,11 +99,13 @@ onMounted(() => {
     background-color: white;
     padding: 10px 0;
     max-height: 400px;
+
     .nav-item {
       font-size: 16px;
       padding: 15px 20px;
       font-weight: 500;
       user-select: none;
+
       &:hover {
         user-select: none;
         background-color: #f9f9fa;

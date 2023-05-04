@@ -188,7 +188,7 @@ export interface PostQuery {
     collection?: number[];
     collectionUserId?: number[];
     rankType?:number;
-
+    tags?:string;
 }
 
 export interface CommentsQuery {
