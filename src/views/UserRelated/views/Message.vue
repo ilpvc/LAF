@@ -2,7 +2,7 @@
   <div id="related-message">
     <!--头部-->
     <div class="header">
-      <span>所有消息</span> {{ 0 }}
+      <span>所有消息</span> {{ messageStore.getAllMessageNum() }}
     </div>
     <div class="body">
       <n-scrollbar style="max-height: 700px">
@@ -14,8 +14,10 @@
 
 <script setup lang="ts">
 
+import {useMessageStore} from "@/store/MessageStore";
 
-import AttentionUser from "../components/AttentionUser.vue";
+const messageStore = useMessageStore();
+
 </script>
 
 <style scoped lang="less">

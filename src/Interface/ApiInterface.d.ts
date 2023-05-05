@@ -201,6 +201,7 @@ export interface CommentsQuery {
   content?: string;
   commentType?: number;
   parentId?: number;
+  postIds?: number[]
   status?: number;
 }
 
@@ -237,6 +238,7 @@ export interface Res {
 export interface CollectionQuery {
   userId?: number;
   postId?: number;
+  postIds?: number[];
   status?: number;
 }
 
