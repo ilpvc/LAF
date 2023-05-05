@@ -224,9 +224,9 @@ async function doSearch() {
   await router.push(
       {
         name: `search`,
-        params: {
-          info: searchInfo.value
-        }
+        // params: {
+        //   info: searchInfo.value
+        // }
       })
   // searchInfo.value = ''
 

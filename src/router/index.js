@@ -1,6 +1,5 @@
 import {createRouter, createWebHashHistory} from "vue-router/dist/vue-router"
 import {getToken} from "@/utils/auth.ts";
-import {last} from "lodash";
 
 
 const constantRoutes = [
@@ -21,7 +20,7 @@ const constantRoutes = [
         },
       },
       {
-        path: 'search/s=:info?',
+        path: 'search',
         name: 'search',
         component: () => import('@/views/SearchDetail/SearchDetail.vue'),
         meta: {

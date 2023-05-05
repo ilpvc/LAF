@@ -1,7 +1,9 @@
 <template>
   <div class="searchDetail">
     <div>
-      <Card v-for="post in posts" :key="post.id" v-bind:pp="post"></Card>
+      <n-empty size="large" description="什么也没有" v-if="postsNum===0" class="empty">
+      </n-empty>
+      <Card v-else v-for="post in posts" :key="post.id" v-bind:pp="post"></Card>
     </div>
     <div>
       <NavigationCard></NavigationCard>
@@ -25,16 +27,15 @@ const postStore = usePostStore();
 const currentInstance = getCurrentInstance();
 const route = useRoute()
 let posts:Post[]  = postStore.getSearchPosts()
+let postsNum = ref(posts.length)
 //初始化
-function init(){
 
-}
 watch(route,()=>{
   posts = postStore.getSearchPosts()
+  postsNum.value = posts.length
   currentInstance?.proxy?.$forceUpdate()
 })
 onMounted(()=>{
-  init()
 })
 
 </script>
@@ -43,5 +44,14 @@ onMounted(()=>{
 .searchDetail {
   display: flex;
   flex-direction: row;
+
+  .empty{
+    background-color: white;
+    width: 700px;
+    height: 700px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 </style>

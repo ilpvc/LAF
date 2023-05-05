@@ -61,7 +61,6 @@
         <n-image
           v-if="post.image!==''"
           width="100"
-          height="100"
           class="right-image"
           :src="post.image">
 

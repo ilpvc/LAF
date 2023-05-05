@@ -1,6 +1,8 @@
 <template>
   <div class="index">
     <div>
+<!--      <n-empty size="large" description="什么也没有" v-if="postNum===0" class="empty">-->
+<!--      </n-empty>-->
       <Card v-for="port in ports" :key="port.id" v-bind:pp="port"></Card>
     </div>
     <div>
@@ -27,6 +29,7 @@ const loadingBar = useLoadingBar()
 const router = useRouter()
 const currentInstance = getCurrentInstance()
 let ports = ref([])
+const postNum = ref(ports.value.length)
 let load = false
 const webStore = useWebStore()
 
@@ -36,6 +39,7 @@ async function init() {
   if (webStore.getPage === Type.ALL) {
     await getAllNormalPost().then(res => {
       ports.value = res.data.list
+      postNum.value = ports.value.length
       if (useHttpStatusStore().getErrorStatus().has(res.status)){
         confirm("你还没有登录，请登录")
         router.push({name: 'login'})
