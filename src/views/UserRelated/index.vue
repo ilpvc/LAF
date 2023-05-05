@@ -26,7 +26,6 @@ import {onBeforeMount, ref, unref} from "vue";
 import {useRouter} from "vue-router";
 import {useUserRelatedStore} from "@/store/UserRelatedStore";
 import {useLoadingBar} from 'naive-ui'
-import {User} from "@/Interface/ApiInterface";
 import {Nav} from "./enums/nav";
 import {getAttentionCondition} from "@/api/attention";
 import {getUserByCondition} from "@/api/user";
@@ -75,6 +74,7 @@ async function changeNav(nav: number) {
       userRelatedStore.setUsers([])
     }
   }
+
   await router.push({
     name: navMap.get(nav)
   })

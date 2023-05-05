@@ -39,11 +39,11 @@
     </div>
     <!--通知图标等-->
     <n-space :size="30" align="center" justify="center">
-      <router-link to="/notice" class="Tab-icon">
+      <a class="Tab-icon" @click="toMessage">
         <n-badge :value="value" :max="15">
-          <img src="./img/notice.svg">
+          <img src="./img/notice.svg" alt="消息">
         </n-badge>
-      </router-link>
+      </a>
 
       <!--    头像和下拉框  -->
       <n-popover placement="bottom" trigger="click">
@@ -268,6 +268,15 @@ async function toSetting(){
   loadBar.finish()
 }
 
+//跳转到消息页面
+const userRelatedStore = useUserRelatedStore()
+function toMessage(){
+  userRelatedStore.setNav(1)
+  router.push({
+    name:'message'
+  })
+}
+
 </script>
 
 <style scoped lang="less">
@@ -315,6 +324,10 @@ async function toSetting(){
 /*顶部通知样式*/
 .Tab-icon {
   padding-left: 10px;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 /*搜索框样式*/
@@ -325,7 +338,7 @@ async function toSetting(){
   border: 1px solid #ececec;
   height: 32px;
   transition: border 1s;
-  padding: 0 5px 0px 20px;
+  padding: 0 5px 0 20px;
   color: #121212;
   width: 310px;
   margin-right: 10px;
