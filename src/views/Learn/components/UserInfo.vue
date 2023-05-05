@@ -13,7 +13,7 @@
         {{ webInfoStore.getUser.nickname }}
       </div>
       <div class="title-search">
-        <input type="search" placeholder="搜索"/>
+        <input type="search" placeholder="搜索" v-model="searchContent" @keyup.enter="doSearch"/>
       </div>
     </div>
 
@@ -41,10 +41,20 @@
 import {NAvatar} from 'naive-ui'
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {usePostStore} from "@/store/PostStore";
+import {ref} from "vue";
+import {getPostByCondition, pagePostCondition} from "@/api/posts";
 
 const webInfoStore = useWebInfoStore();
 const postStore = usePostStore();
+const emits = defineEmits(['search']);
+const searchContent = ref('')
 
+async function doSearch(){
+
+  const postsRes = await pagePostCondition({searchInfo:searchContent.value,types:[4]},1,5);
+  console.log(postsRes)
+  emits("search",postsRes.data.items.records,postsRes.data.items.pages,searchContent.value)
+}
 
 </script>
 

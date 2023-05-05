@@ -69,6 +69,7 @@ import {Post} from "@/Interface/ApiInterface";
 import {getRankPost, pagePostCondition} from "@/api/posts";
 import {useRouter} from "vue-router";
 import {useLoadingBar} from "naive-ui";
+import {useLearnStore} from "@/store/LearnStore";
 
 const postStore = usePostStore();
 const posts = ref<Post[]>([])
@@ -78,8 +79,18 @@ const loadingBar = useLoadingBar();
 let page = 1
 let pages = postStore.getPages()
 
+const learnStore = useLearnStore();
 async function getMorePosts() {
-  const morePosts = await pagePostCondition({types: [4]}, ++page, 5);
+  const nav = learnStore.getCurrentNav()
+  const searchInfo = learnStore.getSearchInfo()
+  const navMap = learnStore.getNavMap()
+  let morePosts
+  if (searchInfo!==''){
+    morePosts= await pagePostCondition({types: [4],searchInfo:searchInfo,tags:navMap.get(nav)}, ++page, 5);
+  }else {
+    morePosts = await pagePostCondition({types: [4],tags:navMap.get(nav)}, ++page, 5);
+  }
+
   pages = morePosts.data.items.pages
   posts.value = unref(posts).concat(morePosts.data.items.records)
 }

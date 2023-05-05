@@ -6,8 +6,8 @@
       <ul ref="allItem">
         <li class="nav-item" :class="{onFocus:isActive[0]}" @click="changeNav(0)">全部学科</li>
         <li class="nav-item" :class="{onFocus:isActive[1]}" @click="changeNav(1)">高等数学</li>
-        <li class="nav-item" :class="{onFocus:isActive[2]}" @click="changeNav(2)">大学英语</li>
-        <li class="nav-item" :class="{onFocus:isActive[3]}" @click="changeNav(3)">教资</li>
+        <li class="nav-item" :class="{onFocus:isActive[2]}" @click="changeNav(2)">算法</li>
+        <li class="nav-item" :class="{onFocus:isActive[3]}" @click="changeNav(3)">计算机</li>
         <li class="nav-item" :class="{onFocus:isActive[4]}" @click="changeNav(4)">四六级</li>
         <li class="nav-item" :class="{onFocus:isActive[5]}" @click="changeNav(5)">C语言</li>
         <li class="nav-item" :class="{onFocus:isActive[6]}" @click="changeNav(6)">其他</li>
@@ -20,7 +20,7 @@
     </div>
 
     <div class="right">
-      <UserInfo></UserInfo>
+      <UserInfo @search="refreshView"></UserInfo>
     </div>
   </div>
 </template>
@@ -33,6 +33,8 @@ import Index from "./views/index.vue";
 import {getPostByCondition, pagePostCondition} from "@/api/posts";
 import {usePostStore} from "@/store/PostStore";
 import {useLoadingBar} from 'naive-ui'
+import {Post} from "@/Interface/ApiInterface";
+import {useLearnStore} from "@/store/LearnStore";
 
 const allItem = ref()
 const isActive = ref([
@@ -49,9 +51,10 @@ const postStore = usePostStore();
 const loadingBar = useLoadingBar();
 
 const isLoad = ref(false)
-
+const learnStore = useLearnStore();
 async function changeNav(nav: number) {
   isLoad.value = true
+  learnStore.setCurrentNav(nav)
   isActive.value = [false, false, false, false, false, false, false]
   switch (nav) {
     case 0:
@@ -61,7 +64,19 @@ async function changeNav(nav: number) {
       await init('高数')
       break
     case 2:
-      await init('英语')
+      await init('算法')
+      break
+    case 3:
+      await init('计算机')
+      break
+    case 4:
+      await init('四六级')
+      break
+    case 5:
+      await init('C语言')
+      break
+    case 6:
+      await init('其他')
       break
   }
 
@@ -80,6 +95,16 @@ async function init(tags: string) {
   postStore.setPages(pagePost.data.items.pages)
   await postStore.setLearnPost(postsRes.data.list)
   isLoad.value = false
+}
+
+function refreshView(list,pages,searchContent){
+  isLoad.value = true
+  learnStore.setSearchInfo(searchContent)
+  setTimeout(()=>{
+    postStore.setCurrentPagePost(list)
+    postStore.setPages(pages)
+    isLoad.value = false
+  },500)
 }
 
 

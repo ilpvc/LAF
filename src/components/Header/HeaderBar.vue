@@ -30,7 +30,7 @@
     <!--搜索框-->
     <div class="SearchBar">
       <form>
-        <input class="SearchBox" v-model="searchInfo"/>
+        <input class="SearchBox" v-model="searchInfo" @keyup.enter="doSearch"/>
         <n-button type="info" attr-type="submit"
                   style="outline: none" @click="doSearch">
           搜索
@@ -228,7 +228,7 @@ async function doSearch() {
           info: searchInfo.value
         }
       })
-  searchInfo.value = ''
+  // searchInfo.value = ''
 
 }
 

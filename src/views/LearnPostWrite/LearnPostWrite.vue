@@ -32,7 +32,7 @@
           <n-input v-model:value="postTemp.title" placeholder="标题"/>
         </n-form-item>
         <n-form-item label="标签" path="tags">
-          <n-dynamic-tags v-model:value="postTemp.tags"/>
+          <n-dynamic-tags v-model:value="postTemp.tags" type="success"/>
         </n-form-item>
         <n-form-item label="封面图片">
           <n-upload
@@ -79,7 +79,7 @@ const webInfoStore = useWebInfoStore();
 const postTemp = ref({
   title: '',
   userNickname: webInfoStore.getUser.nickname,
-  tags: [],
+  tags: ['高数','四六级','算法','计算机','C语言'],
   image: ''
 })
 
