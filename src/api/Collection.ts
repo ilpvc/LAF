@@ -26,3 +26,10 @@ export const deleteCollections = (params: CollectionQuery) =>
         data: params
     });
 
+export const updateCollections = (params: Collection) =>
+  service.request({
+    url: `/Collections/updateCollections`,
+    method: "put",
+    params: {},
+    data: params
+  });

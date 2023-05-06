@@ -5,30 +5,42 @@
       <n-card :title="'所有消息'+' '+messageStore.getAllMessageNum()" class="header-card" :bordered="false">
         <n-tabs type="line" animated justify-content="space-between">
           <n-tab-pane name="blacklist" tab="拉黑消息">
-            <i v-for="blacklist of messageStore.getBlacklist()">
-              {{blacklist.id}} 拉黑了你
-            </i>
+            <div v-if="showInfo">
+              <n-skeleton height="40px" circle />
+            </div>
+            <div v-if="showInfo">
+              <n-skeleton text :repeat="2" style="width: 700px"/> <n-skeleton text style="width: 60%" />
+            </div>
+            <div v-else v-for="blacklist of blacklists">
+              <MessageUser :item="blacklist" :itemType="'blacklist'">拉黑了你</MessageUser>
+            </div>
           </n-tab-pane>
           <n-tab-pane name="attention" tab="关注消息">
-            <div v-for="attention of messageStore.getAttentions()">
-              {{attention.id}} 拉黑了你
+            <div v-for="attention of attentions">
+              <MessageUser :item="attention" :itemType="'attention'"> 关注了你</MessageUser>
             </div>
           </n-tab-pane>
           <n-tab-pane name="collection" tab="收藏消息">
-            <div v-for="collection of messageStore.getCollections()">
-              {{collection.userId}} 收藏了你的帖子{{collection.postId}}
+            <div v-for="collection of collections">
+              <MessageUser :item="collection" :itemType="'collection'"> 收藏了你的文章</MessageUser>
             </div>
           </n-tab-pane>
           <n-tab-pane name="comment" tab="评论消息">
-            <div v-for="comments of messageStore.getMyPostComments()">
-              {{comments.userName}} 在你的帖子{{comments.postId}} 下评论了{{comments.content}}
+
+            <div v-for="comment of myComments">
+              <MessageUser :item="comment" :itemType="'myComment'"> 在你的文章</MessageUser>
+            </div>
+            <div v-for="comment of comments">
+              <MessageUser :item="comment" :itemType="'comment'"> 在你的文章</MessageUser>
             </div>
           </n-tab-pane>
           <n-tab-pane name="likes" tab="点赞消息">
-            七里香
+            <div v-for="like of likes">
+              <MessageUser :item="like" :itemType="'like'"> 点赞了你的文章</MessageUser>
+            </div>
           </n-tab-pane>
           <n-tab-pane name="system" tab="系统消息">
-            七里香
+            系统消息
           </n-tab-pane>
         </n-tabs>
       </n-card>
@@ -46,8 +58,47 @@
 <script setup lang="ts">
 
 import {useMessageStore} from "@/store/MessageStore";
+import MessageUser from "../components/MessageUser.vue";
+import {onBeforeMount, reactive, ref} from "vue";
+import {blacklistCondition} from "@/api/blacklist";
+import {useWebInfoStore} from "@/store/WebInfoStore";
+import {Attention, Blacklist, Collection, Comments, Likes} from "@/Interface/ApiInterface";
+import {getAttentionCondition} from "@/api/attention";
+import {getPostByCondition} from "@/api/posts";
+import {getCollectionByCondition} from "@/api/Collection";
+import {getCommentCondition} from "@/api/comment";
+import {getLikesByCondition} from "@/api/Likes";
+
 
 const messageStore = useMessageStore();
+const webInfoStore = useWebInfoStore();
+
+const showInfo = ref(true)
+
+let blacklists = reactive<Blacklist[]>([])
+let attentions = reactive<Attention[]>([])
+let collections = reactive<Collection[]>([])
+let comments = reactive<Comments[]>([])
+let myComments = reactive<Comments[]>([])
+let likes = reactive<Likes[]>([])
+onBeforeMount(async ()=>{
+  const blacklistsRes = await blacklistCondition({otherUserId:webInfoStore.getUser.id});
+  blacklists = blacklistsRes.data.list
+  const attentionsRes = await getAttentionCondition({attentionedUserId: webInfoStore.getUser.id});
+  attentions = attentionsRes.data.list
+  const postsRes = await getPostByCondition({userId: webInfoStore.getUser.id});
+  let postsIds = postsRes.data.list.map(v=>v.id)
+  const collectionsRes = await getCollectionByCondition({postIds: postsIds});
+  collections = collectionsRes.data.list
+  const myPostCommentsRes = await getCommentCondition({postIds:postsIds})
+  myComments = myPostCommentsRes.data.list
+  const commentsRes = await getCommentCondition({commentedUserId:webInfoStore.getUser.id})
+  comments = commentsRes.data.list
+  const likesRes = await getLikesByCondition({postIds:postsIds})
+  likes = likesRes.data.list
+  showInfo.value=false
+})
+
 
 </script>
 

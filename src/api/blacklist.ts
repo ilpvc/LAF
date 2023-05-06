@@ -25,3 +25,11 @@ export const deleteBlacklist = (params: BlacklistQuery) =>
     params: {},
     data: params
   });
+
+export const updateBlacklist = (params: Blacklist) =>
+  service.request({
+    url: `/blacklist/updateBlacklist`,
+    method: "put",
+    params: {},
+    data: params
+  });

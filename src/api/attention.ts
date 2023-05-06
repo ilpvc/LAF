@@ -25,3 +25,11 @@ export const deleteAttention = (params: AttentionQuery) =>
         params: {},
         data: params
     });
+
+export const updateAttention = (params: Attention) =>
+  service.request({
+    url: `/attention/updateAttention`,
+    method: "put",
+    params: {},
+    data: params
+  });

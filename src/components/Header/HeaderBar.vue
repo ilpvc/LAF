@@ -284,32 +284,36 @@ async function toMessage(){
 const allMessage = ref(0)
 const messageStore = useMessageStore();
 onBeforeMount(async ()=>{
-  /**
-   * 获取所有的未读消息
-   */
-  const blacklistsRes = await blacklistCondition({otherUserId:webInfoStore.getUser.id,status:0});
-  const attentionsRes = await getAttentionCondition({attentionedUserId: webInfoStore.getUser.id, status: 0});
-  const postsRes = await getPostByCondition({userId: webInfoStore.getUser.id});
-  let postsIds = postsRes.data.list.map(v=>v.postId)
-  const collectionsRes = await getCollectionByCondition({postIds: postsIds, status: 0});
-  const myPostCommentsRes = await getCommentCondition({postIds:postsIds, status: 0})
-  const commentsRes = await getCommentCondition({commentedUserId:webInfoStore.getUser.id, status: 0})
-  const likesRes = await getLikesByCondition({postIds:postsIds,status:0})
-  const blacklistsNum = blacklistsRes.data.list.length
-  const attentionsNum = attentionsRes.data.list.length
-  const collectionsNum = collectionsRes.data.list.length
-  const myPostCommentsNum = myPostCommentsRes.data.num
-  const commentsNum = commentsRes.data.num
-  const likesNum = likesRes.data.list.length
-  messageStore.setLikes(likesRes.data.list)
-  messageStore.setComments(commentsRes.data.list)
-  messageStore.setMyPostComments(myPostCommentsRes.data.list)
-  messageStore.setCollections(collectionsRes.data.list)
-  messageStore.setBlacklist(blacklistsRes.data.list)
-  messageStore.setAttentions(attentionsRes.data.list)
-  allMessage.value = blacklistsNum+attentionsNum+collectionsNum+myPostCommentsNum+collectionsNum+commentsNum+likesNum
-  messageStore.setAllMessageNum(allMessage.value)
 
+  if (webInfoStore.getUser.id!==undefined){
+    /**
+     * 获取所有的未读消息
+     */
+    const blacklistsRes = await blacklistCondition({otherUserId:webInfoStore.getUser.id,status:0});
+    const attentionsRes = await getAttentionCondition({attentionedUserId: webInfoStore.getUser.id, status: 0});
+    const postsRes = await getPostByCondition({userId: webInfoStore.getUser.id});
+    let postsIds = postsRes.data.list.map(v=>v.id)
+    const collectionsRes = await getCollectionByCondition({postIds: postsIds, status: 0});
+    const myPostCommentsRes = await getCommentCondition({postIds:postsIds, status: 0})
+    const commentsRes = await getCommentCondition({commentedUserId:webInfoStore.getUser.id, status: 0})
+    const likesRes = await getLikesByCondition({postIds:postsIds,status:0})
+    const blacklistsNum = blacklistsRes.data.list.length
+    const attentionsNum = attentionsRes.data.list.length
+    const collectionsNum = collectionsRes.data.list.length
+    const myPostCommentsNum = myPostCommentsRes.data.num
+    const commentsNum = commentsRes.data.num
+    const likesNum = likesRes.data.list.length
+    messageStore.setLikes(likesRes.data.list)
+    messageStore.setComments(commentsRes.data.list)
+    messageStore.setMyPostComments(myPostCommentsRes.data.list)
+    messageStore.setCollections(collectionsRes.data.list)
+    messageStore.setBlacklist(blacklistsRes.data.list)
+    messageStore.setAttentions(attentionsRes.data.list)
+    allMessage.value = blacklistsNum+attentionsNum+myPostCommentsNum+collectionsNum+commentsNum+likesNum
+    messageStore.setAllMessageNum(allMessage.value)
+  }else {
+    allMessage.value=0
+  }
 
   if (webInfoStore.getUser.header !== undefined) {
     image.push(<string>webInfoStore.getUser.header)

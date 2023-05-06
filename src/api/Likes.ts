@@ -34,3 +34,10 @@ export const allLikes = () =>
     data:{}
   });
 
+export const updateLikes = (params: Likes) =>
+  service.request({
+    url: `/likes/updateLikes`,
+    method: "put",
+    params: {},
+    data: params
+  });
