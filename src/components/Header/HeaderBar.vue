@@ -52,7 +52,7 @@
             <n-avatar
                 round
                 size="medium"
-                :src="image.pop()"
+                :src="webInfoStore.getUser.header || 'src/components/Header/img/default_header.svg'"
             >
             </n-avatar>
           </a>
@@ -124,7 +124,6 @@ import {useMessageStore} from "@/store/MessageStore";
 const webInfoStore = useWebInfoStore()
 const webStore = useWebStore()
 const postStore = usePostStore()
-const image = ['src/components/Header/img/default_header.svg']
 const loadBar = useLoadingBar()
 const router = useRouter()
 const dialog = useDialog();
@@ -315,9 +314,6 @@ onBeforeMount(async ()=>{
     allMessage.value=0
   }
 
-  if (webInfoStore.getUser.header !== undefined) {
-    image.push(<string>webInfoStore.getUser.header)
-  }
 })
 
 </script>
