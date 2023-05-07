@@ -332,3 +332,17 @@ export interface BlacklistQuery {
   status?: number;
 
 }
+
+export interface Message {
+  id?: number;
+  userId?: number;
+  type?:number;
+  content?:string;
+  createdTime?:number;
+}
+
+export interface MessageQuery {
+  userId?: number;
+  type?:number;
+  content?:string;
+}

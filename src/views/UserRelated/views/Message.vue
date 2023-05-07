@@ -2,7 +2,7 @@
   <div id="related-message">
     <!--头部-->
     <div class="header">
-      <n-card :title="'所有消息'+' '+messageStore.getAllMessageNum()" class="header-card" :bordered="false">
+      <n-card :title="'所有消息'+' 未读 '+messageStore.getAllMessageNum()" class="header-card" :bordered="false">
         <n-tabs type="line" animated justify-content="space-between">
           <n-tab-pane name="blacklist" tab="拉黑消息">
             <div v-if="showInfo">
@@ -40,7 +40,9 @@
             </div>
           </n-tab-pane>
           <n-tab-pane name="system" tab="系统消息">
-            系统消息
+            <div v-for="systemMessage of messages">
+              <MessageUser :item="systemMessage" :itemType="'system'"> </MessageUser>
+            </div>
           </n-tab-pane>
         </n-tabs>
       </n-card>
@@ -48,8 +50,6 @@
     <div class="body">
       <n-scrollbar style="max-height: 700px">
         <n-empty v-if="false" description="什么都没有"></n-empty>
-
-
       </n-scrollbar>
     </div>
   </div>
@@ -62,12 +62,13 @@ import MessageUser from "../components/MessageUser.vue";
 import {onBeforeMount, reactive, ref} from "vue";
 import {blacklistCondition} from "@/api/blacklist";
 import {useWebInfoStore} from "@/store/WebInfoStore";
-import {Attention, Blacklist, Collection, Comments, Likes} from "@/Interface/ApiInterface";
+import {Attention, Blacklist, Collection, Comments, Likes, Message} from "@/Interface/ApiInterface";
 import {getAttentionCondition} from "@/api/attention";
 import {getPostByCondition} from "@/api/posts";
 import {getCollectionByCondition} from "@/api/Collection";
 import {getCommentCondition} from "@/api/comment";
 import {getLikesByCondition} from "@/api/Likes";
+import {getMessageByCondition} from "@/api/message";
 
 
 const messageStore = useMessageStore();
@@ -81,6 +82,7 @@ let collections = reactive<Collection[]>([])
 let comments = reactive<Comments[]>([])
 let myComments = reactive<Comments[]>([])
 let likes = reactive<Likes[]>([])
+let messages = reactive<Message[]>([])
 onBeforeMount(async ()=>{
   const blacklistsRes = await blacklistCondition({otherUserId:webInfoStore.getUser.id});
   blacklists = blacklistsRes.data.list
@@ -96,6 +98,11 @@ onBeforeMount(async ()=>{
   comments = commentsRes.data.list
   const likesRes = await getLikesByCondition({postIds:postsIds})
   likes = likesRes.data.list
+
+  const systemMessage4me = await getMessageByCondition({userId:webInfoStore.getUser.id,type:2});
+  const allSystemMessage = await getMessageByCondition({type:1});
+  messages = messages.concat(systemMessage4me.data.list)
+  messages = messages.concat(allSystemMessage.data.list)
   showInfo.value=false
 })
 

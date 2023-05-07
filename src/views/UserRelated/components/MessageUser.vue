@@ -7,7 +7,7 @@
         <n-avatar
           round
           :size="45"
-          :src="user.header"
+          :src="itemType==='system'?'src/assets/system_header.png':user.header"
         />
       </div>
 
@@ -110,6 +110,13 @@ async function init() {
       let likeTempItem = {...unref(item)}
       likeTempItem.status = 1
       await updateLikes(likeTempItem)
+      break
+    case 'system':
+      // const userRes7 = await getUserById(item.userId)
+      // user = userRes7.data.item
+      // let system = {...unref(item)}
+      // likeTempItem.status = 1
+      // await updateLikes(likeTempItem)
       break
   }
   showInfo.value = true
