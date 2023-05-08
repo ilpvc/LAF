@@ -23,7 +23,7 @@
     </div>
 
     <div class="mission">
-      <div class="mission-item" v-for="task in tasks" :key="task.taskId">
+      <div class="mission-item" v-for="(task,index) in tasks" :key="index">
         <div class="item-left">
           <svg t="1678697746782" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
                p-id="1493" width="30" height="30">
@@ -61,9 +61,14 @@
         </div>
 
         <div class="item-right">
-          <n-button  round type="success" size="tiny" @click="success">
-            领取
+          <n-button v-if="receivedTaskSet?.has(task.id)" round size="tiny" type="warning" disabled>
+            已领取
           </n-button>
+          <n-button v-else round :type="finishTaskSet.has(task.id)?'success':''"
+                     size="tiny" @click="success(task)" :disabled="!finishTaskSet.has(task.id)" >
+            领&nbsp;&nbsp;&nbsp;&nbsp;取
+          </n-button>
+
         </div>
 
       </div>
@@ -71,19 +76,41 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {useMessage} from 'naive-ui'
 import {getAllTasks} from "@/api/task";
-import {onMounted, ref} from "vue";
+import {onBeforeMount, onMounted, ref, unref} from "vue";
+import {getTaskUserByCondition, updateTaskUsers} from "@/api/taskUser";
+import {useWebInfoStore} from "@/store/WebInfoStore";
+import {Tasks, TaskUsers} from "@/Interface/ApiInterface";
+import {getUserById, updateUser} from "@/api/user";
 
+
+const webInfoStore = useWebInfoStore();
 const message = useMessage()
-function success () {
+async function success (task) {
+  const taskUserRes = await getTaskUserByCondition({taskId:task.id,userId:webInfoStore.getUser.id});
+  let taskUsers:TaskUsers = taskUserRes.data.list[0]
+  taskUsers.status = 1
+  await updateTaskUsers(taskUsers)
+  let user = webInfoStore.getUser
+  user.integral = task.points+ (user.integral || 0)
+  await updateUser(user)
+  webInfoStore.setUser(user)
   message.success(
       "领取成功"
   )
+  receivedTaskSet.value?.add(task.id)
 }
-const tasks = ref([])
+const tasks = ref<Tasks[]>([])
+
+//已经完成的任务ID
+let finishTaskSet = new Set()
+//已经领取的任务Id
+let receivedTaskSet = ref<Set<number>>()
+receivedTaskSet.value = new Set<number>()
 async function init(){
+
   await getAllTasks().then(res=>{
     for (let i of res.data.list){
       tasks.value.push(i)
@@ -94,6 +121,14 @@ async function init(){
 
 onMounted(()=>{
   init()
+})
+
+onBeforeMount(async ()=>{
+  const taskUserRes = await getTaskUserByCondition({userId: webInfoStore.getUser.id,status: 0})
+  taskUserRes.data.list.map(v =>finishTaskSet.add(v.taskId))
+  const receivedTaskUserRes = await getTaskUserByCondition({userId: webInfoStore.getUser.id,status: 1})
+
+  receivedTaskUserRes.data.list.map(v=>receivedTaskSet?.value?.add(v.taskId))
 })
 </script>
 
@@ -108,7 +143,7 @@ onMounted(()=>{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px 0px;
+    padding: 5px 0;
     .item-left {
       display: flex;
       align-items: center;
@@ -122,6 +157,12 @@ onMounted(()=>{
       }
     }
 
+
+    .item-right {
+      button {
+        outline: none;
+      }
+    }
   }
 }
 

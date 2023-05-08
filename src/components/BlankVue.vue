@@ -8,7 +8,6 @@ import {useRoute, useRouter} from "vue-router";
 import {onBeforeMount} from "vue";
 
 const route = useRoute();
-console.log(route)
 useRouter()
 onBeforeMount(() => {
   useRouter().push({

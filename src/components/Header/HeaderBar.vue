@@ -112,7 +112,7 @@ import {useUserDetailsStore} from "@/store/UserDetailsStore";
 import {useUserRelatedStore} from "@/store/UserRelatedStore";
 import {Nav} from "../../views/UserRelated/enums/nav";
 import {getAttentionCondition} from "@/api/attention";
-import {getUserByCondition} from "@/api/user";
+import {getUserByCondition, getUserById} from "@/api/user";
 import {blacklistCondition} from "@/api/blacklist";
 import {useLikesStore} from "@/store/LikesStore";
 import {useCommentStore} from "@/store/CommentStore";
@@ -140,6 +140,9 @@ async function beforeLeaveInUserDetails() {
     }
   })
   if (webInfoStore.getUser !== undefined) {
+    const userRes = await getUserById(webInfoStore.getUser.id);
+    let user = userRes.data.item
+    webInfoStore.setUser(user)
     useUserDetailsStore().setUser(webInfoStore.getUser)
     loadBar.finish()
     await router.push({name: 'blank', params: {name: webInfoStore?.getUser?.nickname},query:{name:webInfoStore?.getUser?.nickname}})
@@ -196,19 +199,24 @@ async function changeNav(nav: number) {
 
 //退出登录
 function logout() {
-  dialog.warning({
-    title:'退出登录',
-    content: '确认退出登录,登录信息将被清除',
-    negativeText: '取消',
-    positiveText:'确认',
-    onPositiveClick:()=>{
-      removeToken()
-      removeUser()
-      //将user值设为空
-      webInfoStore.setUser({})
-      router.push({path:'/login'})
-    }
-  })
+  if (webInfoStore.getUser.id!==undefined){
+    dialog.warning({
+      title:'退出登录',
+      content: '确认退出登录,登录信息将被清除',
+      negativeText: '取消',
+      positiveText:'确认',
+      onPositiveClick:()=>{
+        removeToken()
+        removeUser()
+        //将user值设为空
+        webInfoStore.setUser({})
+        router.push({path:'/login'})
+      }
+    })
+  }else {
+    router.push({path:'/login'})
+  }
+
 
 }
 

@@ -1,8 +1,8 @@
 <template>
   <div class="index">
     <div>
-<!--      <n-empty size="large" description="什么也没有" v-if="postNum===0" class="empty">-->
-<!--      </n-empty>-->
+      <!--      <n-empty size="large" description="什么也没有" v-if="postNum===0" class="empty">-->
+      <!--      </n-empty>-->
       <Card v-for="port in ports" :key="port.id" v-bind:pp="port"></Card>
     </div>
     <div>
@@ -23,7 +23,9 @@ import {useWebStore} from "@/store/WebStore";
 import {Type} from "@/Interface/enum";
 import {useHttpStatusStore} from "@/store/HttpStatusStore";
 import {useRouter} from "vue-router";
-import {useLoadingBar} from "naive-ui"
+import {useLoadingBar, useMessage} from "naive-ui"
+import {addTaskUsers, getTaskUserByCondition} from "@/api/taskUser";
+import {useWebInfoStore} from "@/store/WebInfoStore";
 
 const loadingBar = useLoadingBar()
 const router = useRouter()
@@ -40,15 +42,15 @@ async function init() {
     await getAllNormalPost().then(res => {
       ports.value = res.data.list
       postNum.value = ports.value.length
-      if (useHttpStatusStore().getErrorStatus().has(res.status)){
+      if (useHttpStatusStore().getErrorStatus().has(res.status)) {
         confirm("你还没有登录，请登录")
         router.push({name: 'login'})
       }
     })
   } else {
-    const res = await getPostByCondition({types: [webStore.getPage],status:[1]});
+    const res = await getPostByCondition({types: [webStore.getPage], status: [1]});
     ports.value = res.data.list
-    if (useHttpStatusStore().getErrorStatus().has(res.status)){
+    if (useHttpStatusStore().getErrorStatus().has(res.status)) {
       confirm("你还没有登录，请登录")
       await router.push({name: 'login'})
     }
@@ -59,7 +61,21 @@ async function init() {
 
 }
 
-watch(()=>webStore.getPage,()=>{
+
+const webInfoStore = useWebInfoStore();
+const message = useMessage();
+
+//完成登录任务
+async function doLoginTask() {
+  const taskUserRes = await getTaskUserByCondition({taskId: 7, userId: webInfoStore.getUser.id});
+  if (taskUserRes.data.list.length === 0) {
+    await addTaskUsers({taskId: 7, userId: webInfoStore.getUser.id})
+    message.success('每日登录 完成')
+  }
+
+}
+
+watch(() => webStore.getPage, () => {
   init()
 })
 
@@ -69,7 +85,9 @@ nextTick(() => {
 
 onMounted(() => {
   init()
+  doLoginTask()
 })
+
 
 </script>
 

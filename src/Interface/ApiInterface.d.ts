@@ -59,7 +59,7 @@ export interface UserRole {
 }
 
 export interface Tasks {
-  taskId?: number;
+  id?: number;
   taskName?: string;
   points?: number;
   description?: string;
@@ -68,11 +68,18 @@ export interface Tasks {
 }
 
 export interface TaskUsers {
-  taskUserId?: number;
+  id?: number;
   taskId?: number;
   userId?: number;
+  status?: number;
   createTime?: string;
   updateTime?: string;
+}
+
+export interface TaskUserQuery {
+  taskId?: number;
+  userId?: number;
+  status?: number;
 }
 
 export interface Roles {
@@ -336,13 +343,13 @@ export interface BlacklistQuery {
 export interface Message {
   id?: number;
   userId?: number;
-  type?:number;
-  content?:string;
-  createdTime?:number;
+  type?: number;
+  content?: string;
+  createdTime?: number;
 }
 
 export interface MessageQuery {
   userId?: number;
-  type?:number;
-  content?:string;
+  type?: number;
+  content?: string;
 }

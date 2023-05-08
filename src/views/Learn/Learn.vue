@@ -32,9 +32,10 @@ import UserInfo from "./components/UserInfo.vue";
 import Index from "./views/index.vue";
 import {getPostByCondition, pagePostCondition} from "@/api/posts";
 import {usePostStore} from "@/store/PostStore";
-import {useLoadingBar} from 'naive-ui'
-import {Post} from "@/Interface/ApiInterface";
+import {useLoadingBar, useMessage} from 'naive-ui'
 import {useLearnStore} from "@/store/LearnStore";
+import {addTaskUsers, getTaskUserByCondition} from "@/api/taskUser";
+import {useWebInfoStore} from "@/store/WebInfoStore";
 
 const allItem = ref()
 const isActive = ref([
@@ -52,6 +53,7 @@ const loadingBar = useLoadingBar();
 
 const isLoad = ref(false)
 const learnStore = useLearnStore();
+
 async function changeNav(nav: number) {
   isLoad.value = true
   learnStore.setCurrentNav(nav)
@@ -97,18 +99,33 @@ async function init(tags: string) {
   isLoad.value = false
 }
 
-function refreshView(list,pages,searchContent){
+function refreshView(list, pages, searchContent) {
   isLoad.value = true
   learnStore.setSearchInfo(searchContent)
-  setTimeout(()=>{
+  setTimeout(() => {
     postStore.setCurrentPagePost(list)
     postStore.setPages(pages)
     isLoad.value = false
-  },500)
+  }, 500)
 }
 
 
+const webInfoStore = useWebInfoStore();
+const message = useMessage();
+
+//完成学习浏览学习区域任务
+async function finishLearnTask() {
+  const taskUserRes = await getTaskUserByCondition({taskId: 10, userId: webInfoStore.getUser.id});
+  if (taskUserRes.data.list.length === 0) {
+    await addTaskUsers({taskId: 10, userId: webInfoStore.getUser.id})
+    message.success('浏览学习区域 完成')
+  }
+
+}
+
 onMounted(() => {
+
+  finishLearnTask()
 })
 </script>
 
