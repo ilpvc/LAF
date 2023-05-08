@@ -195,33 +195,45 @@
 
       </div>
 
-      <div class="item">
-        <h2>反馈</h2>
+<!--      <div class="item">-->
+<!--        <h2>反馈</h2>-->
 
-        <div>
-          <h3>提交问题</h3>
-          <div style="height: 300px;display: block">
-            <MyEditor></MyEditor>
-          </div>
-        </div>
+<!--        <div>-->
+<!--          <h3>提交问题</h3>-->
+<!--          <div style="height: 300px;display: block">-->
+<!--            <MyEditor></MyEditor>-->
+<!--          </div>-->
+<!--        </div>-->
 
-      </div>
+<!--      </div>-->
 
     </div>
 
     <div class="right">
       <div class="question">
         <h2>常见问题</h2>
-        <ul>
-          <li><a href="#">1、忘记密码怎么办？</a></li>
-          <li><a href="#">2、账号注销可以找回吗？</a></li>
-          <li><a href="#">3、绑定手机号无法使用,应该怎么解绑?</a></li>
-          <li><a href="#">4、账号封禁，如何解封？</a></li>
-          <li><a href="#">5、帖子信息侵犯个人信息？如何解决</a></li>
-          <li><a href="#">6、别人对我言语攻击，应该怎么举报？</a></li>
-          <li><a href="#">7、我的物品被别人冒领怎么办？</a></li>
-          <li><a href="#">8、如何发起招领？</a></li>
-          <li><a href="#">9、如何发起挂失？</a></li>
+        <div v-if="isLoaded">
+          <n-skeleton ></n-skeleton>
+          <n-skeleton ></n-skeleton>
+          <n-skeleton ></n-skeleton>
+          <n-skeleton ></n-skeleton>
+          <n-skeleton width="60%"></n-skeleton>
+        </div>
+        <ul class="all-item" v-else>
+          <li class="item" tabindex="-1" v-for="(item,index) in questionList" :key="index">
+            <i class="item-key">{{index+1}}、{{item.key}}</i>
+            <div class="question-hide">
+              {{item.value}}
+            </div>
+          </li>
+<!--          <li><a href="#">2、账号注销可以找回吗？</a></li>-->
+<!--          <li><a href="#">3、绑定手机号无法使用,应该怎么解绑?</a></li>-->
+<!--          <li><a href="#">4、账号封禁，如何解封？</a></li>-->
+<!--          <li><a href="#">5、帖子信息侵犯个人信息？如何解决</a></li>-->
+<!--          <li><a href="#">6、别人对我言语攻击，应该怎么举报？</a></li>-->
+<!--          <li><a href="#">7、我的物品被别人冒领怎么办？</a></li>-->
+<!--          <li><a href="#">8、如何发起招领？</a></li>-->
+<!--          <li><a href="#">9、如何发起挂失？</a></li>-->
         </ul>
       </div>
 
@@ -233,14 +245,15 @@
 
 <script setup lang="ts">
 import MyEditor from "@/components/MyEditor.vue";
-import {getCurrentInstance, ref} from "vue";
-import {UserSecurity} from "@/Interface/ApiInterface";
+import {getCurrentInstance, onBeforeMount, ref} from "vue";
+import {Attribute, UserSecurity} from "@/Interface/ApiInterface";
 import {getUserById, updateUserSecurity} from "@/api/user";
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {useMessage,useLoadingBar} from "naive-ui";
 import {useRouter} from "vue-router";
 import {useUserRelatedStore} from "@/store/UserRelatedStore";
 import {Nav} from "../UserRelated/enums/nav";
+import {getByKey} from "@/api/attribute";
 
 
 const loadingBar = useLoadingBar();
@@ -293,6 +306,16 @@ async function toRelated(){
 }
 
 const blacklistUsers = userRelatedStore.getUsers()
+const questionList = ref([])
+const isLoaded = ref(true)
+onBeforeMount(async ()=>{
+  const questionListRes = await getByKey('question');
+  questionList.value = questionListRes.data.list.map(v=>({
+    key:v.textValue.split('__')[0],
+    value:v.textValue.split('__')[1]
+  }))
+  isLoaded.value=false
+})
 
 </script>
 
@@ -353,22 +376,40 @@ const blacklistUsers = userRelatedStore.getUsers()
     .question {
       background-color: @bgColor;
 
-      padding: 10px 20px;
+      padding: 10px 0;
       width: 290px;
 
-      ul {
+
+
+
+      .all-item {
         display: flex;
         flex-direction: column;
 
-        li {
-          display: inline-block;
-          line-height: 30px;
-
-          a {
-            color: #8590a6;
+        .item {
+          display: block;
+          line-height: 40px;
+          transition: background-color 0.5s;
+          padding: 0 20px;
+          &:focus{
+            background-color: #ececec;
+          }
+          &:focus .question-hide{
+            display: flex;
           }
 
-          a:hover {
+          .question-hide {
+            display: none;
+          }
+
+
+          .item-key {
+            color: #8590a6;
+            user-select: none;
+          }
+
+          .item-key:hover {
+            cursor: pointer;
             color: #1e90ff;
           }
         }

@@ -222,9 +222,16 @@ export interface R {
 
 export interface AttributeQuery {
   attrKey?: string;
-  numberValue?: string;
+  numberValue?: number;
   textValue?: string;
 }
+export interface Attribute{
+  id?:number;
+  attrKey?: string;
+  numberValue?: number
+  textValue?: string;
+}
+
 
 
 export interface LoginParams {

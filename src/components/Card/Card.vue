@@ -206,7 +206,7 @@
 <script setup lang="ts">
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
 import {computed, getCurrentInstance, onBeforeMount, onMounted, reactive, ref, unref} from 'vue'
-import {Attention, AttentionQuery, Comments, Post, Report, User} from "@/Interface/ApiInterface";
+import {Attention, AttentionQuery, Attribute, Comments, Post, Report, User} from "@/Interface/ApiInterface";
 import moment from "moment";
 import {getCacheUserById, getUserByCondition} from "@/api/user";
 import type {DrawerPlacement} from 'naive-ui'
@@ -226,6 +226,7 @@ import {getLoginUser} from "@/utils/auth";
 import {addReport, getReportByCondition} from "@/api/Report";
 import {getCommentCondition} from "@/api/comment";
 import {useCommentStore} from "@/store/CommentStore";
+import {getByKey, updateAttrByKey} from "@/api/attribute";
 
 const router = useRouter()
 const userDetailsStore = useUserDetailsStore()
@@ -549,6 +550,18 @@ function doAccomplish(){
     autoFocus:false,
     onNegativeClick:async ()=>{
       loadingBar.start()
+
+      //完成帖子,完成数加一
+      const allCompleteRes  = await getByKey('complete_overall')
+      const nowDayCompleteRes = await getByKey('complete_nowaday')
+      let nowDayAttr:Attribute = nowDayCompleteRes.data.list[0]
+      let allAttr:Attribute = allCompleteRes.data.list[0]
+      nowDayAttr.numberValue=1+ (nowDayAttr.numberValue || 0)
+      allAttr.numberValue = 1+ (allAttr.numberValue||0)
+      await updateAttrByKey(nowDayAttr)
+      await updateAttrByKey(allAttr)
+
+
       post.status=5
       await updatePost(post)
       loadingBar.finish()

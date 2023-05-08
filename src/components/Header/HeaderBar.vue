@@ -46,7 +46,7 @@
       </a>
 
       <!--    头像和下拉框  -->
-      <n-popover placement="bottom" trigger="click">
+      <n-popover placement="bottom" trigger="hover" >
         <template #trigger>
           <a href="javascript:;" class="Tab-avatar">
             <n-avatar
@@ -191,6 +191,11 @@ async function changeNav(nav: number) {
     await router.push({
       name:'learn'
     })
+  }
+
+
+  if (nav===5) {
+    webStore.changePage(nav)
   }
   loadBar.finish()
 

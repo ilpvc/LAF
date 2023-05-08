@@ -48,6 +48,11 @@ const constantRoutes = [
         component: () => import('@/views/WritePost/WritePost.vue')
       },
       {
+        path: 'feedback',
+        name: 'feedback',
+        component: () => import('@/views/Feedback/Feedback.vue')
+      },
+      {
         path: 'learn',
         name: 'learn',
         component: () => import('@/views/Learn/Learn.vue'),

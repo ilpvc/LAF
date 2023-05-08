@@ -28,9 +28,9 @@
           发起招领
           </router-link>
         </li>
-        <li><a href="javascript:;">
+        <li><router-link :to="{name:'feedback'}">
           <img src="src/components/img/feedback.svg" alt="反馈">
-          我要反馈</a></li>
+          我要反馈</router-link></li>
       </ul>
     </div>
 
@@ -70,8 +70,8 @@ let all: AttributeQuery = {}
 async function init() {
   await getLikeKey("complete").then(res => {
     count = res.data.list
-    now = count[0]
-    all = count[1]
+    now = count[1]
+    all = count[0]
     currentInstance?.proxy?.$forceUpdate()
   })
 

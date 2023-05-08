@@ -68,6 +68,7 @@ import {useWebInfoStore} from "@/store/WebInfoStore";
 import {addPost, getPostByCondition, pagePostCondition} from "@/api/posts";
 import {useRouter} from "vue-router";
 import {usePostStore} from "@/store/PostStore";
+import {addTaskUsers, getTaskUserByCondition} from "@/api/taskUser";
 
 const message = useMessage();
 const toolbarsExclude = ref(['github', 'save', 'fullscreen', 'htmlPreview'])
@@ -125,6 +126,12 @@ watch(() => postTemp.value.image, async () => {
   await router.push({
     name:'learn'
   })
+
+  const taskUserRes = await getTaskUserByCondition({taskId: 9, userId: webInfoStore.getUser.id});
+  if (taskUserRes.data.list.length === 0) {
+    await addTaskUsers({taskId: 9, userId: webInfoStore.getUser.id})
+    message.success('发布帖子 完成')
+  }
   loadingBar.finish()
 })
 

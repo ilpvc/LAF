@@ -1,4 +1,5 @@
 import service from "@/utils/request";
+import {Attribute} from "@/Interface/ApiInterface";
 
 export function getByKey(key: string | null) {
     return service({
@@ -26,4 +27,14 @@ export function getOnlyKey(key: string | null) {
         data: {}
     })
 }
+
+export const updateAttrByKey = (params: Attribute) =>
+  service.request({
+      url: `/attribute/update`,
+      method: "post",
+      params: {},
+      data: params
+  });
+
+
 
