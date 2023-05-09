@@ -87,7 +87,7 @@
           <h3>账号注销</h3>
           <div>
             <i style="color: red;">此操作将彻底删除此账号，请谨慎操作</i>
-            <a href="#" style="color:red;">注销</a>
+            <a style="color:red;cursor: pointer" @click="doDeleteUser">注销</a>
           </div>
 
         </div>
@@ -112,14 +112,7 @@
           <h3>系统消息</h3>
           <div>
             <i>系统消息推送</i>
-            <n-switch>
-              <template #checked>
-                接收
-              </template>
-              <template #unchecked>
-                不接受
-              </template>
-            </n-switch>
+            <n-switch :round="false" v-model:value="setting.pushNotification" @click="doChangeMessagePush"></n-switch>
           </div>
         </div>
 
@@ -127,39 +120,21 @@
           <h3>关注消息</h3>
           <div style="padding: 10px 0px;margin-left: 10px;">
             <i>别人关注我</i>
-            <n-switch>
-              <template #checked>
-                接收
-              </template>
-              <template #unchecked>
-                不接受
-              </template>
+            <n-switch :round="false" v-model:value="setting.followMe" @click="doChangeMessagePush">
             </n-switch>
           </div>
 
           <div style="padding: 10px 0px;margin-left: 10px;">
             <i>举报消息</i>
-            <n-switch>
-              <template #checked>
-                接收
-              </template>
-              <template #unchecked>
-                不接受
-              </template>
+            <n-switch :round="false" v-model:value="setting.reportNotification" @click="doChangeMessagePush">
             </n-switch>
           </div>
 
-          <div style="padding: 10px 0px;margin-left: 10px;">
-            <i>我关注别人</i>
-            <n-switch>
-              <template #checked>
-                发送
-              </template>
-              <template #unchecked>
-                不发送
-              </template>
-            </n-switch>
-          </div>
+<!--          <div style="padding: 10px 0px;margin-left: 10px;">-->
+<!--            <i>我关注别人</i>-->
+<!--            <n-switch>-->
+<!--            </n-switch>-->
+<!--          </div>-->
 
 
         </div>
@@ -169,25 +144,13 @@
           <h3>帖子消息</h3>
           <div style="padding: 10px 0px;margin-left: 10px;">
             <i>收到回复时</i>
-            <n-switch>
-              <template #checked>
-                接收
-              </template>
-              <template #unchecked>
-                不接收
-              </template>
+            <n-switch :round="false" v-model:value="setting.replyNotification" @click="doChangeMessagePush">
             </n-switch>
           </div>
 
           <div style="padding: 10px 0px;margin-left: 10px;">
             <i>帖子被收藏时</i>
-            <n-switch>
-              <template #checked>
-                接收
-              </template>
-              <template #unchecked>
-                不接收
-              </template>
+            <n-switch :round="false" v-model:value="setting.bookmarkNotification" @click="doChangeMessagePush">
             </n-switch>
           </div>
         </div>
@@ -195,17 +158,6 @@
 
       </div>
 
-<!--      <div class="item">-->
-<!--        <h2>反馈</h2>-->
-
-<!--        <div>-->
-<!--          <h3>提交问题</h3>-->
-<!--          <div style="height: 300px;display: block">-->
-<!--            <MyEditor></MyEditor>-->
-<!--          </div>-->
-<!--        </div>-->
-
-<!--      </div>-->
 
     </div>
 
@@ -244,16 +196,18 @@
 </template>
 
 <script setup lang="ts">
-import MyEditor from "@/components/MyEditor.vue";
-import {getCurrentInstance, onBeforeMount, ref} from "vue";
-import {Attribute, UserSecurity} from "@/Interface/ApiInterface";
-import {getUserById, updateUserSecurity} from "@/api/user";
+import {getCurrentInstance, onBeforeMount, reactive, ref, unref} from "vue";
+import {UserSecurity, UserSettings} from "@/Interface/ApiInterface";
+import {deleteUser, getUserById, updateUserSecurity} from "@/api/user";
 import {useWebInfoStore} from "@/store/WebInfoStore";
-import {useMessage,useLoadingBar} from "naive-ui";
+import {useMessage,useLoadingBar,useDialog} from "naive-ui";
 import {useRouter} from "vue-router";
 import {useUserRelatedStore} from "@/store/UserRelatedStore";
 import {Nav} from "../UserRelated/enums/nav";
 import {getByKey} from "@/api/attribute";
+import {getUserSettingsById, updateUserSettings} from "@/api/userSetting";
+import {debounce} from "lodash";
+import {removeToken, removeUser} from "@/utils/auth";
 
 
 const loadingBar = useLoadingBar();
@@ -314,8 +268,45 @@ onBeforeMount(async ()=>{
     key:v.textValue.split('__')[0],
     value:v.textValue.split('__')[1]
   }))
+
+  const userSettingRes = await getUserSettingsById(webInfoStore.getUser.id);
+  setting.value = {...userSettingRes.data.item}
+
   isLoaded.value=false
 })
+
+
+let setting = ref<UserSettings>({});
+
+
+function doChangeMessagePush(){
+  doUpdateUserSetting()
+}
+
+const doUpdateUserSetting = debounce(()=>{
+  updateUserSettings(unref(setting))
+},100)
+
+const dialog = useDialog();
+function doDeleteUser(){
+
+  const d = dialog.error({
+    title:'警告',
+    content:'再次确认,此操作将清除所有用户数据',
+    positiveText: '确认',
+    negativeText: '取消',
+    onPositiveClick: async ()=>{
+      await deleteUser(webInfoStore.getUser.id)
+      removeToken()
+      removeUser()
+      //将user值设为空
+      webInfoStore.setUser({})
+      await router.push({
+        name:'login'
+      })
+    }
+  })
+}
 
 </script>
 

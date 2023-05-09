@@ -26,6 +26,8 @@ import {useRouter} from "vue-router";
 import {useLoadingBar, useMessage} from "naive-ui"
 import {addTaskUsers, getTaskUserByCondition} from "@/api/taskUser";
 import {useWebInfoStore} from "@/store/WebInfoStore";
+import {getUserSettingsById} from "@/api/userSetting";
+import {useUserSettingStore} from "@/store/UserSettingStore";
 
 const loadingBar = useLoadingBar()
 const router = useRouter()
@@ -83,9 +85,12 @@ nextTick(() => {
 
 })
 
-onMounted(() => {
-  init()
-  doLoginTask()
+const userSettingStore = useUserSettingStore();
+onMounted(async () => {
+  await init()
+  await doLoginTask()
+  const userSettingsByIdRes =await getUserSettingsById(webInfoStore.getUser.id);
+  userSettingStore.setLoginUserSetting(userSettingsByIdRes.data.item)
 })
 
 

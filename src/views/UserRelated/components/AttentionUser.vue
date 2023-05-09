@@ -37,6 +37,7 @@ import {onBeforeMount, reactive, ref, unref} from "vue";
 import {User} from "@/Interface/ApiInterface";
 import {addAttention, deleteAttention} from "@/api/attention";
 import {useWebInfoStore} from "@/store/WebInfoStore";
+import {getUserSettingsById} from "@/api/userSetting";
 
 const loadingBar = useLoadingBar();
 const webInfoStore = useWebInfoStore();
@@ -50,7 +51,13 @@ async function doAttention() {
   if (unref(isAttention)) {
     await deleteAttention({attentionUserId: webInfoStore.getUser.id, attentionedUserId: user.id})
   } else {
-    await addAttention({attentionUserId: webInfoStore.getUser.id, attentionedUserId: user.id})
+    const attentionedUserRes = await getUserSettingsById(user.id);
+    if (!attentionedUserRes.data.item.followMe){
+      await addAttention({attentionUserId: webInfoStore.getUser.id, attentionedUserId: user.id,status:3})
+    }else {
+      await addAttention({attentionUserId: webInfoStore.getUser.id, attentionedUserId: user.id})
+    }
+
   }
   isAttention.value = !unref(isAttention)
   loadingBar.finish()

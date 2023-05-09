@@ -35,9 +35,9 @@
 import {useMessage, useLoadingBar} from 'naive-ui'
 import {onBeforeMount, onMounted, reactive, ref, unref} from "vue";
 import {Attention, Blacklist, Collection, Post, User} from "@/Interface/ApiInterface";
-import {addAttention, deleteAttention, updateAttention} from "@/api/attention";
+import {updateAttention} from "@/api/attention";
 import {useWebInfoStore} from "@/store/WebInfoStore";
-import {addBlacklist, deleteBlacklist, updateBlacklist} from "@/api/blacklist";
+import {updateBlacklist} from "@/api/blacklist";
 import {getUserById} from "@/api/user";
 import moment from "moment";
 import {getPostById} from "@/api/posts";
@@ -64,16 +64,20 @@ async function init() {
     case 'blacklist':
       const userRes1 = await getUserById(item.userId)
       let tempItemBlacklist:Blacklist = {...unref(item)}
-      tempItemBlacklist.status = 1
-      await updateBlacklist(tempItemBlacklist)
+      if (tempItemBlacklist.status!==3) {
+        tempItemBlacklist.status = 1
+        await updateBlacklist(tempItemBlacklist)
+      }
       user = userRes1.data.item
       break
     case 'attention':
       const userRes2 = await getUserById(item.attentionUserId)
       user = userRes2.data.item
       let attentionTempItem:Attention = {...unref(item)}
-      attentionTempItem.status = 1
-      await updateAttention(attentionTempItem)
+      if (attentionTempItem.status!==3){
+        attentionTempItem.status = 1
+        await updateAttention(attentionTempItem)
+      }
       break
     case 'collection':
       const userRes3 = await getUserById(item.userId)
@@ -81,8 +85,10 @@ async function init() {
       const postRes3 = await getPostById(item.postId)
       post = postRes3.data.item
       let collectionTempItem:Collection = {...unref(item)}
-      collectionTempItem.status = 1
-      await updateCollections(collectionTempItem)
+      if (collectionTempItem.status!==3) {
+        collectionTempItem.status = 1
+        await updateCollections(collectionTempItem)
+      }
       break
     case 'myComment':
       const userRes4 = await getUserById(item.commenterId)
@@ -90,8 +96,10 @@ async function init() {
       const postRes4 = await getPostById(item.postId)
       post = postRes4.data.item
       let myCommentTempItem = {...unref(item)}
-      myCommentTempItem.status = 1
-      await updateComments(myCommentTempItem)
+      if (myCommentTempItem.status!==3) {
+        myCommentTempItem.status = 1
+        await updateComments(myCommentTempItem)
+      }
       break
     case 'comment':
       const userRes5 = await getUserById(item.commenterId)
@@ -99,8 +107,10 @@ async function init() {
       const postRes5 = await getPostById(item.postId)
       post = postRes5.data.item
       let commentTempItem = {...unref(item)}
-      commentTempItem.status = 1
-      await updateComments(commentTempItem)
+      if (commentTempItem.status!==3) {
+        commentTempItem.status = 1
+        await updateComments(commentTempItem)
+      }
       break
     case 'like':
       const userRes6 = await getUserById(item.userId)
@@ -108,8 +118,10 @@ async function init() {
       const postRes6 = await getPostById(item.postId)
       post = postRes6.data.item
       let likeTempItem = {...unref(item)}
-      likeTempItem.status = 1
-      await updateLikes(likeTempItem)
+      if (likeTempItem.status!==3) {
+        likeTempItem.status = 1
+        await updateLikes(likeTempItem)
+      }
       break
     case 'system':
       // const userRes7 = await getUserById(item.userId)

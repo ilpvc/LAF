@@ -12,31 +12,31 @@
               <n-skeleton text :repeat="2" style="width: 700px"/> <n-skeleton text style="width: 60%" />
             </div>
             <div v-else v-for="blacklist of blacklists">
-              <MessageUser :item="blacklist" :itemType="'blacklist'">拉黑了你</MessageUser>
+              <MessageUser v-if="blacklist.status!==3" :item="blacklist" :itemType="'blacklist'">拉黑了你</MessageUser>
             </div>
           </n-tab-pane>
           <n-tab-pane name="attention" tab="关注消息">
             <div v-for="attention of attentions">
-              <MessageUser :item="attention" :itemType="'attention'"> 关注了你</MessageUser>
+              <MessageUser v-if="attention.status!==3" :item="attention" :itemType="'attention'"> 关注了你</MessageUser>
             </div>
           </n-tab-pane>
           <n-tab-pane name="collection" tab="收藏消息">
             <div v-for="collection of collections">
-              <MessageUser :item="collection" :itemType="'collection'"> 收藏了你的文章</MessageUser>
+              <MessageUser v-if="collection.status!==3" :item="collection" :itemType="'collection'"> 收藏了你的文章</MessageUser>
             </div>
           </n-tab-pane>
           <n-tab-pane name="comment" tab="评论消息">
 
             <div v-for="comment of myComments">
-              <MessageUser :item="comment" :itemType="'myComment'"> 在你的文章</MessageUser>
+              <MessageUser v-if="comment.status!==3" :item="comment" :itemType="'myComment'"> 在你的文章</MessageUser>
             </div>
             <div v-for="comment of comments">
-              <MessageUser :item="comment" :itemType="'comment'"> 在你的文章</MessageUser>
+              <MessageUser v-if="comment.status!==3" :item="comment" :itemType="'comment'"> 在你的文章</MessageUser>
             </div>
           </n-tab-pane>
           <n-tab-pane name="likes" tab="点赞消息">
             <div v-for="like of likes">
-              <MessageUser :item="like" :itemType="'like'"> 点赞了你的文章</MessageUser>
+              <MessageUser v-if="like.status!==3" :item="like" :itemType="'like'"> 点赞了你的文章</MessageUser>
             </div>
           </n-tab-pane>
           <n-tab-pane name="system" tab="系统消息">
@@ -69,6 +69,7 @@ import {getCollectionByCondition} from "@/api/Collection";
 import {getCommentCondition} from "@/api/comment";
 import {getLikesByCondition} from "@/api/Likes";
 import {getMessageByCondition} from "@/api/message";
+import {c} from "naive-ui";
 
 
 const messageStore = useMessageStore();
@@ -104,6 +105,8 @@ onBeforeMount(async ()=>{
   messages = messages.concat(systemMessage4me.data.list)
   messages = messages.concat(allSystemMessage.data.list)
   showInfo.value=false
+
+  console.log(attentions)
 })
 
 

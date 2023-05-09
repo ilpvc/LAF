@@ -217,7 +217,7 @@ import {addCollections, deleteCollections, getCollectionByCondition} from "@/api
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {addLikes, deleteLikes, getLikesByCondition} from "@/api/Likes";
 import {debounce} from "lodash";
-import {deletePost, updatePost} from "@/api/posts";
+import {deletePost, getPostByCondition, getPostById, updatePost} from "@/api/posts";
 import {useUserDetailsStore} from "@/store/UserDetailsStore";
 import {useRouter} from "vue-router";
 import {addAttention, deleteAttention, getAttentionCondition} from "@/api/attention";
@@ -227,6 +227,8 @@ import {addReport, getReportByCondition} from "@/api/Report";
 import {getCommentCondition} from "@/api/comment";
 import {useCommentStore} from "@/store/CommentStore";
 import {getByKey, updateAttrByKey} from "@/api/attribute";
+import {useUserSettingStore} from "@/store/UserSettingStore";
+import {getUserSettingsById} from "@/api/userSetting";
 
 const router = useRouter()
 const userDetailsStore = useUserDetailsStore()
@@ -337,9 +339,15 @@ const handleThumb = debounce(() => {
   }
 }, 500)
 //对收藏操作进行防抖
-const handleCollection = debounce(() => {
+const handleCollection = debounce(async () => {
   if (collection.value) {
-    addCollections({userId: webInfoStore.getUser.id, postId: post.id}).then(res => {
+    const postRes = await getPostById(post.id);
+    const userSettingRes = await getUserSettingsById(postRes.data.item.userId);
+    let status = 0
+    if (!userSettingRes.data.item.followMe){
+      status=3
+    }
+    addCollections({userId: webInfoStore.getUser.id, postId: post.id,status:status}).then(res => {
       if (res.code === 200) message.success('收藏成功')
       else message.error('收藏失败')
     })
@@ -374,7 +382,7 @@ let attentionsSet = new Set()
 for (let attention of attentions) {
   attentionsSet.add(attention.attentionedUserId)
 }
-
+const userSettingStore = useUserSettingStore();
 //新增关注
 async function doAddAttention(id: number) {
   loadingBar.start()
@@ -382,6 +390,10 @@ async function doAddAttention(id: number) {
   await debounce(async () => {
     attention.attentionUserId = useWebInfoStore().getUser.id
     attention.attentionedUserId = id
+    const attentionedUserRes = await getUserSettingsById(id);
+    if (!attentionedUserRes.data.item.followMe){
+      attention.status=3
+    }
     const res = await addAttention(attention);
     if (res.code === 200)
       message.success(res.message)

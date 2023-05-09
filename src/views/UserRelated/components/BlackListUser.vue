@@ -35,7 +35,6 @@
 import {useMessage, useLoadingBar} from 'naive-ui'
 import {onBeforeMount, reactive, ref, unref} from "vue";
 import {User} from "@/Interface/ApiInterface";
-import {addAttention, deleteAttention} from "@/api/attention";
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {addBlacklist, deleteBlacklist} from "@/api/blacklist";
 

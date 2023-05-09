@@ -62,6 +62,7 @@ import {useWebInfoStore} from "@/store/WebInfoStore";
 import {addAttention, deleteAttention, getAttentionCondition} from "@/api/attention";
 import {useAttentionStore} from "@/store/AttentonStore";
 import {debounce} from "lodash";
+import {getUserSettingsById} from "@/api/userSetting";
 
 const message = useMessage();
 const loadingBar = useLoadingBar();
@@ -106,6 +107,10 @@ async function doAddAttention(id: number) {
   await debounce(async () => {
     attention.attentionUserId = useWebInfoStore().getUser.id
     attention.attentionedUserId = id
+    const attentionedUserRes = await getUserSettingsById(id);
+    if (!attentionedUserRes.data.item.followMe){
+      attention.status=3
+    }
     const res = await addAttention(attention);
     if (res.code === 200)
       message.success(res.message)

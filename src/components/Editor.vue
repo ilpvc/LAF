@@ -58,6 +58,7 @@ import {useWebInfoStore} from "@/store/WebInfoStore";
 import {addComments} from "@/api/comment";
 import {useRouter} from "vue-router";
 import {getPostById, updatePost} from "@/api/posts";
+import {getUserSettingsById} from "@/api/userSetting";
 
 const router = useRouter()
 const message = useMessage()
@@ -89,6 +90,10 @@ async function doSubmitComment() {
     comment.parentId = commentStore.getCurrentParentId()
   }
   comment.content = unref(content)
+  const userSettingRes = await getUserSettingsById(comment.commenterId);
+  if (!userSettingRes.data.item.followMe){
+    comment.status=3
+  }
   await addComments(comment)
   const postRes = await getPostById(comment.postId);
   let tempPost:Post = postRes.data.item
