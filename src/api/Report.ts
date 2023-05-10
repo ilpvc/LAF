@@ -35,3 +35,20 @@ export const updateReport = (params: Report) =>
         params: {},
         data: params
     });
+
+export const pageReportCondition = (
+  params: ReportQuery,
+  {
+    pageNo,
+    pageCount
+  }: {
+    pageNo: number;
+    pageCount: number;
+  }
+) =>
+  service.request({
+    url: `/report/pageReportCondition/${pageNo}/${pageCount}`,
+    method: "post",
+    params: {},
+    data: params
+  });
