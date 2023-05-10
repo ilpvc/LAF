@@ -4,7 +4,7 @@
     <div class="announcement">
       <div class="announcement-header">公告</div>
       <div class="announcement-body">
-        {{ webInfoStore.getUser.otherContacts }}
+        {{ announcement }}
       </div>
     </div>
 
@@ -41,8 +41,9 @@
 import {NAvatar} from 'naive-ui'
 import {useWebInfoStore} from "@/store/WebInfoStore";
 import {usePostStore} from "@/store/PostStore";
-import {ref} from "vue";
+import {onBeforeMount, ref} from "vue";
 import {getPostByCondition, pagePostCondition} from "@/api/posts";
+import {getOnlyKey} from "@/api/attribute";
 
 const webInfoStore = useWebInfoStore();
 const postStore = usePostStore();
@@ -55,6 +56,11 @@ async function doSearch(){
   console.log(postsRes)
   emits("search",postsRes.data.items.records,postsRes.data.items.pages,searchContent.value)
 }
+const announcement = ref('')
+onBeforeMount(async ()=>{
+  const announcementRes = await getOnlyKey('announcement');
+  announcement.value = announcement.value.concat(announcementRes.data.item.textValue)
+})
 
 </script>
 

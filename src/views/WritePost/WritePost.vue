@@ -84,7 +84,7 @@ let post = ref<Post>({
   title: '',
   type: 1,
   count: 0,
-  status: 1,
+  status: 2,
   backUserId: undefined,
   image: '',
   content: '',
