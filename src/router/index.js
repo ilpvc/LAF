@@ -112,6 +112,11 @@ const constantRoutes = [
     path: "/login",
     name: 'login',
     component: () => import('@/views/LoginAndRegister/Login.vue')
+  },
+  {
+    path: "/forget",
+    name: 'forget',
+    component: () => import('@/views/LoginAndRegister/ForgetPassword.vue')
   }
 
 ]

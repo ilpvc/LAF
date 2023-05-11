@@ -29,7 +29,7 @@
 
             <input type="password" name="password" id="password" placeholder="密码..."
                    v-model="userDetails.password">
-            <a href="#" class="forget-password">忘记密码</a>
+            <a @click="forgetPassword" class="forget-password">忘记密码</a>
             <button class="signIn" @click="doSignIn">登 录</button>
           </div>
         </div>
@@ -151,6 +151,12 @@ function sendCode(){
   getEmailCode({userEmail:userDetails.email})
   message.success('发送成功')
 }
+//忘记密码
+function forgetPassword(){
+  router.push({
+    name:'forget'
+  })
+}
 
 </script>
 
@@ -244,6 +250,7 @@ input {
 .forget-password:hover {
   color: lightslategray;
   border-bottom: 2px solid #1e90ff;
+  cursor: pointer;
 }
 
 button {

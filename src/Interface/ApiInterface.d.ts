@@ -329,7 +329,8 @@ export interface R {
 }
 
 export interface Mail {
-  userEmail?: string
+  userEmail?: string;
+  code?:string;
 }
 
 export interface Blacklist {
