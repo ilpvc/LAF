@@ -114,6 +114,7 @@ watch(() => postTemp.value.image, async () => {
     tags: unref(postTemp).tags.toString(),
     image: postTemp.value.image,
     content: unref(editorContent),
+    status:2,
     count: 0
   })
   showDetailModal.value = false
